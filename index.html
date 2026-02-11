@@ -471,7 +471,7 @@
 
         document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-        // Video playback: on load + on scroll + on hover (plays from start each time, no loop)
+        // Video playback
         const video = document.querySelector('video');
         if (video) {
             const playFromStart = () => {
@@ -480,9 +480,18 @@
             };
             // 1. Play on page load
             video.play();
-            // 2. Play on mouse over video
-            video.addEventListener('mouseenter', playFromStart);
-            video.parentElement.addEventListener('mouseenter', playFromStart);
+
+            const isMobile = window.matchMedia('(max-width: 900px)').matches || 'ontouchstart' in window;
+
+            if (isMobile) {
+                // Mobile: play on scroll
+                window.addEventListener('scroll', playFromStart, { once: true });
+                window.addEventListener('touchmove', playFromStart, { once: true });
+            } else {
+                // Desktop: play on mouse hover over video only
+                video.addEventListener('mouseenter', playFromStart);
+                video.parentElement.addEventListener('mouseenter', playFromStart);
+            }
         }
     </script>
 
