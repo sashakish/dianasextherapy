@@ -484,9 +484,25 @@
             const isMobile = window.matchMedia('(max-width: 900px)').matches || 'ontouchstart' in window;
 
             if (isMobile) {
-                // Mobile: play on scroll
-                window.addEventListener('scroll', playFromStart, { once: true });
-                window.addEventListener('touchmove', playFromStart, { once: true });
+                // Mobile: play on scroll, resume if browser pauses it
+                let scrollTimer;
+                window.addEventListener('scroll', () => {
+                    clearTimeout(scrollTimer);
+                    scrollTimer = setTimeout(() => {
+                        if (video.paused && video.currentTime < video.duration) {
+                            video.play();
+                        }
+                    }, 150);
+                    if (video.currentTime === 0) {
+                        playFromStart();
+                    }
+                });
+                // Also resume on touch end
+                window.addEventListener('touchend', () => {
+                    if (video.paused && video.currentTime > 0 && video.currentTime < video.duration) {
+                        video.play();
+                    }
+                });
             } else {
                 // Desktop: play on mouse hover over video only
                 video.addEventListener('mouseenter', playFromStart);
