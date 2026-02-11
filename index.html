@@ -519,36 +519,39 @@
             // About section video
             const aboutVideo = document.querySelector('.about-video video');
             if (aboutVideo) {
-                const playAbout = () => { aboutVideo.currentTime = 0; aboutVideo.play(); };
-                aboutVideo.addEventListener('touchstart', playAbout);
-                aboutVideo.addEventListener('mouseenter', playAbout);
+                let aboutStarted = false;
+                const playAboutOnce = () => {
+                    if (!aboutStarted) { aboutStarted = true; aboutVideo.play(); }
+                    else if (aboutVideo.paused && aboutVideo.currentTime < aboutVideo.duration) { aboutVideo.play(); }
+                };
+                const restartAbout = () => { aboutVideo.currentTime = 0; aboutVideo.play(); };
+                aboutVideo.addEventListener('touchstart', restartAbout);
+                aboutVideo.addEventListener('mouseenter', restartAbout);
                 const aboutObserver = new IntersectionObserver((entries) => {
-                    entries.forEach(e => { if (e.isIntersecting) playAbout(); });
+                    entries.forEach(e => { if (e.isIntersecting) playAboutOnce(); });
                 }, { threshold: 0.3 });
                 aboutObserver.observe(aboutVideo);
             }
 
             if (isMobile) {
-                // Mobile: play on scroll, resume if browser pauses it
+                // Mobile: on scroll, resume if paused (don't restart)
                 let scrollTimer;
-                window.addEventListener('scroll', () => {
-                    clearTimeout(scrollTimer);
-                    scrollTimer = setTimeout(() => {
-                        if (video.paused && video.currentTime < video.duration) {
-                            video.play();
-                        }
-                    }, 150);
-                    if (video.currentTime === 0) {
-                        playFromStart();
-                    }
-                });
-                // Also resume on touch end
-                window.addEventListener('touchend', () => {
-                    if (video.paused && video.currentTime > 0 && video.currentTime < video.duration) {
+                const resumeIfPaused = () => {
+                    if (video.paused && video.currentTime < video.duration) {
                         video.play();
                     }
+                };
+                window.addEventListener('scroll', () => {
+                    clearTimeout(scrollTimer);
+                    // Start video if it hasn't played yet
+                    if (video.currentTime === 0 && video.paused) {
+                        video.play();
+                    }
+                    // Resume after scroll stops (in case browser paused it)
+                    scrollTimer = setTimeout(resumeIfPaused, 150);
                 });
-                // Play on tap/touch on the video
+                window.addEventListener('touchend', resumeIfPaused);
+                // Tap on video to play from start
                 video.addEventListener('touchstart', playFromStart);
                 video.parentElement.addEventListener('touchstart', playFromStart);
             } else {
