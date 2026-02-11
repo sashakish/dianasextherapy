@@ -325,6 +325,35 @@
             transform: translateY(0);
         }
 
+        /* ─── ABOUT VIDEO (mobile only) ─── */
+        .about-inner {
+            max-width: 680px;
+            margin: 0 auto;
+        }
+        .about-video-mobile {
+            display: none;
+        }
+        @media (max-width: 900px) {
+            .about-inner {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 2rem;
+                align-items: center;
+                max-width: 100%;
+            }
+            .about-video-mobile {
+                display: block;
+            }
+            .about-video-mobile video {
+                width: 100%;
+                height: auto;
+                display: block;
+            }
+            .about-content {
+                text-align: left;
+            }
+        }
+
         /* ─── RESPONSIVE ─── */
         @media (max-width: 900px) {
             .hero-inner { grid-template-columns: 1fr; text-align: center; gap: 3rem; }
@@ -373,6 +402,13 @@
 
     <!-- About -->
     <section class="about" id="about">
+        <div class="about-inner">
+        <div class="about-video-mobile fade-up">
+            <video muted playsinline>
+                <source src="about-video.mp4" type="video/mp4">
+                <source src="about-video.mov" type="video/quicktime">
+            </video>
+        </div>
         <div class="about-content fade-up">
             <p class="section-label">About the Practice</p>
             <h2 class="section-title">Sexuality is a fundamental part of being human</h2>
@@ -380,6 +416,7 @@
             <p>Too often, we carry silence, shame, or confusion around our intimate lives. Whether you're navigating desire discrepancy, recovering from trauma, exploring identity, or simply wanting a more fulfilling connection — therapy can help.</p>
             <br>
             <p>Our practice offers evidence-based sex therapy in a warm, non-judgmental environment. Every body, every identity, every relationship structure is welcome here.</p>
+        </div>
         </div>
     </section>
 
@@ -482,6 +519,17 @@
             video.play();
 
             const isMobile = window.matchMedia('(max-width: 900px)').matches || 'ontouchstart' in window;
+
+            // About section video (mobile)
+            const aboutVideo = document.querySelector('.about-video-mobile video');
+            if (aboutVideo && isMobile) {
+                const playAbout = () => { aboutVideo.currentTime = 0; aboutVideo.play(); };
+                aboutVideo.addEventListener('touchstart', playAbout);
+                const aboutObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(e => { if (e.isIntersecting) playAbout(); });
+                }, { threshold: 0.3 });
+                aboutObserver.observe(aboutVideo);
+            }
 
             if (isMobile) {
                 // Mobile: play on scroll, resume if browser pauses it
