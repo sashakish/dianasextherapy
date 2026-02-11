@@ -503,6 +503,9 @@
                         video.play();
                     }
                 });
+                // Play on tap/touch on the video
+                video.addEventListener('touchstart', playFromStart);
+                video.parentElement.addEventListener('touchstart', playFromStart);
             } else {
                 // Desktop: play on mouse hover over video only
                 video.addEventListener('mouseenter', playFromStart);
