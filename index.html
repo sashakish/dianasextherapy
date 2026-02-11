@@ -525,7 +525,7 @@
                     else if (aboutVideo.paused && aboutVideo.currentTime < aboutVideo.duration) { aboutVideo.play(); }
                 };
                 const restartAbout = () => { aboutVideo.currentTime = 0; aboutVideo.play(); };
-                aboutVideo.addEventListener('touchstart', restartAbout);
+                aboutVideo.addEventListener('touchstart', () => { if (aboutVideo.paused) restartAbout(); });
                 aboutVideo.addEventListener('mouseenter', restartAbout);
                 const aboutObserver = new IntersectionObserver((entries) => {
                     entries.forEach(e => { if (e.isIntersecting) playAboutOnce(); });
@@ -551,9 +551,10 @@
                     scrollTimer = setTimeout(resumeIfPaused, 150);
                 });
                 window.addEventListener('touchend', resumeIfPaused);
-                // Tap on video to play from start
-                video.addEventListener('touchstart', playFromStart);
-                video.parentElement.addEventListener('touchstart', playFromStart);
+                // Tap on video to play (only restart if not already playing)
+                const tapPlay = () => { if (video.paused) playFromStart(); };
+                video.addEventListener('touchstart', tapPlay);
+                video.parentElement.addEventListener('touchstart', tapPlay);
             } else {
                 // Desktop: play on mouse hover over video only
                 video.addEventListener('mouseenter', playFromStart);
