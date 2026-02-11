@@ -182,11 +182,9 @@
         /* ─── ABOUT ─── */
         .about {
             background: var(--warm-white);
-            text-align: center;
         }
         .about-content {
-            max-width: 680px;
-            margin: 0 auto;
+            text-align: center;
         }
         .about-content p {
             font-size: 1.05rem;
@@ -325,32 +323,24 @@
             transform: translateY(0);
         }
 
-        /* ─── ABOUT VIDEO (mobile only) ─── */
+        /* ─── ABOUT WITH VIDEO ─── */
         .about-inner {
-            max-width: 680px;
+            max-width: 1100px;
             margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
         }
-        .about-video-mobile {
-            display: none;
+        .about-video-mobile video {
+            width: 100%;
+            height: auto;
+            display: block;
         }
         @media (max-width: 900px) {
             .about-inner {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: 1fr;
                 gap: 2rem;
-                align-items: center;
-                max-width: 100%;
-            }
-            .about-video-mobile {
-                display: block;
-            }
-            .about-video-mobile video {
-                width: 100%;
-                height: auto;
-                display: block;
-            }
-            .about-content {
-                text-align: left;
             }
         }
 
@@ -520,11 +510,12 @@
 
             const isMobile = window.matchMedia('(max-width: 900px)').matches || 'ontouchstart' in window;
 
-            // About section video (mobile)
+            // About section video
             const aboutVideo = document.querySelector('.about-video-mobile video');
-            if (aboutVideo && isMobile) {
+            if (aboutVideo) {
                 const playAbout = () => { aboutVideo.currentTime = 0; aboutVideo.play(); };
                 aboutVideo.addEventListener('touchstart', playAbout);
+                aboutVideo.addEventListener('mouseenter', playAbout);
                 const aboutObserver = new IntersectionObserver((entries) => {
                     entries.forEach(e => { if (e.isIntersecting) playAbout(); });
                 }, { threshold: 0.3 });
