@@ -875,7 +875,7 @@
 
                 const imgData = oc.getImageData(0, 0, off.width, off.height);
                 const points = [];
-                const step = Math.max(2, Math.round(3 / dpr));
+                const step = Math.max(3, Math.round(5 / dpr));
                 for (let y = 0; y < off.height; y += step) {
                     for (let x = 0; x < off.width; x += step) {
                         const a = imgData.data[(y * off.width + x) * 4 + 3];
@@ -895,11 +895,10 @@
             let stateStart = 0;
             let textData = null;
 
-            const GATHER_DUR = 2000;   // stardust converges
-            const DRAW_DUR = 1500;     // ink draws in
-            const HOLD_DUR = 2500;     // text visible
-            const DISSOLVE_DUR = 2500; // dissolves to stardust
-            const WAIT_DUR = 400;      // pause between phrases
+            const GATHER_DUR = 3000;   // stardust converges
+            const HOLD_DUR = 3000;     // text visible
+            const DISSOLVE_DUR = 3000; // dissolves to stardust
+            const WAIT_DUR = 500;      // pause between phrases
 
             const initPhrase = (t) => {
                 textData = sampleText(phrases[phraseIdx]);
@@ -931,7 +930,7 @@
             const drawStar = (x, y, size, alpha) => {
                 ctx.save();
                 ctx.translate(x, y);
-                ctx.fillStyle = `rgba(40, 35, 30, ${alpha})`;
+                ctx.fillStyle = `rgba(100, 85, 80, ${alpha})`;
                 ctx.beginPath();
                 for (let i = 0; i < 8; i++) {
                     const r = i % 2 === 0 ? size : size * 0.3;
@@ -959,89 +958,40 @@
                 const elapsed = t - stateStart;
 
                 if (state === 'gathering') {
-                    // Particles converge from scattered to text positions
+                    // Stardust converges into letter shapes
                     const progress = Math.min(1, elapsed / GATHER_DUR);
                     const ease = easeInOutCubic(progress);
                     for (const p of particles) {
                         const cx = p.x + (p.tx - p.x) * ease;
                         const cy = p.y + (p.ty - p.y) * ease;
                         const twinkle = 0.4 + 0.6 * Math.sin(t * p.twinkleSpeed + p.twinkle);
-                        const alpha = (0.3 + 0.7 * progress) * twinkle * p.ta;
-                        // Start as sparkles, become solid dots
-                        if (progress < 0.7) {
-                            drawStar(cx, cy, p.size * (1.5 - progress), alpha);
-                        } else {
-                            ctx.beginPath();
-                            ctx.arc(cx, cy, p.size * 0.6, 0, Math.PI * 2);
-                            ctx.fillStyle = `rgba(40, 35, 30, ${alpha})`;
-                            ctx.fill();
-                        }
+                        const alpha = (0.2 + 0.6 * progress) * twinkle * p.ta;
+                        const s = p.size * (1.8 - ease * 0.8);
+                        drawStar(cx, cy, s, alpha);
                     }
-                    if (progress >= 1) { state = 'drawing'; stateStart = t; }
-                }
-                else if (state === 'drawing') {
-                    // Ink draws in — reveal text left to right with soft edge
-                    const progress = Math.min(1, elapsed / DRAW_DUR);
-                    const ease = easeInOutCubic(progress);
-                    const revealX = ease * w * 1.1 - w * 0.05;
-
-                    // Draw text using the font
-                    ctx.font = textData.font;
-                    ctx.fillStyle = '#2A2520';
-                    ctx.textBaseline = 'middle';
-
-                    // Clip to reveal region
-                    ctx.save();
-                    ctx.beginPath();
-                    ctx.rect(0, 0, revealX, h);
-                    ctx.clip();
-                    ctx.fillText(textData.text, textData.tx, textData.ty);
-                    ctx.restore();
-
-                    // Ink edge particles at the drawing front
-                    if (progress < 1) {
-                        for (let i = 0; i < 8; i++) {
-                            const px = revealX + (Math.random() - 0.5) * 15;
-                            const py = h * 0.3 + Math.random() * h * 0.4;
-                            const s = 0.5 + Math.random() * 1.5;
-                            drawStar(px, py, s, 0.2 + Math.random() * 0.3);
-                        }
-                    }
-
                     if (progress >= 1) { state = 'holding'; stateStart = t; }
                 }
                 else if (state === 'holding') {
-                    // Full text visible
-                    ctx.font = textData.font;
-                    ctx.fillStyle = '#2A2520';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillText(textData.text, textData.tx, textData.ty);
-
+                    // Particles sit in letter positions, gently twinkling
+                    for (const p of particles) {
+                        const twinkle = 0.5 + 0.5 * Math.sin(t * p.twinkleSpeed + p.twinkle);
+                        const alpha = 0.7 * twinkle * p.ta;
+                        drawStar(p.tx, p.ty, p.size, alpha);
+                    }
                     if (elapsed > HOLD_DUR) { state = 'dissolving'; stateStart = t; }
                 }
                 else if (state === 'dissolving') {
-                    // Text dissolves into stardust
+                    // Particles scatter back into stardust
                     const progress = Math.min(1, elapsed / DISSOLVE_DUR);
                     const ease = easeInOutCubic(progress);
-
-                    // Fading text
-                    if (progress < 0.5) {
-                        ctx.font = textData.font;
-                        ctx.fillStyle = `rgba(42, 37, 32, ${1 - progress * 2})`;
-                        ctx.textBaseline = 'middle';
-                        ctx.fillText(textData.text, textData.tx, textData.ty);
-                    }
-
-                    // Particles fly away
                     for (const p of particles) {
-                        const cx = p.tx + p.dx * ease * 200;
-                        const cy = p.ty + p.dy * ease * 200;
+                        const cx = p.tx + p.dx * ease * 250;
+                        const cy = p.ty + p.dy * ease * 250;
                         const twinkle = 0.4 + 0.6 * Math.sin(t * p.twinkleSpeed + p.twinkle);
-                        const alpha = (1 - ease) * twinkle * p.ta;
+                        const alpha = (1 - ease) * twinkle * p.ta * 0.7;
                         if (alpha < 0.01) continue;
-                        drawStar(cx, cy, p.size * (1 + ease), alpha);
+                        drawStar(cx, cy, p.size * (1 + ease * 1.5), alpha);
                     }
-
                     if (progress >= 1) {
                         phraseIdx = (phraseIdx + 1) % phrases.length;
                         state = 'waiting';
