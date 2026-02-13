@@ -408,10 +408,14 @@
             <br>
             <p>Our practice offers evidence-based sex therapy in a warm, non-judgmental environment. Every body, every identity, every relationship structure is welcome here.</p>
         </div>
-        <div class="about-video fade-up">
-            <video muted playsinline>
+        <div class="about-video fade-up" id="about-video-wrapper">
+            <video muted playsinline id="about-fwd">
                 <source src="about-video.mp4" type="video/mp4">
                 <source src="about-video.mov" type="video/quicktime">
+            </video>
+            <video muted playsinline id="about-rev" style="display:none">
+                <source src="about-video-reverse.mp4" type="video/mp4">
+                <source src="about-video-reverse.mov" type="video/quicktime">
             </video>
         </div>
         </div>
@@ -592,33 +596,60 @@
             }
         })();
 
-        // ─── ABOUT VIDEO: same alternating logic ───
-        const aboutVideo = document.querySelector('.about-video video');
-        if (aboutVideo) {
-            let aboutStarted = false;
+        // ─── ABOUT VIDEO: forward/reverse alternating ───
+        (() => {
+            const wrapper = document.getElementById('about-video-wrapper');
+            const aFwd = document.getElementById('about-fwd');
+            const aRev = document.getElementById('about-rev');
+            if (!wrapper || !aFwd || !aRev) return;
+
+            aFwd.style.mixBlendMode = 'multiply';
+            aRev.style.mixBlendMode = 'multiply';
+            aRev.load();
+
+            let currentAbout = aFwd;
             let aboutPlaying = false;
 
-            const playAbout = () => {
-                if (aboutPlaying) return;
-                aboutPlaying = true;
-                aboutVideo.currentTime = 0;
-                aboutVideo.play().catch(() => {});
+            const swapAbout = (to, from) => {
+                to.currentTime = 0;
+                to.style.display = 'block';
+                from.style.display = 'none';
+                to.play().catch(() => {});
             };
 
-            aboutVideo.addEventListener('ended', () => { aboutPlaying = false; });
-            aboutVideo.addEventListener('touchstart', () => { if (!aboutPlaying) playAbout(); });
-            aboutVideo.addEventListener('mouseenter', () => { if (!aboutPlaying) playAbout(); });
+            aFwd.addEventListener('ended', () => { aboutPlaying = false; currentAbout = aFwd; });
+            aRev.addEventListener('ended', () => { aboutPlaying = false; currentAbout = aRev; });
 
+            const triggerAbout = () => {
+                if (aboutPlaying) return;
+                aboutPlaying = true;
+                if (currentAbout === aFwd) { swapAbout(aRev, aFwd); currentAbout = aRev; }
+                else { swapAbout(aFwd, aRev); currentAbout = aFwd; }
+            };
+
+            const isMobile = window.matchMedia('(max-width: 900px)').matches || 'ontouchstart' in window;
+            if (isMobile) {
+                wrapper.addEventListener('touchstart', triggerAbout);
+            } else {
+                let mouseOver = false;
+                wrapper.addEventListener('mouseenter', () => { mouseOver = true; triggerAbout(); });
+                wrapper.addEventListener('mouseleave', () => { mouseOver = false; });
+                wrapper.addEventListener('click', triggerAbout);
+                wrapper.addEventListener('mousemove', () => { if (mouseOver && !aboutPlaying) triggerAbout(); });
+            }
+
+            // Auto-play on scroll into view
             const aboutObserver = new IntersectionObserver((entries) => {
                 entries.forEach(e => {
-                    if (e.isIntersecting && !aboutStarted) {
-                        aboutStarted = true;
-                        playAbout();
+                    if (e.isIntersecting && !aboutPlaying) {
+                        aboutPlaying = true;
+                        aFwd.currentTime = 0;
+                        aFwd.play().catch(() => {});
                     }
                 });
             }, { threshold: 0.3 });
-            aboutObserver.observe(aboutVideo);
-        }
+            aboutObserver.observe(wrapper);
+        })()
     </script>
 
 </body>
