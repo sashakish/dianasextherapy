@@ -505,62 +505,90 @@
 
         document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-        // Video playback
-        const video = document.querySelector('video');
-        if (video) {
-            const playFromStart = () => {
-                video.currentTime = 0;
-                video.play();
+        // ─── HERO VIDEO: alternating forward/reverse ───
+        const heroVideo = document.querySelector('.hero-video-wrapper video');
+        if (heroVideo) {
+            const heroSources = {
+                forward: { mp4: 'hero-video.mp4', mov: 'hero-video.mov' },
+                reverse: { mp4: 'hero-video-reverse.mp4', mov: 'hero-video-reverse.mov' }
             };
-            // 1. Play on page load
-            video.play();
+            let heroDirection = 'forward'; // starts forward
+            let heroPlaying = false;
+
+            const loadAndPlay = (video, direction) => {
+                if (heroPlaying) return;
+                heroPlaying = true;
+                const src = heroSources[direction];
+                const sources = video.querySelectorAll('source');
+                sources[0].src = src.mp4;
+                if (sources[1]) sources[1].src = src.mov;
+                video.load();
+                video.play().catch(() => {});
+            };
+
+            // Play forward on page load
+            heroVideo.play().catch(() => {});
+
+            // When video ends, mark as ready for next trigger
+            heroVideo.addEventListener('ended', () => {
+                heroPlaying = false;
+                // Toggle direction for next play
+                heroDirection = (heroDirection === 'forward') ? 'reverse' : 'forward';
+            });
+
+            const triggerHero = () => {
+                if (heroPlaying) return; // still playing, ignore
+                loadAndPlay(heroVideo, heroDirection);
+            };
 
             const isMobile = window.matchMedia('(max-width: 900px)').matches || 'ontouchstart' in window;
 
-            // About section video
-            const aboutVideo = document.querySelector('.about-video video');
-            if (aboutVideo) {
-                let aboutStarted = false;
-                const playAboutOnce = () => {
-                    if (!aboutStarted) { aboutStarted = true; aboutVideo.play(); }
-                    else if (aboutVideo.paused && aboutVideo.currentTime < aboutVideo.duration) { aboutVideo.play(); }
-                };
-                const restartAbout = () => { aboutVideo.currentTime = 0; aboutVideo.play(); };
-                aboutVideo.addEventListener('touchstart', () => { if (aboutVideo.paused) restartAbout(); });
-                aboutVideo.addEventListener('mouseenter', restartAbout);
-                const aboutObserver = new IntersectionObserver((entries) => {
-                    entries.forEach(e => { if (e.isIntersecting) playAboutOnce(); });
-                }, { threshold: 0.3 });
-                aboutObserver.observe(aboutVideo);
-            }
-
             if (isMobile) {
-                // Mobile: on scroll, resume if paused (don't restart)
-                let scrollTimer;
-                const resumeIfPaused = () => {
-                    if (video.paused && video.currentTime < video.duration) {
-                        video.play();
-                    }
-                };
-                window.addEventListener('scroll', () => {
-                    clearTimeout(scrollTimer);
-                    // Start video if it hasn't played yet
-                    if (video.currentTime === 0 && video.paused) {
-                        video.play();
-                    }
-                    // Resume after scroll stops (in case browser paused it)
-                    scrollTimer = setTimeout(resumeIfPaused, 150);
-                });
-                window.addEventListener('touchend', resumeIfPaused);
-                // Tap on video to play (only restart if not already playing)
-                const tapPlay = () => { if (video.paused) playFromStart(); };
-                video.addEventListener('touchstart', tapPlay);
-                video.parentElement.addEventListener('touchstart', tapPlay);
+                heroVideo.addEventListener('touchstart', triggerHero);
+                heroVideo.parentElement.addEventListener('touchstart', triggerHero);
+                // Also trigger on scroll into view after first play
+                let firstPlay = true;
+                const heroObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(e => {
+                        if (e.isIntersecting && !heroPlaying) {
+                            if (firstPlay) { firstPlay = false; return; } // skip first (autoplay handles it)
+                            triggerHero();
+                        }
+                    });
+                }, { threshold: 0.3 });
+                heroObserver.observe(heroVideo);
             } else {
-                // Desktop: play on mouse hover over video only
-                video.addEventListener('mouseenter', playFromStart);
-                video.parentElement.addEventListener('mouseenter', playFromStart);
+                heroVideo.addEventListener('mouseenter', triggerHero);
+                heroVideo.parentElement.addEventListener('mouseenter', triggerHero);
             }
+        }
+
+        // ─── ABOUT VIDEO: same alternating logic ───
+        const aboutVideo = document.querySelector('.about-video video');
+        if (aboutVideo) {
+            let aboutStarted = false;
+            let aboutPlaying = false;
+
+            const playAbout = () => {
+                if (aboutPlaying) return;
+                aboutPlaying = true;
+                aboutVideo.currentTime = 0;
+                aboutVideo.play().catch(() => {});
+            };
+
+            aboutVideo.addEventListener('ended', () => { aboutPlaying = false; });
+            aboutVideo.addEventListener('touchstart', () => { if (!aboutPlaying) playAbout(); });
+            aboutVideo.addEventListener('mouseenter', () => { if (!aboutPlaying) playAbout(); });
+
+            const aboutObserver = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting && !aboutStarted) {
+                        aboutStarted = true;
+                        playAbout();
+                    }
+                });
+            }, { threshold: 0.3 });
+            aboutObserver.observe(aboutVideo);
         }
     </script>
 
