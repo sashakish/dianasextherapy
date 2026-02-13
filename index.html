@@ -114,26 +114,28 @@
             color: var(--dusty-rose);
         }
 
-        /* Rotating keywords */
+        /* Rotating keywords with particle explosion */
         .keyword-rotator {
-            height: 1.2em;
-            overflow: hidden;
             display: inline-block;
             vertical-align: bottom;
+            position: relative;
         }
         .keyword-rotator .keyword {
-            display: block;
-            animation: rotateWords 10s ease-in-out infinite;
+            display: none;
             color: var(--dusty-rose);
             font-style: italic;
             font-weight: 400;
         }
-        @keyframes rotateWords {
-            0%, 20% { transform: translateY(0); }
-            25%, 45% { transform: translateY(-100%); }
-            50%, 70% { transform: translateY(-200%); }
-            75%, 95% { transform: translateY(-300%); }
-            100% { transform: translateY(0); }
+        .keyword-rotator .keyword.active {
+            display: inline;
+        }
+        .keyword-canvas {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 2;
         }
 
         .hero-text p {
@@ -503,11 +505,12 @@
         <div class="hero-inner">
             <div class="hero-text fade-up">
                 <h1>
-                    <span class="keyword-rotator">
-                        <span class="keyword">Expand Confidence</span>
+                    <span class="keyword-rotator" id="keyword-rotator">
+                        <span class="keyword active">Expand Confidence</span>
                         <span class="keyword">Reignite Passion</span>
                         <span class="keyword">Be Orgasmic</span>
                         <span class="keyword">Ketamine Assisted Therapy</span>
+                        <canvas class="keyword-canvas" id="keyword-canvas"></canvas>
                     </span>
                 </h1>
                 <p>Sex &amp; relationship therapy and coaching for intimacy, passion, and fulfillment.</p>
@@ -843,6 +846,131 @@
                 });
             }, { threshold: 0.3 });
             aboutObserver.observe(wrapper);
+        })();
+
+        // ─── KEYWORD PARTICLE EXPLOSION ───
+        (() => {
+            const rotator = document.getElementById('keyword-rotator');
+            const canvas = document.getElementById('keyword-canvas');
+            const ctx = canvas.getContext('2d');
+            const keywords = rotator.querySelectorAll('.keyword');
+            let currentIdx = 0;
+            let particles = [];
+            let animating = false;
+
+            const getTextMetrics = () => {
+                const active = keywords[currentIdx];
+                const rect = active.getBoundingClientRect();
+                const rotRect = rotator.getBoundingClientRect();
+                return { w: rect.width, h: rect.height, offsetX: rect.left - rotRect.left, offsetY: rect.top - rotRect.top };
+            };
+
+            const sampleTextPixels = () => {
+                const active = keywords[currentIdx];
+                const text = active.textContent;
+                const style = getComputedStyle(active);
+                const fontSize = parseFloat(style.fontSize);
+                const font = `${style.fontStyle} ${style.fontWeight} ${fontSize}px ${style.fontFamily}`;
+
+                // Measure text
+                ctx.font = font;
+                const m = ctx.measureText(text);
+                const tw = Math.ceil(m.width);
+                const th = Math.ceil(fontSize * 1.4);
+
+                // Draw text offscreen to sample pixels
+                const offCanvas = document.createElement('canvas');
+                offCanvas.width = tw;
+                offCanvas.height = th;
+                const offCtx = offCanvas.getContext('2d');
+                offCtx.font = font;
+                offCtx.fillStyle = '#000';
+                offCtx.textBaseline = 'middle';
+                offCtx.fillText(text, 0, th / 2);
+
+                const imgData = offCtx.getImageData(0, 0, tw, th);
+                const points = [];
+                const step = Math.max(2, Math.floor(fontSize / 12));
+                for (let y = 0; y < th; y += step) {
+                    for (let x = 0; x < tw; x += step) {
+                        if (imgData.data[(y * tw + x) * 4 + 3] > 100) {
+                            points.push({ x, y: y - th / 2 });
+                        }
+                    }
+                }
+                return { points, tw, th };
+            };
+
+            const explode = () => {
+                if (animating) return;
+                animating = true;
+
+                const metrics = getTextMetrics();
+                const { points, tw, th } = sampleTextPixels();
+
+                // Size canvas to cover the text area with margin
+                const margin = 200;
+                canvas.width = tw + margin * 2;
+                canvas.height = th + margin * 2;
+                canvas.style.width = canvas.width + 'px';
+                canvas.style.height = canvas.height + 'px';
+                // Center canvas on the text
+                canvas.style.left = (metrics.offsetX + metrics.w / 2) + 'px';
+                canvas.style.top = (metrics.offsetY + metrics.h / 2) + 'px';
+
+                const cx = margin; // text starts at margin offset
+                const cy = canvas.height / 2;
+
+                // Create particles from sampled text pixels
+                particles = points.map(p => {
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = 1.5 + Math.random() * 4;
+                    return {
+                        x: cx + p.x,
+                        y: cy + p.y,
+                        vx: Math.cos(angle) * speed,
+                        vy: Math.sin(angle) * speed,
+                        r: 0.8 + Math.random() * 1.2,
+                        life: 1,
+                        decay: 0.012 + Math.random() * 0.015
+                    };
+                });
+
+                // Hide current text immediately
+                keywords[currentIdx].classList.remove('active');
+
+                const animate = () => {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    let alive = false;
+                    for (const p of particles) {
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        p.vy += 0.03; // slight gravity
+                        p.vx *= 0.99;
+                        p.vy *= 0.99;
+                        p.life -= p.decay;
+                        if (p.life <= 0) continue;
+                        alive = true;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(196, 160, 146, ${p.life * 0.7})`;
+                        ctx.fill();
+                    }
+                    if (alive) {
+                        requestAnimationFrame(animate);
+                    } else {
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        // Show next keyword
+                        currentIdx = (currentIdx + 1) % keywords.length;
+                        keywords[currentIdx].classList.add('active');
+                        animating = false;
+                    }
+                };
+                requestAnimationFrame(animate);
+            };
+
+            // Auto-cycle every 3 seconds
+            setInterval(() => { explode(); }, 3000);
         })();
 
         // ─── PENCIL SKETCH LINES ───
