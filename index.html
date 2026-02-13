@@ -131,9 +131,6 @@
         }
         .keyword-canvas {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
             pointer-events: none;
             z-index: 2;
         }
@@ -862,7 +859,7 @@
                 const active = keywords[currentIdx];
                 const rect = active.getBoundingClientRect();
                 const rotRect = rotator.getBoundingClientRect();
-                return { w: rect.width, h: rect.height, offsetX: rect.left - rotRect.left, offsetY: rect.top - rotRect.top };
+                return { w: rect.width, h: rect.height, offsetX: rect.left - rotRect.left, offsetY: rect.top - rotRect.top, absX: rect.left, absY: rect.top };
             };
 
             const sampleTextPixels = () => {
@@ -909,17 +906,17 @@
                 const { points, tw, th } = sampleTextPixels();
 
                 // Size canvas to cover the text area with margin
-                const margin = 200;
+                const margin = 250;
                 canvas.width = tw + margin * 2;
                 canvas.height = th + margin * 2;
                 canvas.style.width = canvas.width + 'px';
                 canvas.style.height = canvas.height + 'px';
-                // Center canvas on the text
-                canvas.style.left = (metrics.offsetX + metrics.w / 2) + 'px';
-                canvas.style.top = (metrics.offsetY + metrics.h / 2) + 'px';
+                // Position canvas so text area aligns with actual text
+                canvas.style.left = (metrics.offsetX - margin) + 'px';
+                canvas.style.top = (metrics.offsetY - margin + (metrics.h - th) / 2) + 'px';
 
                 const cx = margin; // text starts at margin offset
-                const cy = canvas.height / 2;
+                const cy = margin + th / 2;
 
                 // Create particles from sampled text pixels
                 particles = points.map(p => {
@@ -985,17 +982,17 @@
             window.addEventListener('resize', resize);
 
             const ripples = [];
-            const MAX_RIPPLES = 8;
-            let nextSpawn = 500;
+            const MAX_RIPPLES = 10;
+            let nextSpawn = 300;
 
             const createRipple = () => ({
                 x: Math.random() * W,
                 y: Math.random() * H,
                 r: 0,
-                maxR: 80 + Math.random() * 180,
-                speed: 0.3 + Math.random() * 0.5,
-                opacity: 0.15 + Math.random() * 0.1,
-                lineWidth: 0.6 + Math.random() * 0.8
+                maxR: 60 + Math.random() * 250,
+                speed: 0.2 + Math.random() * 0.4,
+                opacity: 0.3 + Math.random() * 0.15,
+                lineWidth: 1 + Math.random() * 1
             });
 
             const draw = (t) => {
@@ -1003,7 +1000,7 @@
 
                 if (ripples.length < MAX_RIPPLES && t > nextSpawn) {
                     ripples.push(createRipple());
-                    nextSpawn = t + 800 + Math.random() * 2500;
+                    nextSpawn = t + 600 + Math.random() * 1500;
                 }
 
                 for (let i = ripples.length - 1; i >= 0; i--) {
@@ -1018,19 +1015,32 @@
 
                     ctx.beginPath();
                     ctx.arc(rip.x, rip.y, rip.r, 0, Math.PI * 2);
-                    ctx.strokeStyle = `rgba(180, 165, 155, ${alpha})`;
+                    ctx.strokeStyle = `rgba(150, 130, 120, ${alpha})`;
                     ctx.lineWidth = rip.lineWidth * (1 - progress * 0.5);
                     ctx.stroke();
 
-                    // Second inner ring, slightly delayed
-                    if (rip.r > 20) {
-                        const innerR = rip.r * 0.55;
-                        const innerAlpha = alpha * 0.5;
+                    // Second inner ring
+                    if (rip.r > 15) {
+                        const innerR = rip.r * 0.6;
+                        const innerAlpha = alpha * 0.6;
                         ctx.beginPath();
                         ctx.arc(rip.x, rip.y, innerR, 0, Math.PI * 2);
-                        ctx.strokeStyle = `rgba(180, 165, 155, ${innerAlpha})`;
-                        ctx.lineWidth = rip.lineWidth * 0.6;
+                        ctx.strokeStyle = `rgba(150, 130, 120, ${innerAlpha})`;
+                        ctx.lineWidth = rip.lineWidth * 0.7;
                         ctx.stroke();
+                    }
+
+                    // Third faint outer ring
+                    if (rip.r > 30) {
+                        const outerR = rip.r * 1.3;
+                        if (outerR < rip.maxR * 1.3) {
+                            const outerAlpha = alpha * 0.25;
+                            ctx.beginPath();
+                            ctx.arc(rip.x, rip.y, outerR, 0, Math.PI * 2);
+                            ctx.strokeStyle = `rgba(150, 130, 120, ${outerAlpha})`;
+                            ctx.lineWidth = rip.lineWidth * 0.4;
+                            ctx.stroke();
+                        }
                     }
                 }
 
