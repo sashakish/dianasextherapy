@@ -505,63 +505,81 @@
 
         document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-        // ─── HERO VIDEO: alternating forward/reverse ───
-        const heroVideo = document.querySelector('.hero-video-wrapper video');
-        if (heroVideo) {
-            const heroSources = {
-                forward: { mp4: 'hero-video.mp4', mov: 'hero-video.mov' },
-                reverse: { mp4: 'hero-video-reverse.mp4', mov: 'hero-video-reverse.mov' }
-            };
-            let heroDirection = 'forward'; // starts forward
+        // ─── HERO VIDEO: alternating forward/reverse (dual video, no loading gap) ───
+        (() => {
+            const wrapper = document.querySelector('.hero-video-wrapper');
+            if (!wrapper) return;
+
+            const fwdVideo = wrapper.querySelector('video');
+            // Create reverse video element (hidden, preloaded)
+            const revVideo = document.createElement('video');
+            revVideo.muted = true;
+            revVideo.playsInline = true;
+            revVideo.preload = 'auto';
+            revVideo.style.cssText = fwdVideo.style.cssText;
+            revVideo.style.width = '100%';
+            revVideo.style.height = 'auto';
+            revVideo.style.display = 'none';
+            revVideo.style.mixBlendMode = 'multiply';
+            revVideo.innerHTML = '<source src="hero-video-reverse.mp4" type="video/mp4"><source src="hero-video-reverse.mov" type="video/quicktime">';
+            wrapper.appendChild(revVideo);
+
+            let currentVideo = fwdVideo; // which one is visible
             let heroPlaying = false;
 
-            const loadAndPlay = (video, direction) => {
-                if (heroPlaying) return;
-                heroPlaying = true;
-                const src = heroSources[direction];
-                const sources = video.querySelectorAll('source');
-                sources[0].src = src.mp4;
-                if (sources[1]) sources[1].src = src.mov;
-                video.load();
-                video.play().catch(() => {});
+            // Preload reverse video
+            revVideo.load();
+
+            const swap = (toVideo, fromVideo) => {
+                toVideo.currentTime = 0;
+                toVideo.style.display = 'block';
+                fromVideo.style.display = 'none';
+                toVideo.play().catch(() => {});
             };
 
             // Play forward on page load
-            heroVideo.play().catch(() => {});
+            fwdVideo.play().catch(() => {});
+            heroPlaying = true;
 
-            // When video ends, mark as ready for next trigger
-            heroVideo.addEventListener('ended', () => {
+            fwdVideo.addEventListener('ended', () => {
                 heroPlaying = false;
-                // Toggle direction for next play
-                heroDirection = (heroDirection === 'forward') ? 'reverse' : 'forward';
+                currentVideo = fwdVideo;
+            });
+            revVideo.addEventListener('ended', () => {
+                heroPlaying = false;
+                currentVideo = revVideo;
             });
 
             const triggerHero = () => {
-                if (heroPlaying) return; // still playing, ignore
-                loadAndPlay(heroVideo, heroDirection);
+                if (heroPlaying) return;
+                heroPlaying = true;
+                if (currentVideo === fwdVideo) {
+                    swap(revVideo, fwdVideo);
+                    currentVideo = revVideo;
+                } else {
+                    swap(fwdVideo, revVideo);
+                    currentVideo = fwdVideo;
+                }
             };
 
             const isMobile = window.matchMedia('(max-width: 900px)').matches || 'ontouchstart' in window;
 
             if (isMobile) {
-                heroVideo.addEventListener('touchstart', triggerHero);
-                heroVideo.parentElement.addEventListener('touchstart', triggerHero);
-                // Also trigger on scroll into view after first play
+                wrapper.addEventListener('touchstart', triggerHero);
                 let firstPlay = true;
                 const heroObserver = new IntersectionObserver((entries) => {
                     entries.forEach(e => {
                         if (e.isIntersecting && !heroPlaying) {
-                            if (firstPlay) { firstPlay = false; return; } // skip first (autoplay handles it)
+                            if (firstPlay) { firstPlay = false; return; }
                             triggerHero();
                         }
                     });
                 }, { threshold: 0.3 });
-                heroObserver.observe(heroVideo);
+                heroObserver.observe(wrapper);
             } else {
-                heroVideo.addEventListener('mouseenter', triggerHero);
-                heroVideo.parentElement.addEventListener('mouseenter', triggerHero);
+                wrapper.addEventListener('mouseenter', triggerHero);
             }
-        }
+        })();
 
         // ─── ABOUT VIDEO: same alternating logic ───
         const aboutVideo = document.querySelector('.about-video video');
