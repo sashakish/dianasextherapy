@@ -577,7 +577,18 @@
                 }, { threshold: 0.3 });
                 heroObserver.observe(wrapper);
             } else {
-                wrapper.addEventListener('mouseenter', triggerHero);
+                // Desktop: hover, click, or mousemove (after video ends while hovering)
+                let mouseIsOver = false;
+                wrapper.addEventListener('mouseenter', () => {
+                    mouseIsOver = true;
+                    triggerHero();
+                });
+                wrapper.addEventListener('mouseleave', () => { mouseIsOver = false; });
+                wrapper.addEventListener('click', triggerHero);
+                // If mouse is still over when video ends, trigger on next move
+                wrapper.addEventListener('mousemove', () => {
+                    if (mouseIsOver && !heroPlaying) triggerHero();
+                });
             }
         })();
 
