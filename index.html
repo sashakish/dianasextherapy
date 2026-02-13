@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Intimate Connections — Sex Therapy & Relationship Counseling</title>
+    <title>Diana Urman — Sex &amp; Relationship Therapy</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
@@ -54,6 +54,7 @@
             font-weight: 500;
             color: var(--deep-plum);
             letter-spacing: 0.02em;
+            text-decoration: none;
         }
         nav ul {
             list-style: none;
@@ -70,6 +71,16 @@
             transition: color 0.3s;
         }
         nav a:hover { color: var(--dusty-rose); }
+
+        /* Mobile menu */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--deep-plum);
+            cursor: pointer;
+        }
 
         /* ─── HERO ─── */
         .hero {
@@ -102,6 +113,29 @@
             font-weight: 400;
             color: var(--dusty-rose);
         }
+
+        /* Rotating keywords */
+        .keyword-rotator {
+            height: 1.2em;
+            overflow: hidden;
+            display: inline-block;
+            vertical-align: bottom;
+        }
+        .keyword-rotator .keyword {
+            display: block;
+            animation: rotateWords 10s ease-in-out infinite;
+            color: var(--dusty-rose);
+            font-style: italic;
+            font-weight: 400;
+        }
+        @keyframes rotateWords {
+            0%, 20% { transform: translateY(0); }
+            25%, 45% { transform: translateY(-100%); }
+            50%, 70% { transform: translateY(-200%); }
+            75%, 95% { transform: translateY(-300%); }
+            100% { transform: translateY(0); }
+        }
+
         .hero-text p {
             font-size: 1.1rem;
             color: #666;
@@ -181,22 +215,72 @@
         }
 
         /* ─── ABOUT ─── */
-        .about {
-            background: var(--warm-white);
+        .about { background: var(--warm-white); }
+        .about-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: start;
         }
-        .about-content {
-            text-align: center;
+        .about-video { order: -1; }
+        .about-video video {
+            width: 100%;
+            height: auto;
+            display: block;
         }
         .about-content p {
-            font-size: 1.05rem;
+            font-size: 1rem;
             color: #666;
             line-height: 1.9;
+            margin-bottom: 1rem;
+        }
+        .about-content h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: var(--deep-plum);
+            margin: 1.5rem 0 0.75rem;
+        }
+        .credentials-list {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0 2rem;
+        }
+        .credentials-list li {
+            font-size: 0.92rem;
+            color: #666;
+            line-height: 1.7;
+            padding-left: 1.5rem;
+            position: relative;
+            margin-bottom: 0.3rem;
+        }
+        .credentials-list li::before {
+            content: "★";
+            position: absolute;
+            left: 0;
+            color: var(--dusty-rose);
+            font-size: 0.8rem;
+        }
+        .credentials-list li ul {
+            list-style: none;
+            padding: 0;
+            margin: 0.3rem 0 0;
+        }
+        .credentials-list li ul li {
+            padding-left: 1.5rem;
+            font-size: 0.88rem;
+        }
+        .credentials-list li ul li::before {
+            content: "★";
+            font-size: 0.7rem;
         }
         .divider {
             width: 60px;
             height: 1px;
             background: var(--blush);
-            margin: 2.5rem auto;
+            margin: 1.5rem 0;
         }
 
         /* ─── SERVICES ─── */
@@ -244,61 +328,120 @@
             line-height: 1.7;
         }
 
-        /* ─── APPROACH ─── */
-        .approach {
+        /* ─── VIDEO THERAPY ─── */
+        .video-therapy {
             background: var(--deep-plum);
             color: var(--cream);
         }
-        .approach .section-label { color: var(--muted-gold); }
-        .approach .section-title { color: var(--cream); }
-        .approach-content {
-            max-width: 900px;
+        .video-therapy .section-label { color: var(--muted-gold); }
+        .video-therapy .section-title { color: var(--cream); }
+        .video-therapy-content {
+            max-width: 800px;
             margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
         }
-        .approach-text p {
-            color: rgba(250, 247, 242, 0.7);
-            font-size: 1rem;
+        .video-therapy-content p {
+            color: rgba(255,255,255,0.75);
+            font-size: 1.05rem;
             line-height: 1.9;
             margin-bottom: 1.5rem;
         }
-        .approach-values {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-            padding-top: 0.5rem;
+        .video-therapy-content ul {
+            list-style: none;
+            padding: 0;
+            margin: 1.5rem 0 2.5rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
         }
-        .value-item {
+        .video-therapy-content li {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.95rem;
             padding-left: 1.5rem;
-            border-left: 2px solid var(--muted-gold);
+            position: relative;
         }
-        .value-item h4 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.3rem;
-            font-weight: 400;
-            margin-bottom: 0.3rem;
-        }
-        .value-item p {
-            font-size: 0.9rem;
-            color: rgba(250, 247, 242, 0.55);
-            line-height: 1.6;
+        .video-therapy-content li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--muted-gold);
         }
 
-        /* ─── CTA ─── */
-        .cta {
-            text-align: center;
-            background: var(--warm-white);
-            padding: 8rem 3rem;
+        /* ─── TESTIMONIALS ─── */
+        .testimonials { background: var(--warm-white); }
+        .testimonials-header { text-align: center; margin-bottom: 4rem; }
+        .testimonials-grid {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2.5rem;
         }
-        .cta .section-title { margin-bottom: 1rem; }
-        .cta p {
+        .testimonial-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            border: 1px solid rgba(232, 213, 204, 0.4);
+            transition: transform 0.3s;
+        }
+        .testimonial-card:hover { transform: translateY(-3px); }
+        .testimonial-card p {
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.8;
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+        .testimonial-card .author {
+            font-style: normal;
+            font-weight: 500;
+            color: var(--deep-plum);
+            font-size: 0.9rem;
+        }
+
+        /* ─── CONTACT ─── */
+        .contact { background: var(--cream); }
+        .contact-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .contact-inner > p {
             font-size: 1.05rem;
             color: #888;
             max-width: 500px;
-            margin: 0 auto 2.5rem;
+            margin: 0 auto 3rem;
         }
+        .locations {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        .location {
+            text-align: center;
+        }
+        .location h4 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: var(--deep-plum);
+            margin-bottom: 0.5rem;
+        }
+        .location p {
+            font-size: 0.9rem;
+            color: #888;
+            line-height: 1.6;
+        }
+        .contact-details {
+            margin-top: 2rem;
+            font-size: 0.95rem;
+            color: #666;
+        }
+        .contact-details a {
+            color: var(--dusty-rose);
+            text-decoration: none;
+        }
+        .contact-details a:hover { text-decoration: underline; }
 
         /* ─── FOOTER ─── */
         footer {
@@ -324,41 +467,20 @@
             transform: translateY(0);
         }
 
-        /* ─── ABOUT WITH VIDEO ─── */
-        .about-inner {
-            max-width: 1100px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
-        }
-        .about-video {
-            order: -1;
-        }
-        .about-video video {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-        @media (max-width: 900px) {
-            .about-inner {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-            .about-video {
-                order: 1;
-            }
-        }
-
         /* ─── RESPONSIVE ─── */
         @media (max-width: 900px) {
             .hero-inner { grid-template-columns: 1fr; text-align: center; gap: 3rem; }
             .hero-text p { margin-left: auto; margin-right: auto; }
-            .hero-video-wrapper { width: 100%; max-width: 100%; height: auto; }
+            .hero-video-wrapper { width: 100%; max-width: 100%; }
+            .about-inner { grid-template-columns: 1fr; gap: 2rem; }
+            .about-video { order: 1; }
             .services-grid { grid-template-columns: 1fr; max-width: 400px; }
-            .approach-content { grid-template-columns: 1fr; }
+            .video-therapy-content ul { grid-template-columns: 1fr; }
+            .testimonials-grid { grid-template-columns: 1fr; }
+            .locations { grid-template-columns: 1fr; }
             nav ul { display: none; }
+            nav ul.open { display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); padding: 2rem 3rem; gap: 1.5rem; }
+            .menu-toggle { display: block; }
         }
     </style>
 </head>
@@ -366,12 +488,13 @@
 
     <!-- Nav -->
     <nav id="nav">
-        <div class="logo">Intimate Connections</div>
+        <a href="#" class="logo">Diana Urman</a>
+        <button class="menu-toggle" onclick="document.querySelector('nav ul').classList.toggle('open')" aria-label="Menu">☰</button>
         <ul>
             <li><a href="#about">About</a></li>
             <li><a href="#services">Services</a></li>
-            <li><a href="#approach">Approach</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li><a href="#video-therapy">Video Therapy</a></li>
+            <li><a href="https://www.zocdoc.com/practice/diana-urman-sex-and-relationship-therapy-135565" target="_blank">Free Consultation</a></li>
         </ul>
     </nav>
 
@@ -379,11 +502,18 @@
     <section class="hero">
         <div class="hero-inner">
             <div class="hero-text fade-up">
-                <h1>Rediscover <em>intimacy</em> without shame</h1>
-                <p>A safe, compassionate space to explore your sexuality, deepen connection, and heal — individually or with your partner.</p>
+                <h1>
+                    <span class="keyword-rotator">
+                        <span class="keyword">Expand Confidence</span>
+                        <span class="keyword">Reignite Passion</span>
+                        <span class="keyword">Be Orgasmic</span>
+                        <span class="keyword">Ketamine Assisted Therapy</span>
+                    </span>
+                </h1>
+                <p>Sex &amp; relationship therapy and coaching for intimacy, passion, and fulfillment.</p>
                 <div>
-                    <a href="#contact" class="btn btn-primary">Book a Session</a>
-                    <a href="#about" class="btn btn-outline">Learn More</a>
+                    <a href="#about" class="btn btn-primary">Learn More</a>
+                    <a href="https://www.zocdoc.com/practice/diana-urman-sex-and-relationship-therapy-135565" target="_blank" class="btn btn-outline">Free Consultation</a>
                 </div>
             </div>
             <div class="hero-video-container fade-up">
@@ -397,34 +527,53 @@
         </div>
     </section>
 
-    <!-- About -->
+    <!-- About Diana -->
     <section class="about" id="about">
         <div class="about-inner">
-        <div class="about-content fade-up">
-            <p class="section-label">About the Practice</p>
-            <h2 class="section-title">Sexuality is a fundamental part of being human</h2>
-            <div class="divider"></div>
-            <p>Too often, we carry silence, shame, or confusion around our intimate lives. Whether you're navigating desire discrepancy, recovering from trauma, exploring identity, or simply wanting a more fulfilling connection — therapy can help.</p>
-            <br>
-            <p>Our practice offers evidence-based sex therapy in a warm, non-judgmental environment. Every body, every identity, every relationship structure is welcome here.</p>
-        </div>
-        <div class="about-video fade-up" id="about-video-wrapper">
-            <video muted playsinline id="about-fwd">
-                <source src="about-video.mp4" type="video/mp4">
-                <source src="about-video.mov" type="video/quicktime">
-            </video>
-            <video muted playsinline id="about-rev" style="display:none">
-                <source src="about-video-reverse.mp4" type="video/mp4">
-                <source src="about-video-reverse.mov" type="video/quicktime">
-            </video>
-        </div>
+            <div class="about-content fade-up">
+                <p class="section-label">About Diana</p>
+                <h2 class="section-title">Sex &amp; Relationship Therapy</h2>
+                <div class="divider"></div>
+                <p>I view sexuality from the perspective of pleasure and quality of life, not from a dysfunction-based model. My professional and personal goal is to assist my clients in the process of self-healing and growth, helping them realize their full potential through expressing their sexuality. My work is incredibly rewarding, and I truly love being able to empower my clients.</p>
+                <p>Whether you want to increase your confidence, explore fantasies, or discover a new level of intimacy with your partner, I can help. My specialties include treating issues with erectile dysfunction, sexual trauma, loss of desire, relationships in couples, women, and men.</p>
+                <p>I have a PhD in Human Sexuality from the Institute for Advanced Study of Human Sexuality, as well as a graduate degree (MSW) in Clinical Social Work. Additionally, I am a California State Licensed Clinical Social Worker (LCSW #26883) and Certified Clinical Sexologist.</p>
+                <h3>Training &amp; Credentials</h3>
+                <ul class="credentials-list">
+                    <li>Advanced training in Attachment Theory, Imago Therapy, Integrative Model of Couples Therapy, Differentiation Model, and the Somatica Method</li>
+                    <li>Member of AASECT (American Association of Sexuality Educators, Counselors and Therapists)</li>
+                    <li>Certified Sex Educator, San Francisco Sex Information (SFSI)</li>
+                    <li>Somatica Professional Couples Training</li>
+                    <li>David Schnarch training:
+                        <ul>
+                            <li>Crucible® Mind Mapping Therapy</li>
+                            <li>Treating Extra-Relationship Affairs</li>
+                            <li>5-day Clinical Practicum</li>
+                            <li>Crucible® Intimacy and Desire</li>
+                        </ul>
+                    </li>
+                    <li>Tammy Nelson workshop: Creating Connected Couples</li>
+                    <li>The Couples Institute study group with Dr. Ellyn Bader and Dr. Peter Pearson</li>
+                </ul>
+                <p>I'd love to learn more about you and why you might be considering therapy. Schedule a free phone consultation today.</p>
+                <a href="https://www.zocdoc.com/practice/diana-urman-sex-and-relationship-therapy-135565" target="_blank" class="btn btn-primary">Schedule Free Consultation</a>
+            </div>
+            <div class="about-video fade-up" id="about-video-wrapper">
+                <video muted playsinline id="about-fwd">
+                    <source src="about-video.mp4" type="video/mp4">
+                    <source src="about-video.mov" type="video/quicktime">
+                </video>
+                <video muted playsinline id="about-rev" style="display:none">
+                    <source src="about-video-reverse.mp4" type="video/mp4">
+                    <source src="about-video-reverse.mov" type="video/quicktime">
+                </video>
+            </div>
         </div>
     </section>
 
     <!-- Services -->
     <section class="services" id="services">
         <div class="services-header fade-up">
-            <p class="section-label">What We Offer</p>
+            <p class="section-label">What I Offer</p>
             <h2 class="section-title">Specialized therapy for your intimate life</h2>
         </div>
         <div class="services-grid">
@@ -440,55 +589,105 @@
             </div>
             <div class="service-card fade-up">
                 <div class="service-icon">💫</div>
-                <h3>Sexual Health & Education</h3>
+                <h3>Sexual Health &amp; Education</h3>
                 <p>Evidence-based guidance on desire, pleasure, function, and the mind-body connection — grounded in science, free of stigma.</p>
             </div>
         </div>
     </section>
 
-    <!-- Approach -->
-    <section class="approach" id="approach">
-        <div class="approach-content">
-            <div class="approach-text fade-up">
-                <p class="section-label">Our Approach</p>
-                <h2 class="section-title">Healing happens in<br>the space between</h2>
-                <p>We integrate somatic awareness, attachment theory, and modern sexology to address the whole person — not just symptoms. Our work is collaborative, culturally responsive, and always at your pace.</p>
-                <p>Sessions are available in-person and via secure telehealth.</p>
+    <!-- Video Therapy -->
+    <section class="video-therapy" id="video-therapy">
+        <div class="video-therapy-content fade-up">
+            <p class="section-label">Online Therapy Available</p>
+            <h2 class="section-title">Video Therapy &amp; Coaching</h2>
+            <p>I am excited to offer video therapy and coaching for clients who prefer the convenience and comfort of remote sessions. Whether you're across the state or simply prefer to connect from home, I provide the same quality of care through secure video sessions.</p>
+            <p>Video therapy can help with:</p>
+            <ul>
+                <li>Relationship &amp; intimacy issues</li>
+                <li>Sexual confidence &amp; desire</li>
+                <li>Erectile dysfunction</li>
+                <li>Sexual trauma recovery</li>
+                <li>Communication with your partner</li>
+                <li>Exploring fantasies &amp; boundaries</li>
+                <li>Loss of desire</li>
+                <li>Self-discovery &amp; growth</li>
+            </ul>
+            <a href="mailto:diana@dianaurman.com" class="btn btn-primary" style="background: var(--muted-gold);">Contact Me to Learn More</a>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials" id="testimonials">
+        <div class="testimonials-header fade-up">
+            <p class="section-label">Client Experiences</p>
+            <h2 class="section-title">What clients are saying</h2>
+        </div>
+        <div class="testimonials-grid">
+            <div class="testimonial-card fade-up">
+                <p>"I have been meeting with Diana for over a year and have gained so much knowledge and confidence from our sessions. From the very beginning I felt comfortable enough to openly discuss whatever is on my mind without judgment. She has the calm and expertise to listen, offer guidance, and suggest resources for a wide range of topics. With her help I have developed the skills to move through life and the challenges it presents with more ease and grace."</p>
+                <span class="author">— Phoebe C.</span>
             </div>
-            <div class="approach-values fade-up">
-                <div class="value-item">
-                    <h4>Confidential & Safe</h4>
-                    <p>Your privacy is sacred. Everything shared stays here.</p>
-                </div>
-                <div class="value-item">
-                    <h4>Inclusive & Affirming</h4>
-                    <p>All orientations, identities, and relationship structures are honored.</p>
-                </div>
-                <div class="value-item">
-                    <h4>Evidence-Based</h4>
-                    <p>Grounded in research, informed by lived experience.</p>
-                </div>
-                <div class="value-item">
-                    <h4>Shame-Free</h4>
-                    <p>There are no wrong questions. Only human ones.</p>
-                </div>
+            <div class="testimonial-card fade-up">
+                <p>"Diana and I have been meeting for 8 months now and I have gained so much from her knowledge and expertise in love and relationships. She has helped me identify my beliefs and boundaries in my relationships with family, friends, coworkers and my significant other. In her compassionate yet firm way she has helped me to evaluate my own self-imposed 'stories' and listen to my mind and body without judgement. I find I am a calmer, more compassionate, self respecting person today. Thank you Diana!"</p>
+                <span class="author">— Adrienne L</span>
+            </div>
+            <div class="testimonial-card fade-up">
+                <p>"Diana is a wonderful support to me and I look forward to our sessions every time. She makes our time together so productive that I always leave feeling like I have accomplished something or made a breakthrough."</p>
+                <span class="author">— Madeleine G.</span>
+            </div>
+            <div class="testimonial-card fade-up">
+                <p>"It is easy to underestimate the progress she helps you achieve and take it for granted because positive changes settle quickly and we tend to think of them as 'always been there.' It sometimes took me a thorough look back at myself 'six months ago' or 'a year ago' that made me realize how far Diana helped me travel. I highly recommend Diana for anyone who is interested in soul searching deep-dive style."</p>
+                <span class="author">— Natalia L.</span>
+            </div>
+            <div class="testimonial-card fade-up">
+                <p>"Diana is among the very best, in my experience. Her calm, straightforward manner put me at ease instantly. She has always been insightful and helpful. She occasionally also suggests outside readings, which have always proven very useful. I recommend her highly!"</p>
+                <span class="author">— Rob S.</span>
+            </div>
+            <div class="testimonial-card fade-up">
+                <p>"I began seeing Diana about a year ago when my personal and professional struggles became too overwhelming to deal with on my own. Along the way, I have gained problem solving and coping skills, as well as a greater sense of self. Her kind, gentle nature creates an environment which allows you to feel comfortable opening up. She has a wide range of knowledge and provides great resources. I leave each session feeling more prepared and confident to handle whatever lies ahead!"</p>
+                <span class="author">— P.</span>
+            </div>
+            <div class="testimonial-card fade-up">
+                <p>"Diana Urman leads a personalized, yet goal-oriented approach to self awareness and discovery. Her compassionate yet direct practices have helped me achieve practical results I have not experienced with other therapeutic methods."</p>
+                <span class="author">— A.</span>
+            </div>
+            <div class="testimonial-card fade-up">
+                <p>"Specializing in sex and relationships, Diana has given me insight into the most priceless endeavor: fostering and maintaining a healthy, giving, and compassionate relationship with my partner."</p>
+                <span class="author">— S.</span>
             </div>
         </div>
     </section>
 
-    <!-- CTA -->
-    <section class="cta" id="contact">
-        <div class="fade-up">
-            <p class="section-label">Take the First Step</p>
-            <h2 class="section-title">You deserve a fulfilling intimate life</h2>
-            <p>Schedule a free 15-minute consultation to see if we're the right fit for your journey.</p>
-            <a href="mailto:hello@example.com" class="btn btn-primary">Schedule a Consultation</a>
+    <!-- Contact -->
+    <section class="contact" id="contact">
+        <div class="contact-inner fade-up">
+            <p class="section-label">Get in Touch</p>
+            <h2 class="section-title">Schedule a Free Consultation</h2>
+            <p>I'd love to learn more about you and why you might be considering therapy.</p>
+            <a href="https://www.zocdoc.com/practice/diana-urman-sex-and-relationship-therapy-135565" target="_blank" class="btn btn-primary">Book on ZocDoc</a>
+            <div class="locations">
+                <div class="location">
+                    <h4>SF Noe Valley</h4>
+                    <p>4112 24th Street<br>San Francisco, CA 94114</p>
+                </div>
+                <div class="location">
+                    <h4>Calistoga</h4>
+                    <p>Calistoga, CA 94515</p>
+                </div>
+                <div class="location">
+                    <h4>Santa Barbara Area</h4>
+                    <p>Santa Barbara Office<br>CA 93067</p>
+                </div>
+            </div>
+            <div class="contact-details">
+                <p>📞 <a href="tel:+14157295173">(415) 729-5173</a> &nbsp;·&nbsp; ✉ <a href="mailto:diana@dianaurman.com">diana@dianaurman.com</a></p>
+            </div>
         </div>
     </section>
 
     <!-- Footer -->
     <footer>
-        <p>&copy; 2026 Intimate Connections Therapy. All rights reserved. &nbsp;·&nbsp; LMFT / AASECT Certified</p>
+        <p>&copy; COPYRIGHT DIANA URMAN, PHD, LCSW, LICENSE #26883</p>
     </footer>
 
     <script>
@@ -528,10 +727,9 @@
             revVideo.innerHTML = '<source src="hero-video-reverse.mp4" type="video/mp4"><source src="hero-video-reverse.mov" type="video/quicktime">';
             wrapper.appendChild(revVideo);
 
-            let currentVideo = fwdVideo; // which one is visible
+            let currentVideo = fwdVideo;
             let heroPlaying = false;
 
-            // Preload reverse video
             revVideo.load();
 
             const swap = (toVideo, fromVideo) => {
@@ -541,7 +739,6 @@
                 toVideo.play().catch(() => {});
             };
 
-            // Play forward on page load
             fwdVideo.play().catch(() => {});
             heroPlaying = true;
 
@@ -581,7 +778,6 @@
                 }, { threshold: 0.3 });
                 heroObserver.observe(wrapper);
             } else {
-                // Desktop: hover, click, or mousemove (after video ends while hovering)
                 let mouseIsOver = false;
                 wrapper.addEventListener('mouseenter', () => {
                     mouseIsOver = true;
@@ -589,7 +785,6 @@
                 });
                 wrapper.addEventListener('mouseleave', () => { mouseIsOver = false; });
                 wrapper.addEventListener('click', triggerHero);
-                // If mouse is still over when video ends, trigger on next move
                 wrapper.addEventListener('mousemove', () => {
                     if (mouseIsOver && !heroPlaying) triggerHero();
                 });
@@ -638,7 +833,6 @@
                 wrapper.addEventListener('mousemove', () => { if (mouseOver && !aboutPlaying) triggerAbout(); });
             }
 
-            // Auto-play on scroll into view
             const aboutObserver = new IntersectionObserver((entries) => {
                 entries.forEach(e => {
                     if (e.isIntersecting && !aboutPlaying) {
@@ -649,7 +843,7 @@
                 });
             }, { threshold: 0.3 });
             aboutObserver.observe(wrapper);
-        })()
+        })();
     </script>
 
 </body>
