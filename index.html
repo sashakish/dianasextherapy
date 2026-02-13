@@ -857,18 +857,18 @@
             resize();
             window.addEventListener('resize', resize);
 
-            const COUNT = Math.min(80, Math.floor(window.innerWidth / 15));
+            const COUNT = Math.min(35, Math.floor(window.innerWidth / 40));
             const particles = [];
             for (let i = 0; i < COUNT; i++) {
                 particles.push({
                     x: Math.random() * W,
                     y: Math.random() * H,
-                    r: Math.random() * 3 + 1,
-                    dx: (Math.random() - 0.5) * 0.4,
-                    dy: (Math.random() - 0.5) * 0.3 - 0.2,
-                    o: Math.random() * 0.4 + 0.15,
+                    r: Math.random() * 1.2 + 0.3,
+                    dx: (Math.random() - 0.5) * 0.2,
+                    dy: (Math.random() - 0.5) * 0.15 - 0.1,
+                    o: Math.random() * 0.25 + 0.08,
                     phase: Math.random() * Math.PI * 2,
-                    speed: Math.random() * 0.008 + 0.003
+                    speed: Math.random() * 0.003 + 0.001
                 });
             }
 
