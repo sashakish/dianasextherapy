@@ -655,6 +655,16 @@
             aboutRev.addEventListener('touchstart', triggerAbout);
             aboutFwd.addEventListener('mouseenter', triggerAbout);
             aboutRev.addEventListener('mouseenter', triggerAbout);
+            aboutFwd.addEventListener('click', triggerAbout);
+            aboutRev.addEventListener('click', triggerAbout);
+
+            // Re-trigger on mousemove if mouse is still over the video after it ends
+            let aboutMouseOver = false;
+            aboutWrapper.addEventListener('mouseenter', () => { aboutMouseOver = true; });
+            aboutWrapper.addEventListener('mouseleave', () => { aboutMouseOver = false; });
+            aboutWrapper.addEventListener('mousemove', () => {
+                if (aboutMouseOver && !aboutPlaying) triggerAbout();
+            });
 
             // Auto-play forward when scrolled into view
             const aboutPlayObserver = new IntersectionObserver((entries) => {
