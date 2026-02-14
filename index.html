@@ -409,7 +409,9 @@
             <p>Our practice offers evidence-based sex therapy in a warm, non-judgmental environment. Every body, every identity, every relationship structure is welcome here.</p>
         </div>
         <div class="about-video fade-up">
-            <video id="aboutVid" muted playsinline style="width:100%;height:auto;display:block">
+            <video id="aboutFwd" muted playsinline style="width:100%;height:auto;display:block">
+            </video>
+            <video id="aboutRev" muted playsinline style="width:100%;height:auto;display:none">
             </video>
         </div>
         </div>
@@ -618,63 +620,88 @@
             }
         })();
 
-        // ─── ABOUT VIDEO: pool, random on load, swap when off-screen ───
+        // ─── ABOUT VIDEO: pool with forward/reverse, swap when off-screen ───
         (() => {
-            const aboutVideo = document.getElementById('aboutVid');
-            if (!aboutVideo) return;
+            const aboutWrapper = document.querySelector('.about-video');
+            const aboutFwd = document.getElementById('aboutFwd');
+            const aboutRev = document.getElementById('aboutRev');
+            if (!aboutFwd || !aboutRev) return;
 
             const aboutPool = [
-                'about-video.mp4',
-                'about-video-2.mp4',
+                { fwd: 'about-video.mp4', rev: 'about-video-reverse.mp4' },
+                { fwd: 'about-video-2.mp4', rev: 'about-video-2-reverse.mp4' },
             ];
 
             let aboutIdx = Math.floor(Math.random() * aboutPool.length);
             let aboutPlaying = false;
+            let aboutPlayingFwd = true;
             let aboutStarted = false;
 
-            const loadAbout = (idx) => {
-                aboutVideo.src = aboutPool[idx];
-                aboutVideo.load();
+            const loadAboutPair = (idx) => {
+                aboutFwd.src = aboutPool[idx].fwd;
+                aboutRev.src = aboutPool[idx].rev;
+                aboutFwd.load();
+                aboutRev.load();
+                aboutPlayingFwd = true;
+                aboutFwd.style.display = 'block';
+                aboutRev.style.display = 'none';
             };
 
-            loadAbout(aboutIdx);
+            const aboutSwap = (toVideo, fromVideo) => {
+                toVideo.currentTime = 0;
+                toVideo.style.display = 'block';
+                fromVideo.style.display = 'none';
+                toVideo.play().catch(() => {});
+            };
 
-            const playAbout = () => {
+            loadAboutPair(aboutIdx);
+
+            const triggerAbout = () => {
                 if (aboutPlaying) return;
                 aboutPlaying = true;
-                aboutVideo.currentTime = 0;
-                aboutVideo.play().catch(() => {});
+                if (aboutPlayingFwd) {
+                    aboutSwap(aboutRev, aboutFwd);
+                    aboutPlayingFwd = false;
+                } else {
+                    aboutSwap(aboutFwd, aboutRev);
+                    aboutPlayingFwd = true;
+                }
             };
 
-            aboutVideo.addEventListener('ended', () => { aboutPlaying = false; });
-            aboutVideo.addEventListener('touchstart', () => { if (!aboutPlaying) playAbout(); });
-            aboutVideo.addEventListener('mouseenter', () => { if (!aboutPlaying) playAbout(); });
+            aboutFwd.addEventListener('ended', () => { aboutPlaying = false; aboutPlayingFwd = true; });
+            aboutRev.addEventListener('ended', () => { aboutPlaying = false; aboutPlayingFwd = false; });
 
-            // Play when scrolled into view
+            aboutFwd.addEventListener('touchstart', triggerAbout);
+            aboutRev.addEventListener('touchstart', triggerAbout);
+            aboutFwd.addEventListener('mouseenter', triggerAbout);
+            aboutRev.addEventListener('mouseenter', triggerAbout);
+
+            // Auto-play forward when scrolled into view
             const aboutPlayObserver = new IntersectionObserver((entries) => {
                 entries.forEach(e => {
                     if (e.isIntersecting && !aboutStarted) {
                         aboutStarted = true;
-                        playAbout();
+                        aboutPlaying = true;
+                        aboutFwd.play().catch(() => {});
                     }
                 });
             }, { threshold: 0.3 });
-            aboutPlayObserver.observe(aboutVideo);
+            aboutPlayObserver.observe(aboutWrapper);
 
-            // Swap video only when completely off-screen
+            // Swap pool video only when completely off-screen
             const aboutSwapObserver = new IntersectionObserver((entries) => {
                 entries.forEach(e => {
                     if (!e.isIntersecting && aboutPool.length > 1) {
                         let next;
                         do { next = Math.floor(Math.random() * aboutPool.length); } while (next === aboutIdx);
                         aboutIdx = next;
-                        loadAbout(aboutIdx);
+                        loadAboutPair(aboutIdx);
                         aboutPlaying = false;
                         aboutStarted = false;
                     }
                 });
             }, { threshold: 0 });
-            aboutSwapObserver.observe(aboutVideo);
+            aboutSwapObserver.observe(aboutWrapper);
         })();
     </script>
 
