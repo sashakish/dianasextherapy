@@ -202,6 +202,28 @@
             pointer-events: auto;
         }
 
+        .passion-video-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        .passion-vid {
+            width: 100%;
+            height: auto;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.15s ease;
+        }
+        .passion-vid:first-child {
+            position: relative;
+        }
+        .passion-vid.passion-active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
         /* ─── SERVICE SECTIONS (full-width stacked) ─── */
         .service-section {
             min-height: 100vh;
@@ -435,15 +457,11 @@
                 <p>Desire ebbs and flows — that's human. But when disconnection lingers, it can feel like loss. Couples therapy creates space to rebuild communication, rediscover each other, and find your way back to genuine intimacy.</p>
                 <p>We work with desire discrepancy, emotional distance, and the everyday friction that quietly erodes connection.</p>
             </div>
-            <div class="service-video-wrapper" data-video-pool="passion">
-                <video id="pass0fwd" muted playsinline preload="metadata" src="passion-forward.mp4" style="width:100%;height:auto;">
-                </video>
-                <video id="pass0rev" muted playsinline preload="metadata" src="passion-reverse.mp4" style="width:100%;height:auto;display:none;">
-                </video>
-                <video id="pass1fwd" muted playsinline preload="metadata" src="passion2-forward.mp4" style="width:100%;height:auto;display:none;">
-                </video>
-                <video id="pass1rev" muted playsinline preload="metadata" src="passion2-reverse.mp4" style="width:100%;height:auto;display:none;">
-                </video>
+            <div class="service-video-wrapper passion-video-wrapper" data-video-pool="passion">
+                <video id="pass0fwd" muted playsinline preload="auto" src="passion-forward.mp4" class="passion-vid passion-active"></video>
+                <video id="pass0rev" muted playsinline preload="auto" src="passion-reverse.mp4" class="passion-vid"></video>
+                <video id="pass1fwd" muted playsinline preload="auto" src="passion2-forward.mp4" class="passion-vid"></video>
+                <video id="pass1rev" muted playsinline preload="auto" src="passion2-reverse.mp4" class="passion-vid"></video>
             </div>
         </div>
     </section>
@@ -895,104 +913,94 @@
             cSwapObs.observe(cWrapper);
         })();
 
-        // ─── PASSION VIDEO: 2-video pool, forward then reverse on hover, swap off-screen ───
-        // (mirrors confidence handler exactly)
+        // ─── PASSION VIDEO: mirrors hero handler exactly ───
         (() => {
-            const pPairs = [
+            var pWrapper = document.querySelector('.passion-video-wrapper');
+            if (!pWrapper) return;
+
+            var allPVids = pWrapper.querySelectorAll('.passion-vid');
+            var pPairs = [
                 { fwd: document.getElementById('pass0fwd'), rev: document.getElementById('pass0rev') },
                 { fwd: document.getElementById('pass1fwd'), rev: document.getElementById('pass1rev') },
             ];
-            if (!pPairs[0].fwd) return;
 
-            let pIdx = Math.floor(Math.random() * pPairs.length);
-            let pPlaying = false;
-            let pState = 'idle';
-            let pStarted = false;
+            var pIdx = Math.floor(Math.random() * pPairs.length);
+            var pPlayingFwd = true;
+            var pPlaying = false;
 
-            const hideAllP = () => {
-                pPairs.forEach(p => {
-                    p.fwd.style.display = 'none';
-                    p.rev.style.display = 'none';
-                });
+            var activateP = function(vid) {
+                allPVids.forEach(function(v) { v.classList.remove('passion-active'); });
+                vid.classList.add('passion-active');
             };
 
-            const showPFwd = () => { hideAllP(); pPairs[pIdx].fwd.style.display = 'block'; };
-            const showPRev = () => { hideAllP(); pPairs[pIdx].rev.style.display = 'block'; };
+            // Initial state — show first frame of selected pair
+            activateP(pPairs[pIdx].fwd);
 
-            showPFwd();
-
-            // Ended listeners for all pairs
-            pPairs.forEach(p => {
-                p.fwd.addEventListener('ended', () => { pPlaying = false; pState = 'ended-fwd'; });
-                p.rev.addEventListener('ended', () => {
-                    pPlaying = false;
-                    pState = 'ended-rev';
-                    showPFwd();
-                    pPairs[pIdx].fwd.currentTime = 0;
-                });
+            pPairs.forEach(function(p) {
+                p.fwd.addEventListener('ended', function() { pPlaying = false; pPlayingFwd = true; });
+                p.rev.addEventListener('ended', function() { pPlaying = false; pPlayingFwd = false; });
             });
 
-            const triggerP = () => {
+            var triggerPassion = function() {
                 if (pPlaying) return;
-                if (pState === 'ended-fwd') {
-                    pPlaying = true;
-                    showPRev();
-                    pPairs[pIdx].rev.currentTime = 0;
-                    pPairs[pIdx].rev.play().catch(() => { pPlaying = false; });
-                    pState = 'playing-rev';
-                } else if (pState === 'ended-rev' || pState === 'idle') {
-                    pPlaying = true;
-                    showPFwd();
-                    pPairs[pIdx].fwd.currentTime = 0;
-                    pPairs[pIdx].fwd.play().catch(() => { pPlaying = false; });
-                    pState = 'playing-fwd';
+                pPlaying = true;
+                var pair = pPairs[pIdx];
+                if (pPlayingFwd) {
+                    activateP(pair.rev);
+                    pair.rev.currentTime = 0;
+                    pair.rev.play().catch(function() { pPlaying = false; });
+                    pPlayingFwd = false;
+                } else {
+                    activateP(pair.fwd);
+                    pair.fwd.currentTime = 0;
+                    pair.fwd.play().catch(function() { pPlaying = false; });
+                    pPlayingFwd = true;
                 }
             };
 
-            const pWrapper = pPairs[0].fwd.closest('.service-video-wrapper');
-
-            // Interaction listeners
-            pPairs.forEach(p => {
-                [p.fwd, p.rev].forEach(v => {
-                    v.addEventListener('click', triggerP);
-                    v.addEventListener('mouseenter', triggerP);
-                    v.addEventListener('touchstart', triggerP);
-                });
-            });
-
-            let pMouseOver = false;
-            pWrapper.addEventListener('mouseenter', () => { pMouseOver = true; });
-            pWrapper.addEventListener('mouseleave', () => { pMouseOver = false; });
-            pWrapper.addEventListener('mousemove', () => { if (pMouseOver && !pPlaying) triggerP(); });
-
-            // Auto-play forward on scroll into view + preload all
-            const pObs = new IntersectionObserver((entries) => {
-                entries.forEach(e => {
-                    if (e.isIntersecting && !pStarted) {
-                        pStarted = true;
-                        pPlaying = true;
-                        pState = 'playing-fwd';
-                        pPairs.forEach(p => {
-                            p.fwd.preload = 'auto'; p.fwd.load();
-                            p.rev.preload = 'auto'; p.rev.load();
-                        });
-                        pPairs[pIdx].fwd.play().catch(() => { pPlaying = false; });
+            // Auto-play forward on first scroll into view
+            var pFirstPlay = true;
+            var pAutoObs = new IntersectionObserver(function(entries) {
+                entries.forEach(function(e) {
+                    if (e.isIntersecting && !pPlaying) {
+                        if (pFirstPlay) {
+                            pFirstPlay = false;
+                            pPlaying = true;
+                            pPlayingFwd = true;
+                            activateP(pPairs[pIdx].fwd);
+                            pPairs[pIdx].fwd.currentTime = 0;
+                            pPairs[pIdx].fwd.play().catch(function() { pPlaying = false; });
+                        } else {
+                            triggerPassion();
+                        }
                     }
                 });
             }, { threshold: 0.3 });
-            pObs.observe(pWrapper);
+            pAutoObs.observe(pWrapper);
+
+            var isMobile = window.matchMedia('(max-width: 900px)').matches || 'ontouchstart' in window;
+
+            if (isMobile) {
+                pWrapper.addEventListener('touchstart', triggerPassion);
+            } else {
+                var pMouseOver = false;
+                pWrapper.addEventListener('mouseenter', function() { pMouseOver = true; triggerPassion(); });
+                pWrapper.addEventListener('mouseleave', function() { pMouseOver = false; });
+                pWrapper.addEventListener('click', triggerPassion);
+                pWrapper.addEventListener('mousemove', function() { if (pMouseOver && !pPlaying) triggerPassion(); });
+            }
 
             // Swap pool when off-screen
-            const pSwapObs = new IntersectionObserver((entries) => {
-                entries.forEach(e => {
+            var pSwapObs = new IntersectionObserver(function(entries) {
+                entries.forEach(function(e) {
                     if (!e.isIntersecting && pPairs.length > 1) {
-                        let next;
+                        var next;
                         do { next = Math.floor(Math.random() * pPairs.length); } while (next === pIdx);
                         pIdx = next;
                         pPlaying = false;
-                        pState = 'idle';
-                        pStarted = false;
-                        showPFwd();
+                        pPlayingFwd = true;
+                        pFirstPlay = true;
+                        activateP(pPairs[pIdx].fwd);
                     }
                 });
             }, { threshold: 0 });
