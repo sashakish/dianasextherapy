@@ -409,9 +409,7 @@
             <p>Our practice offers evidence-based sex therapy in a warm, non-judgmental environment. Every body, every identity, every relationship structure is welcome here.</p>
         </div>
         <div class="about-video fade-up">
-            <video muted playsinline>
-                <source src="about-video.mp4" type="video/mp4">
-                <source src="about-video.mov" type="video/quicktime">
+            <video id="aboutVid" muted playsinline style="width:100%;height:auto;display:block">
             </video>
         </div>
         </div>
@@ -620,11 +618,26 @@
             }
         })();
 
-        // ─── ABOUT VIDEO: same alternating logic ───
-        const aboutVideo = document.querySelector('.about-video video');
-        if (aboutVideo) {
-            let aboutStarted = false;
+        // ─── ABOUT VIDEO: pool, random on load, swap when off-screen ───
+        (() => {
+            const aboutVideo = document.getElementById('aboutVid');
+            if (!aboutVideo) return;
+
+            const aboutPool = [
+                'about-video.mp4',
+                'about-video-2.mp4',
+            ];
+
+            let aboutIdx = Math.floor(Math.random() * aboutPool.length);
             let aboutPlaying = false;
+            let aboutStarted = false;
+
+            const loadAbout = (idx) => {
+                aboutVideo.src = aboutPool[idx];
+                aboutVideo.load();
+            };
+
+            loadAbout(aboutIdx);
 
             const playAbout = () => {
                 if (aboutPlaying) return;
@@ -637,7 +650,8 @@
             aboutVideo.addEventListener('touchstart', () => { if (!aboutPlaying) playAbout(); });
             aboutVideo.addEventListener('mouseenter', () => { if (!aboutPlaying) playAbout(); });
 
-            const aboutObserver = new IntersectionObserver((entries) => {
+            // Play when scrolled into view
+            const aboutPlayObserver = new IntersectionObserver((entries) => {
                 entries.forEach(e => {
                     if (e.isIntersecting && !aboutStarted) {
                         aboutStarted = true;
@@ -645,8 +659,23 @@
                     }
                 });
             }, { threshold: 0.3 });
-            aboutObserver.observe(aboutVideo);
-        }
+            aboutPlayObserver.observe(aboutVideo);
+
+            // Swap video only when completely off-screen
+            const aboutSwapObserver = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (!e.isIntersecting && aboutPool.length > 1) {
+                        let next;
+                        do { next = Math.floor(Math.random() * aboutPool.length); } while (next === aboutIdx);
+                        aboutIdx = next;
+                        loadAbout(aboutIdx);
+                        aboutPlaying = false;
+                        aboutStarted = false;
+                    }
+                });
+            }, { threshold: 0 });
+            aboutSwapObserver.observe(aboutVideo);
+        })();
     </script>
 
 </body>
