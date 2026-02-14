@@ -435,14 +435,14 @@
                 <p>Desire ebbs and flows — that's human. But when disconnection lingers, it can feel like loss. Couples therapy creates space to rebuild communication, rediscover each other, and find your way back to genuine intimacy.</p>
                 <p>We work with desire discrepancy, emotional distance, and the everyday friction that quietly erodes connection.</p>
             </div>
-            <div class="service-video-wrapper" data-video-pool="passion" style="position:relative;">
-                <video id="pass0fwd" muted playsinline preload="none" src="passion-forward.mp4" style="width:100%;height:auto;position:relative;z-index:1;">
+            <div class="service-video-wrapper" data-video-pool="passion">
+                <video id="pass0fwd" muted playsinline preload="none" src="passion-forward.mp4" style="width:100%;height:auto;mix-blend-mode:multiply">
                 </video>
-                <video id="pass0rev" muted playsinline preload="none" src="passion-reverse.mp4" style="width:100%;height:auto;position:absolute;top:0;left:0;opacity:0;">
+                <video id="pass0rev" muted playsinline preload="none" src="passion-reverse.mp4" style="width:100%;height:auto;display:none;mix-blend-mode:multiply">
                 </video>
-                <video id="pass1fwd" muted playsinline preload="none" src="passion2-forward.mp4" style="width:100%;height:auto;position:absolute;top:0;left:0;opacity:0;">
+                <video id="pass1fwd" muted playsinline preload="none" src="passion2-forward.mp4" style="width:100%;height:auto;display:none;mix-blend-mode:multiply">
                 </video>
-                <video id="pass1rev" muted playsinline preload="none" src="passion2-reverse.mp4" style="width:100%;height:auto;position:absolute;top:0;left:0;opacity:0;">
+                <video id="pass1rev" muted playsinline preload="none" src="passion2-reverse.mp4" style="width:100%;height:auto;display:none;mix-blend-mode:multiply">
                 </video>
             </div>
         </div>
@@ -895,7 +895,8 @@
             cSwapObs.observe(cWrapper);
         })();
 
-        // ─── PASSION VIDEO: 2-video pool, opacity stacking, forward+reverse on hover, swap off-screen ───
+        // ─── PASSION VIDEO: 2-video pool, forward then reverse on hover, swap off-screen ───
+        // (mirrors confidence handler exactly)
         (() => {
             const pPairs = [
                 { fwd: document.getElementById('pass0fwd'), rev: document.getElementById('pass0rev') },
@@ -908,27 +909,25 @@
             let pState = 'idle';
             let pStarted = false;
 
-            const allVids = pPairs.flatMap(p => [p.fwd, p.rev]);
-
-            const showOnly = (vid) => {
-                allVids.forEach(v => {
-                    v.style.opacity = '0';
-                    v.style.zIndex = '0';
-                    v.style.position = 'absolute';
+            const hideAllP = () => {
+                pPairs.forEach(p => {
+                    p.fwd.style.display = 'none';
+                    p.rev.style.display = 'none';
                 });
-                vid.style.opacity = '1';
-                vid.style.zIndex = '1';
-                vid.style.position = 'relative';
             };
 
-            showOnly(pPairs[pIdx].fwd);
+            const showPFwd = () => { hideAllP(); pPairs[pIdx].fwd.style.display = 'block'; };
+            const showPRev = () => { hideAllP(); pPairs[pIdx].rev.style.display = 'block'; };
 
+            showPFwd();
+
+            // Ended listeners for all pairs
             pPairs.forEach(p => {
                 p.fwd.addEventListener('ended', () => { pPlaying = false; pState = 'ended-fwd'; });
                 p.rev.addEventListener('ended', () => {
                     pPlaying = false;
                     pState = 'ended-rev';
-                    showOnly(pPairs[pIdx].fwd);
+                    showPFwd();
                     pPairs[pIdx].fwd.currentTime = 0;
                 });
             });
@@ -937,13 +936,13 @@
                 if (pPlaying) return;
                 if (pState === 'ended-fwd') {
                     pPlaying = true;
-                    showOnly(pPairs[pIdx].rev);
+                    showPRev();
                     pPairs[pIdx].rev.currentTime = 0;
                     pPairs[pIdx].rev.play().catch(() => { pPlaying = false; });
                     pState = 'playing-rev';
                 } else if (pState === 'ended-rev' || pState === 'idle') {
                     pPlaying = true;
-                    showOnly(pPairs[pIdx].fwd);
+                    showPFwd();
                     pPairs[pIdx].fwd.currentTime = 0;
                     pPairs[pIdx].fwd.play().catch(() => { pPlaying = false; });
                     pState = 'playing-fwd';
@@ -952,6 +951,7 @@
 
             const pWrapper = pPairs[0].fwd.closest('.service-video-wrapper');
 
+            // Interaction listeners
             pPairs.forEach(p => {
                 [p.fwd, p.rev].forEach(v => {
                     v.addEventListener('click', triggerP);
@@ -960,55 +960,39 @@
                 });
             });
 
-            // Also trigger from wrapper itself (catches gaps between videos)
-            pWrapper.addEventListener('click', triggerP);
-            pWrapper.addEventListener('mouseenter', triggerP);
-            pWrapper.addEventListener('touchstart', triggerP);
-
             let pMouseOver = false;
             pWrapper.addEventListener('mouseenter', () => { pMouseOver = true; });
             pWrapper.addEventListener('mouseleave', () => { pMouseOver = false; });
             pWrapper.addEventListener('mousemove', () => { if (pMouseOver && !pPlaying) triggerP(); });
 
-            let pLoaded = false;
-            const ensureLoaded = () => {
-                if (pLoaded) return;
-                pLoaded = true;
-                pPairs.forEach(p => {
-                    p.fwd.preload = 'auto'; p.fwd.load();
-                    p.rev.preload = 'auto'; p.rev.load();
-                });
-            };
-
-            // Auto-play forward every time section scrolls into view
+            // Auto-play forward on scroll into view + preload all
             const pObs = new IntersectionObserver((entries) => {
                 entries.forEach(e => {
-                    if (e.isIntersecting) {
-                        ensureLoaded();
-                        if (!pPlaying) {
-                            pPlaying = true;
-                            pState = 'playing-fwd';
-                            showOnly(pPairs[pIdx].fwd);
-                            pPairs[pIdx].fwd.currentTime = 0;
-                            pPairs[pIdx].fwd.play().catch(() => { pPlaying = false; });
-                        }
+                    if (e.isIntersecting && !pStarted) {
+                        pStarted = true;
+                        pPlaying = true;
+                        pState = 'playing-fwd';
+                        pPairs.forEach(p => {
+                            p.fwd.preload = 'auto'; p.fwd.load();
+                            p.rev.preload = 'auto'; p.rev.load();
+                        });
+                        pPairs[pIdx].fwd.play().catch(() => { pPlaying = false; });
                     }
                 });
-            }, { threshold: 0.2 });
+            }, { threshold: 0.3 });
             pObs.observe(pWrapper);
 
-            // Swap pool when fully off-screen
+            // Swap pool when off-screen
             const pSwapObs = new IntersectionObserver((entries) => {
                 entries.forEach(e => {
                     if (!e.isIntersecting && pPairs.length > 1) {
-                        // Stop any playing video
-                        allVids.forEach(v => { v.pause(); v.currentTime = 0; });
                         let next;
                         do { next = Math.floor(Math.random() * pPairs.length); } while (next === pIdx);
                         pIdx = next;
                         pPlaying = false;
                         pState = 'idle';
-                        showOnly(pPairs[pIdx].fwd);
+                        pStarted = false;
+                        showPFwd();
                     }
                 });
             }, { threshold: 0 });
