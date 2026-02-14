@@ -505,7 +505,7 @@
 
         document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-        // ─── HERO VIDEO: pool of videos, random pick, forward/reverse alternation ───
+        // ─── HERO VIDEO: pool of videos, random on load, swap only when off-screen ───
         (() => {
             const wrapper = document.querySelector('.hero-video-wrapper');
             if (!wrapper) return;
@@ -513,32 +513,27 @@
             const fwdVideo = document.getElementById('heroFwd');
             const revVideo = document.getElementById('heroRev');
 
-            // Video pool — add more entries to grow the pool
+            // Video pool
             const pool = [
                 { fwd: 'hero1-forward.mp4', rev: 'hero1-reverse.mp4' },
                 { fwd: 'hero2-forward.mp4', rev: 'hero2-reverse.mp4' },
             ];
 
             let currentIdx = Math.floor(Math.random() * pool.length);
-            let playingForward = true; // track direction
+            let playingForward = true;
             let heroPlaying = false;
+            let isVisible = true; // hero starts visible
+            let pendingSwap = false; // queued swap for when hero leaves view
 
             const loadPair = (idx) => {
                 fwdVideo.src = pool[idx].fwd;
                 revVideo.src = pool[idx].rev;
                 fwdVideo.load();
                 revVideo.load();
-            };
-
-            // Pick a different random video from the pool
-            const nextVideo = () => {
-                if (pool.length > 1) {
-                    let next;
-                    do { next = Math.floor(Math.random() * pool.length); } while (next === currentIdx);
-                    currentIdx = next;
-                } 
-                loadPair(currentIdx);
                 playingForward = true;
+                // Reset to show forward video
+                fwdVideo.style.display = 'block';
+                revVideo.style.display = 'none';
             };
 
             const swap = (toVideo, fromVideo) => {
@@ -550,7 +545,6 @@
 
             // Initial load + autoplay
             loadPair(currentIdx);
-            fwdVideo.style.display = 'block';
             fwdVideo.addEventListener('canplaythrough', function once() {
                 fwdVideo.play().catch(() => {});
                 heroPlaying = true;
@@ -559,41 +553,44 @@
 
             fwdVideo.addEventListener('ended', () => {
                 heroPlaying = false;
-                playingForward = true; // just finished forward
+                playingForward = true;
             });
             revVideo.addEventListener('ended', () => {
                 heroPlaying = false;
-                playingForward = false; // just finished reverse
-                // After a full fwd+rev cycle, switch to next video
-                nextVideo();
+                playingForward = false;
             });
 
             const triggerHero = () => {
                 if (heroPlaying) return;
                 heroPlaying = true;
                 if (playingForward) {
-                    // Play reverse
                     swap(revVideo, fwdVideo);
                     playingForward = false;
                 } else {
-                    // Play forward (new video already loaded after cycle)
                     swap(fwdVideo, revVideo);
                     playingForward = true;
                 }
             };
 
-            // Also rotate on scroll past hero
-            let lastScrollY = 0;
-            let scrollTriggered = false;
-            window.addEventListener('scroll', () => {
-                const heroBottom = wrapper.getBoundingClientRect().bottom;
-                if (heroBottom < 0 && !scrollTriggered) {
-                    scrollTriggered = true;
-                    // When user scrolls past hero entirely, queue next video
-                    if (!heroPlaying) nextVideo();
-                }
-                if (heroBottom > 100) scrollTriggered = false;
-            });
+            // Only swap videos when hero is completely out of view
+            const visObserver = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) {
+                        isVisible = true;
+                    } else {
+                        // Hero just left the viewport completely
+                        isVisible = false;
+                        if (pool.length > 1) {
+                            let next;
+                            do { next = Math.floor(Math.random() * pool.length); } while (next === currentIdx);
+                            currentIdx = next;
+                            loadPair(currentIdx);
+                            heroPlaying = false;
+                        }
+                    }
+                });
+            }, { threshold: 0 }); // fires when 0% visible (completely gone)
+            visObserver.observe(wrapper);
 
             const isMobile = window.matchMedia('(max-width: 900px)').matches || 'ontouchstart' in window;
 
