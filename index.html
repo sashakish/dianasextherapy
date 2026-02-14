@@ -388,10 +388,10 @@
             </div>
             <div class="hero-video-container fade-up">
                 <div class="hero-video-wrapper">
-                    <video id="heroFwd" muted playsinline style="width:100%;height:auto;display:block;mix-blend-mode:multiply">
-                    </video>
-                    <video id="heroRev" muted playsinline style="width:100%;height:auto;display:none;mix-blend-mode:multiply">
-                    </video>
+                    <video id="hero0fwd" muted playsinline preload="auto" src="hero1-forward.mp4" style="width:100%;height:auto;display:block;mix-blend-mode:multiply"></video>
+                    <video id="hero0rev" muted playsinline preload="auto" src="hero1-reverse.mp4" style="width:100%;height:auto;display:none;mix-blend-mode:multiply"></video>
+                    <video id="hero1fwd" muted playsinline preload="auto" src="hero2-forward.mp4" style="width:100%;height:auto;display:none;mix-blend-mode:multiply"></video>
+                    <video id="hero1rev" muted playsinline preload="auto" src="hero2-reverse.mp4" style="width:100%;height:auto;display:none;mix-blend-mode:multiply"></video>
                 </div>
             </div>
         </div>
@@ -505,103 +505,92 @@
 
         document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-        // ─── HERO VIDEO: pool of videos, random on load, swap only when off-screen ───
+        // ─── HERO VIDEO: all videos preloaded in DOM, no src swapping, just show/hide ───
         (() => {
             const wrapper = document.querySelector('.hero-video-wrapper');
             if (!wrapper) return;
 
-            const fwdVideo = document.getElementById('heroFwd');
-            const revVideo = document.getElementById('heroRev');
-
-            // Video pool
-            const pool = [
-                { fwd: 'hero1-forward.mp4', rev: 'hero1-reverse.mp4' },
-                { fwd: 'hero2-forward.mp4', rev: 'hero2-reverse.mp4' },
+            // All 4 video elements preloaded in HTML
+            const pairs = [
+                { fwd: document.getElementById('hero0fwd'), rev: document.getElementById('hero0rev') },
+                { fwd: document.getElementById('hero1fwd'), rev: document.getElementById('hero1rev') },
             ];
 
-            let currentIdx = Math.floor(Math.random() * pool.length);
+            let currentIdx = Math.floor(Math.random() * pairs.length);
             let playingForward = true;
             let heroPlaying = false;
-            let isVisible = true; // hero starts visible
-            let pendingSwap = false; // queued swap for when hero leaves view
+            let isVisible = true;
 
-            const loadPair = (idx) => {
-                // Preload into memory first to avoid jank
-                const preFwd = new Audio(); // trick: preload video as media
-                preFwd.src = pool[idx].fwd;
-                const preRev = new Audio();
-                preRev.src = pool[idx].rev;
-                fwdVideo.src = pool[idx].fwd;
-                revVideo.src = pool[idx].rev;
-                fwdVideo.preload = 'auto';
-                revVideo.preload = 'auto';
-                fwdVideo.load();
-                revVideo.load();
-                playingForward = true;
-                fwdVideo.style.display = 'block';
-                revVideo.style.display = 'none';
+            // Hide all videos
+            const hideAll = () => {
+                pairs.forEach(p => {
+                    p.fwd.style.display = 'none';
+                    p.rev.style.display = 'none';
+                });
             };
 
-            const swap = (toVideo, fromVideo) => {
-                toVideo.currentTime = 0;
-                toVideo.style.display = 'block';
-                fromVideo.style.display = 'none';
-                toVideo.play().catch(() => {});
+            // Show current forward video
+            const showCurrent = () => {
+                hideAll();
+                pairs[currentIdx].fwd.style.display = 'block';
             };
 
-            // Initial load + autoplay
-            loadPair(currentIdx);
-            fwdVideo.addEventListener('canplaythrough', function once() {
-                fwdVideo.play().catch(() => {});
-                heroPlaying = true;
-                fwdVideo.removeEventListener('canplaythrough', once);
-            });
+            // Initial state
+            showCurrent();
+            pairs[currentIdx].fwd.play().catch(() => {});
+            heroPlaying = true;
 
-            fwdVideo.addEventListener('ended', () => {
-                heroPlaying = false;
-                playingForward = true;
-            });
-            revVideo.addEventListener('ended', () => {
-                heroPlaying = false;
-                playingForward = false;
+            // Set up ended listeners for all videos
+            pairs.forEach((p, idx) => {
+                p.fwd.addEventListener('ended', () => {
+                    heroPlaying = false;
+                    playingForward = true;
+                });
+                p.rev.addEventListener('ended', () => {
+                    heroPlaying = false;
+                    playingForward = false;
+                });
             });
 
             const triggerHero = () => {
                 if (heroPlaying) return;
                 heroPlaying = true;
+                const pair = pairs[currentIdx];
                 if (playingForward) {
-                    swap(revVideo, fwdVideo);
+                    pair.fwd.style.display = 'none';
+                    pair.rev.style.display = 'block';
+                    pair.rev.currentTime = 0;
+                    pair.rev.play().catch(() => {});
                     playingForward = false;
                 } else {
-                    swap(fwdVideo, revVideo);
+                    pair.rev.style.display = 'none';
+                    pair.fwd.style.display = 'block';
+                    pair.fwd.currentTime = 0;
+                    pair.fwd.play().catch(() => {});
                     playingForward = true;
                 }
             };
 
-            // Swap videos only after hero has been fully off-screen for 500ms
-            // This prevents visible jarring swaps during scroll
+            // Swap pool index when off-screen — no loading, just change which pair is active
             let offScreenTimer = null;
-            let swapReady = false;
-
             const visObserver = new IntersectionObserver((entries) => {
                 entries.forEach(e => {
                     if (e.isIntersecting) {
                         isVisible = true;
-                        // Cancel any pending swap if user scrolls back quickly
                         if (offScreenTimer) { clearTimeout(offScreenTimer); offScreenTimer = null; }
                     } else {
                         isVisible = false;
-                        // Wait 500ms to make sure hero is truly off-screen, then swap + preload
                         if (offScreenTimer) clearTimeout(offScreenTimer);
                         offScreenTimer = setTimeout(() => {
-                            if (!isVisible && pool.length > 1) {
+                            if (!isVisible && pairs.length > 1) {
                                 let next;
-                                do { next = Math.floor(Math.random() * pool.length); } while (next === currentIdx);
+                                do { next = Math.floor(Math.random() * pairs.length); } while (next === currentIdx);
                                 currentIdx = next;
-                                loadPair(currentIdx);
+                                playingForward = true;
                                 heroPlaying = false;
+                                showCurrent();
                             }
-                        }, 500);
+                        }, 300);
                     }
                 });
             }, { threshold: 0 });
