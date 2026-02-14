@@ -431,7 +431,9 @@
                 <p>We work with desire discrepancy, emotional distance, and the everyday friction that quietly erodes connection.</p>
             </div>
             <div class="service-video-wrapper" data-video-pool="passion">
-                <video muted playsinline preload="none" class="section-video" style="width:100%;height:auto;mix-blend-mode:multiply">
+                <video id="passionFwd" muted playsinline preload="none" class="section-video" src="passion-forward.mp4" style="width:100%;height:auto;mix-blend-mode:multiply">
+                </video>
+                <video id="passionRev" muted playsinline preload="none" src="passion-reverse.mp4" style="width:100%;height:auto;display:none;mix-blend-mode:multiply">
                 </video>
             </div>
         </div>
@@ -774,6 +776,63 @@
             video.addEventListener('mouseenter', () => { if (!playing) playVideo(); });
             video.addEventListener('touchstart', () => { if (!playing) playVideo(); });
         });
+
+        // ─── PASSION VIDEO: forward/reverse on interaction ───
+        (() => {
+            const passionFwd = document.getElementById('passionFwd');
+            const passionRev = document.getElementById('passionRev');
+            if (!passionFwd || !passionRev) return;
+
+            let pPlaying = false;
+            let pForward = true;
+            let pStarted = false;
+
+            const passionSwap = (toV, fromV) => {
+                toV.currentTime = 0;
+                toV.style.display = 'block';
+                fromV.style.display = 'none';
+                toV.play().catch(() => {});
+            };
+
+            const triggerPassion = () => {
+                if (pPlaying) return;
+                pPlaying = true;
+                if (pForward) {
+                    passionSwap(passionRev, passionFwd);
+                    pForward = false;
+                } else {
+                    passionSwap(passionFwd, passionRev);
+                    pForward = true;
+                }
+            };
+
+            passionFwd.addEventListener('ended', () => { pPlaying = false; pForward = true; });
+            passionRev.addEventListener('ended', () => { pPlaying = false; pForward = false; });
+
+            [passionFwd, passionRev].forEach(v => {
+                v.addEventListener('click', triggerPassion);
+                v.addEventListener('mouseenter', triggerPassion);
+                v.addEventListener('touchstart', triggerPassion);
+            });
+
+            let pMouseOver = false;
+            const pWrapper = passionFwd.closest('.service-video-wrapper');
+            pWrapper.addEventListener('mouseenter', () => { pMouseOver = true; });
+            pWrapper.addEventListener('mouseleave', () => { pMouseOver = false; });
+            pWrapper.addEventListener('mousemove', () => { if (pMouseOver && !pPlaying) triggerPassion(); });
+
+            // Auto-play on scroll into view
+            const pObs = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting && !pStarted) {
+                        pStarted = true;
+                        pPlaying = true;
+                        passionFwd.play().catch(() => { pPlaying = false; });
+                    }
+                });
+            }, { threshold: 0.3 });
+            pObs.observe(pWrapper);
+        })();
 
         // ─── ABOUT VIDEO: pool with forward/reverse, swap when off-screen ───
         (() => {
