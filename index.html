@@ -412,9 +412,9 @@
                 <p>Whether you're exploring your identity, navigating change, or simply wanting to feel more at home in your own skin — this is where it starts.</p>
             </div>
             <div class="service-video-wrapper" data-video-pool="confidence">
-                <video id="confidenceFwd" muted playsinline preload="none" class="section-video" src="confidence-forward.mp4" style="width:100%;height:auto;mix-blend-mode:multiply">
+                <video id="confidenceFwd" muted playsinline preload="none" class="section-video" src="confidence-forward.mp4" style="width:100%;height:auto">
                 </video>
-                <video id="confidenceRev" muted playsinline preload="none" src="confidence-reverse.mp4" style="width:100%;height:auto;display:none;mix-blend-mode:multiply">
+                <video id="confidenceRev" muted playsinline preload="none" src="confidence-reverse.mp4" style="width:100%;height:auto;display:none">
                 </video>
             </div>
         </div>
@@ -776,37 +776,53 @@
             video.addEventListener('touchstart', () => { if (!playing) playVideo(); });
         });
 
-        // ─── CONFIDENCE VIDEO: forward/reverse on interaction ───
+        // ─── CONFIDENCE VIDEO: auto-play forward on scroll, reverse on mouse over ───
         (() => {
             const cFwd = document.getElementById('confidenceFwd');
             const cRev = document.getElementById('confidenceRev');
             if (!cFwd || !cRev) return;
 
             let cPlaying = false;
-            let cForward = true;
+            let cState = 'idle'; // idle -> playing-fwd -> ended-fwd -> playing-rev -> ended-rev -> ended-fwd...
             let cStarted = false;
 
-            const cSwap = (toV, fromV) => {
-                toV.currentTime = 0;
-                toV.style.display = 'block';
-                fromV.style.display = 'none';
-                toV.play().catch(() => {});
-            };
+            const showFwd = () => { cFwd.style.display = 'block'; cRev.style.display = 'none'; };
+            const showRev = () => { cRev.style.display = 'block'; cFwd.style.display = 'none'; };
+
+            // Forward finishes: stop, wait for interaction
+            cFwd.addEventListener('ended', () => {
+                cPlaying = false;
+                cState = 'ended-fwd';
+            });
+
+            // Reverse finishes: show forward frame (reset), wait for interaction
+            cRev.addEventListener('ended', () => {
+                cPlaying = false;
+                cState = 'ended-rev';
+                showFwd();
+                cFwd.currentTime = 0;
+            });
 
             const triggerC = () => {
                 if (cPlaying) return;
-                cPlaying = true;
-                if (cForward) {
-                    cSwap(cRev, cFwd);
-                    cForward = false;
-                } else {
-                    cSwap(cFwd, cRev);
-                    cForward = true;
+                if (cState === 'ended-fwd') {
+                    // Play reverse
+                    cPlaying = true;
+                    showRev();
+                    cRev.currentTime = 0;
+                    cRev.play().catch(() => { cPlaying = false; });
+                    cState = 'playing-rev';
+                } else if (cState === 'ended-rev' || cState === 'idle') {
+                    // Play forward again
+                    cPlaying = true;
+                    showFwd();
+                    cFwd.currentTime = 0;
+                    cFwd.play().catch(() => { cPlaying = false; });
+                    cState = 'playing-fwd';
                 }
             };
 
-            cFwd.addEventListener('ended', () => { cPlaying = false; cForward = true; });
-            cRev.addEventListener('ended', () => { cPlaying = false; cForward = false; });
+            const cWrapper = cFwd.closest('.service-video-wrapper');
 
             [cFwd, cRev].forEach(v => {
                 v.addEventListener('click', triggerC);
@@ -815,16 +831,17 @@
             });
 
             let cMouseOver = false;
-            const cWrapper = cFwd.closest('.service-video-wrapper');
             cWrapper.addEventListener('mouseenter', () => { cMouseOver = true; });
             cWrapper.addEventListener('mouseleave', () => { cMouseOver = false; });
             cWrapper.addEventListener('mousemove', () => { if (cMouseOver && !cPlaying) triggerC(); });
 
+            // Auto-play forward on scroll into view
             const cObs = new IntersectionObserver((entries) => {
                 entries.forEach(e => {
                     if (e.isIntersecting && !cStarted) {
                         cStarted = true;
                         cPlaying = true;
+                        cState = 'playing-fwd';
                         cFwd.play().catch(() => { cPlaying = false; });
                     }
                 });
