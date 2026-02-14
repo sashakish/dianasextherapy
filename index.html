@@ -835,13 +835,16 @@
             cWrapper.addEventListener('mouseleave', () => { cMouseOver = false; });
             cWrapper.addEventListener('mousemove', () => { if (cMouseOver && !cPlaying) triggerC(); });
 
-            // Auto-play forward on scroll into view
+            // Auto-play forward on scroll into view + preload reverse
             const cObs = new IntersectionObserver((entries) => {
                 entries.forEach(e => {
                     if (e.isIntersecting && !cStarted) {
                         cStarted = true;
                         cPlaying = true;
                         cState = 'playing-fwd';
+                        // Preload reverse video now so it's ready
+                        cRev.preload = 'auto';
+                        cRev.load();
                         cFwd.play().catch(() => { cPlaying = false; });
                     }
                 });
