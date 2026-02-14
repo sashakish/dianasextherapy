@@ -225,6 +225,29 @@
             pointer-events: auto;
         }
 
+        .ketamine-video-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        .ket-vid {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 464 / 688;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.15s ease;
+        }
+        .ket-vid:first-child {
+            position: relative;
+        }
+        .ket-vid.ket-active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
         /* ─── SERVICE SECTIONS (full-width stacked) ─── */
         .service-section {
             min-height: 100vh;
@@ -502,9 +525,9 @@
                 <p>For those who feel stuck — when talk therapy alone isn't enough — ketamine-assisted therapy offers a powerful path to breakthroughs. In a carefully held, medically supervised setting, ketamine can help dissolve rigid patterns, access buried emotions, and open new neural pathways for healing.</p>
                 <p>Particularly effective for trauma, treatment-resistant depression, anxiety, and deep-seated blocks around intimacy and connection.</p>
             </div>
-            <div class="service-video-wrapper" data-video-pool="ketamine">
-                <video muted playsinline preload="none" class="section-video" style="width:100%;height:auto;mix-blend-mode:multiply">
-                </video>
+            <div class="service-video-wrapper ketamine-video-wrapper" data-video-pool="ketamine">
+                <video id="ket0fwd" width="464" height="688" muted playsinline preload="auto" src="ketamine-forward.mp4" class="ket-vid ket-active"></video>
+                <video id="ket0rev" width="464" height="688" muted playsinline preload="auto" src="ketamine-reverse.mp4" class="ket-vid"></video>
             </div>
         </div>
     </section>
@@ -1006,6 +1029,73 @@
                 });
             }, { threshold: 0 });
             pSwapObs.observe(pWrapper);
+        })();
+
+        // ─── KETAMINE VIDEO: mirrors hero handler ───
+        (function() {
+            var kWrapper = document.querySelector('.ketamine-video-wrapper');
+            if (!kWrapper) return;
+            var allKVids = kWrapper.querySelectorAll('.ket-vid');
+            var kFwd = document.getElementById('ket0fwd');
+            var kRev = document.getElementById('ket0rev');
+            if (!kFwd) return;
+            var kPlaying = false;
+            var kPlayingFwd = true;
+
+            var activateK = function(vid) {
+                allKVids.forEach(function(v) { v.classList.remove('ket-active'); });
+                vid.classList.add('ket-active');
+            };
+            activateK(kFwd);
+
+            kFwd.addEventListener('ended', function() { kPlaying = false; kPlayingFwd = true; });
+            kRev.addEventListener('ended', function() { kPlaying = false; kPlayingFwd = false; });
+
+            var triggerK = function() {
+                if (kPlaying) return;
+                kPlaying = true;
+                if (kPlayingFwd) {
+                    activateK(kRev);
+                    kRev.currentTime = 0;
+                    kRev.play().catch(function() { kPlaying = false; });
+                    kPlayingFwd = false;
+                } else {
+                    activateK(kFwd);
+                    kFwd.currentTime = 0;
+                    kFwd.play().catch(function() { kPlaying = false; });
+                    kPlayingFwd = true;
+                }
+            };
+
+            var kFirstPlay = true;
+            var kAutoObs = new IntersectionObserver(function(entries) {
+                entries.forEach(function(e) {
+                    if (e.isIntersecting && !kPlaying) {
+                        if (kFirstPlay) {
+                            kFirstPlay = false;
+                            kPlaying = true;
+                            kPlayingFwd = true;
+                            activateK(kFwd);
+                            kFwd.currentTime = 0;
+                            kFwd.play().catch(function() { kPlaying = false; });
+                        } else {
+                            triggerK();
+                        }
+                    }
+                });
+            }, { threshold: 0.3 });
+            kAutoObs.observe(kWrapper);
+
+            var isMobile = window.matchMedia('(max-width: 900px)').matches || 'ontouchstart' in window;
+            if (isMobile) {
+                kWrapper.addEventListener('touchstart', triggerK);
+            } else {
+                var kMouseOver = false;
+                kWrapper.addEventListener('mouseenter', function() { kMouseOver = true; triggerK(); });
+                kWrapper.addEventListener('mouseleave', function() { kMouseOver = false; });
+                kWrapper.addEventListener('click', triggerK);
+                kWrapper.addEventListener('mousemove', function() { if (kMouseOver && !kPlaying) triggerK(); });
+            }
         })();
 
         // ─── ORGASMIC VIDEO: 2-video pool, forward then reverse on hover, swap off-screen ───
