@@ -436,7 +436,13 @@
                 <p>We work with desire discrepancy, emotional distance, and the everyday friction that quietly erodes connection.</p>
             </div>
             <div class="service-video-wrapper" data-video-pool="passion">
-                <video muted playsinline preload="none" class="section-video" style="width:100%;height:auto;mix-blend-mode:multiply">
+                <video id="pass0fwd" muted playsinline preload="none" src="passion-forward.mp4" style="width:100%;height:auto;mix-blend-mode:multiply">
+                </video>
+                <video id="pass0rev" muted playsinline preload="none" src="passion-reverse.mp4" style="width:100%;height:auto;display:none;mix-blend-mode:multiply">
+                </video>
+                <video id="pass1fwd" muted playsinline preload="none" src="passion2-forward.mp4" style="width:100%;height:auto;display:none;mix-blend-mode:multiply">
+                </video>
+                <video id="pass1rev" muted playsinline preload="none" src="passion2-reverse.mp4" style="width:100%;height:auto;display:none;mix-blend-mode:multiply">
                 </video>
             </div>
         </div>
@@ -881,6 +887,105 @@
                 });
             }, { threshold: 0 });
             cSwapObs.observe(cWrapper);
+        })();
+
+        // ─── PASSION VIDEO: 2-video pool, forward then reverse on hover, swap off-screen ───
+        (() => {
+            const pPairs = [
+                { fwd: document.getElementById('pass0fwd'), rev: document.getElementById('pass0rev') },
+                { fwd: document.getElementById('pass1fwd'), rev: document.getElementById('pass1rev') },
+            ];
+            if (!pPairs[0].fwd) return;
+
+            let pIdx = Math.floor(Math.random() * pPairs.length);
+            let pPlaying = false;
+            let pState = 'idle';
+            let pStarted = false;
+
+            const hideAllP = () => {
+                pPairs.forEach(p => {
+                    p.fwd.style.display = 'none';
+                    p.rev.style.display = 'none';
+                });
+            };
+
+            const showPFwd = () => { hideAllP(); pPairs[pIdx].fwd.style.display = 'block'; };
+            const showPRev = () => { hideAllP(); pPairs[pIdx].rev.style.display = 'block'; };
+
+            showPFwd();
+
+            pPairs.forEach(p => {
+                p.fwd.addEventListener('ended', () => { pPlaying = false; pState = 'ended-fwd'; });
+                p.rev.addEventListener('ended', () => {
+                    pPlaying = false;
+                    pState = 'ended-rev';
+                    showPFwd();
+                    pPairs[pIdx].fwd.currentTime = 0;
+                });
+            });
+
+            const triggerP = () => {
+                if (pPlaying) return;
+                if (pState === 'ended-fwd') {
+                    pPlaying = true;
+                    showPRev();
+                    pPairs[pIdx].rev.currentTime = 0;
+                    pPairs[pIdx].rev.play().catch(() => { pPlaying = false; });
+                    pState = 'playing-rev';
+                } else if (pState === 'ended-rev' || pState === 'idle') {
+                    pPlaying = true;
+                    showPFwd();
+                    pPairs[pIdx].fwd.currentTime = 0;
+                    pPairs[pIdx].fwd.play().catch(() => { pPlaying = false; });
+                    pState = 'playing-fwd';
+                }
+            };
+
+            const pWrapper = pPairs[0].fwd.closest('.service-video-wrapper');
+
+            pPairs.forEach(p => {
+                [p.fwd, p.rev].forEach(v => {
+                    v.addEventListener('click', triggerP);
+                    v.addEventListener('mouseenter', triggerP);
+                    v.addEventListener('touchstart', triggerP);
+                });
+            });
+
+            let pMouseOver = false;
+            pWrapper.addEventListener('mouseenter', () => { pMouseOver = true; });
+            pWrapper.addEventListener('mouseleave', () => { pMouseOver = false; });
+            pWrapper.addEventListener('mousemove', () => { if (pMouseOver && !pPlaying) triggerP(); });
+
+            const pObs = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting && !pStarted) {
+                        pStarted = true;
+                        pPlaying = true;
+                        pState = 'playing-fwd';
+                        pPairs.forEach(p => {
+                            p.fwd.preload = 'auto'; p.fwd.load();
+                            p.rev.preload = 'auto'; p.rev.load();
+                        });
+                        pPairs[pIdx].fwd.play().catch(() => { pPlaying = false; });
+                    }
+                });
+            }, { threshold: 0.3 });
+            pObs.observe(pWrapper);
+
+            const pSwapObs = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (!e.isIntersecting && pPairs.length > 1) {
+                        let next;
+                        do { next = Math.floor(Math.random() * pPairs.length); } while (next === pIdx);
+                        pIdx = next;
+                        pPlaying = false;
+                        pState = 'idle';
+                        pStarted = false;
+                        showPFwd();
+                    }
+                });
+            }, { threshold: 0 });
+            pSwapObs.observe(pWrapper);
         })();
 
         // ─── ABOUT VIDEO: pool with forward/reverse, swap when off-screen ───
