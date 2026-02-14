@@ -119,11 +119,26 @@
             width: 100%;
             max-width: 580px;
         }
-        .hero-video-wrapper video {
+        .hero-video-wrapper {
+            position: relative;
+        }
+        .hero-vid {
             width: 100%;
             height: auto;
-            display: block;
             mix-blend-mode: multiply;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.15s ease;
+        }
+        .hero-vid:first-child {
+            position: relative; /* first one sets the height */
+        }
+        .hero-vid.hero-active {
+            opacity: 1;
+            pointer-events: auto;
         }
 
         /* ─── BUTTONS ─── */
@@ -388,10 +403,10 @@
             </div>
             <div class="hero-video-container fade-up">
                 <div class="hero-video-wrapper">
-                    <video id="hero0fwd" muted playsinline preload="auto" src="hero1-forward.mp4" style="width:100%;height:auto;display:block;mix-blend-mode:multiply"></video>
-                    <video id="hero0rev" muted playsinline preload="auto" src="hero1-reverse.mp4" style="width:100%;height:auto;display:none;mix-blend-mode:multiply"></video>
-                    <video id="hero1fwd" muted playsinline preload="auto" src="hero2-forward.mp4" style="width:100%;height:auto;display:none;mix-blend-mode:multiply"></video>
-                    <video id="hero1rev" muted playsinline preload="auto" src="hero2-reverse.mp4" style="width:100%;height:auto;display:none;mix-blend-mode:multiply"></video>
+                    <video id="hero0fwd" muted playsinline preload="auto" src="hero1-forward.mp4" class="hero-vid hero-active"></video>
+                    <video id="hero0rev" muted playsinline preload="auto" src="hero1-reverse.mp4" class="hero-vid"></video>
+                    <video id="hero1fwd" muted playsinline preload="auto" src="hero2-forward.mp4" class="hero-vid"></video>
+                    <video id="hero1rev" muted playsinline preload="auto" src="hero2-reverse.mp4" class="hero-vid"></video>
                 </div>
             </div>
         </div>
@@ -505,12 +520,12 @@
 
         document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-        // ─── HERO VIDEO: all videos preloaded in DOM, no src swapping, just show/hide ───
+        // ─── HERO VIDEO: all videos stacked via opacity, no display/src changes ───
         (() => {
             const wrapper = document.querySelector('.hero-video-wrapper');
             if (!wrapper) return;
 
-            // All 4 video elements preloaded in HTML
+            const allVids = wrapper.querySelectorAll('.hero-vid');
             const pairs = [
                 { fwd: document.getElementById('hero0fwd'), rev: document.getElementById('hero0rev') },
                 { fwd: document.getElementById('hero1fwd'), rev: document.getElementById('hero1rev') },
@@ -521,35 +536,20 @@
             let heroPlaying = false;
             let isVisible = true;
 
-            // Hide all videos
-            const hideAll = () => {
-                pairs.forEach(p => {
-                    p.fwd.style.display = 'none';
-                    p.rev.style.display = 'none';
-                });
-            };
-
-            // Show current forward video
-            const showCurrent = () => {
-                hideAll();
-                pairs[currentIdx].fwd.style.display = 'block';
+            const activate = (vid) => {
+                allVids.forEach(v => v.classList.remove('hero-active'));
+                vid.classList.add('hero-active');
             };
 
             // Initial state
-            showCurrent();
+            activate(pairs[currentIdx].fwd);
             pairs[currentIdx].fwd.play().catch(() => {});
             heroPlaying = true;
 
-            // Set up ended listeners for all videos
-            pairs.forEach((p, idx) => {
-                p.fwd.addEventListener('ended', () => {
-                    heroPlaying = false;
-                    playingForward = true;
-                });
-                p.rev.addEventListener('ended', () => {
-                    heroPlaying = false;
-                    playingForward = false;
-                });
+            // Ended listeners
+            pairs.forEach(p => {
+                p.fwd.addEventListener('ended', () => { heroPlaying = false; playingForward = true; });
+                p.rev.addEventListener('ended', () => { heroPlaying = false; playingForward = false; });
             });
 
             const triggerHero = () => {
@@ -557,21 +557,19 @@
                 heroPlaying = true;
                 const pair = pairs[currentIdx];
                 if (playingForward) {
-                    pair.fwd.style.display = 'none';
-                    pair.rev.style.display = 'block';
+                    activate(pair.rev);
                     pair.rev.currentTime = 0;
                     pair.rev.play().catch(() => {});
                     playingForward = false;
                 } else {
-                    pair.rev.style.display = 'none';
-                    pair.fwd.style.display = 'block';
+                    activate(pair.fwd);
                     pair.fwd.currentTime = 0;
                     pair.fwd.play().catch(() => {});
                     playingForward = true;
                 }
             };
 
-            // Swap pool index when off-screen — no loading, just change which pair is active
+            // Swap pool only when hero is fully off-screen for 500ms
             let offScreenTimer = null;
             const visObserver = new IntersectionObserver((entries) => {
                 entries.forEach(e => {
@@ -588,9 +586,9 @@
                                 currentIdx = next;
                                 playingForward = true;
                                 heroPlaying = false;
-                                showCurrent();
+                                activate(pairs[currentIdx].fwd);
                             }
-                        }, 300);
+                        }, 500);
                     }
                 });
             }, { threshold: 0 });
