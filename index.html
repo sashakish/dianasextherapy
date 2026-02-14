@@ -412,8 +412,9 @@
                 <p>Whether you're exploring your identity, navigating change, or simply wanting to feel more at home in your own skin — this is where it starts.</p>
             </div>
             <div class="service-video-wrapper" data-video-pool="confidence">
-                <!-- Videos will be added here as you provide them -->
-                <video muted playsinline preload="none" class="section-video" style="width:100%;height:auto;mix-blend-mode:multiply">
+                <video id="confidenceFwd" muted playsinline preload="none" class="section-video" src="confidence-forward.mp4" style="width:100%;height:auto;mix-blend-mode:multiply">
+                </video>
+                <video id="confidenceRev" muted playsinline preload="none" src="confidence-reverse.mp4" style="width:100%;height:auto;display:none;mix-blend-mode:multiply">
                 </video>
             </div>
         </div>
@@ -431,9 +432,7 @@
                 <p>We work with desire discrepancy, emotional distance, and the everyday friction that quietly erodes connection.</p>
             </div>
             <div class="service-video-wrapper" data-video-pool="passion">
-                <video id="passionFwd" muted playsinline preload="none" class="section-video" src="passion-forward.mp4" style="width:100%;height:auto;mix-blend-mode:multiply">
-                </video>
-                <video id="passionRev" muted playsinline preload="none" src="passion-reverse.mp4" style="width:100%;height:auto;display:none;mix-blend-mode:multiply">
+                <video muted playsinline preload="none" class="section-video" style="width:100%;height:auto;mix-blend-mode:multiply">
                 </video>
             </div>
         </div>
@@ -777,61 +776,60 @@
             video.addEventListener('touchstart', () => { if (!playing) playVideo(); });
         });
 
-        // ─── PASSION VIDEO: forward/reverse on interaction ───
+        // ─── CONFIDENCE VIDEO: forward/reverse on interaction ───
         (() => {
-            const passionFwd = document.getElementById('passionFwd');
-            const passionRev = document.getElementById('passionRev');
-            if (!passionFwd || !passionRev) return;
+            const cFwd = document.getElementById('confidenceFwd');
+            const cRev = document.getElementById('confidenceRev');
+            if (!cFwd || !cRev) return;
 
-            let pPlaying = false;
-            let pForward = true;
-            let pStarted = false;
+            let cPlaying = false;
+            let cForward = true;
+            let cStarted = false;
 
-            const passionSwap = (toV, fromV) => {
+            const cSwap = (toV, fromV) => {
                 toV.currentTime = 0;
                 toV.style.display = 'block';
                 fromV.style.display = 'none';
                 toV.play().catch(() => {});
             };
 
-            const triggerPassion = () => {
-                if (pPlaying) return;
-                pPlaying = true;
-                if (pForward) {
-                    passionSwap(passionRev, passionFwd);
-                    pForward = false;
+            const triggerC = () => {
+                if (cPlaying) return;
+                cPlaying = true;
+                if (cForward) {
+                    cSwap(cRev, cFwd);
+                    cForward = false;
                 } else {
-                    passionSwap(passionFwd, passionRev);
-                    pForward = true;
+                    cSwap(cFwd, cRev);
+                    cForward = true;
                 }
             };
 
-            passionFwd.addEventListener('ended', () => { pPlaying = false; pForward = true; });
-            passionRev.addEventListener('ended', () => { pPlaying = false; pForward = false; });
+            cFwd.addEventListener('ended', () => { cPlaying = false; cForward = true; });
+            cRev.addEventListener('ended', () => { cPlaying = false; cForward = false; });
 
-            [passionFwd, passionRev].forEach(v => {
-                v.addEventListener('click', triggerPassion);
-                v.addEventListener('mouseenter', triggerPassion);
-                v.addEventListener('touchstart', triggerPassion);
+            [cFwd, cRev].forEach(v => {
+                v.addEventListener('click', triggerC);
+                v.addEventListener('mouseenter', triggerC);
+                v.addEventListener('touchstart', triggerC);
             });
 
-            let pMouseOver = false;
-            const pWrapper = passionFwd.closest('.service-video-wrapper');
-            pWrapper.addEventListener('mouseenter', () => { pMouseOver = true; });
-            pWrapper.addEventListener('mouseleave', () => { pMouseOver = false; });
-            pWrapper.addEventListener('mousemove', () => { if (pMouseOver && !pPlaying) triggerPassion(); });
+            let cMouseOver = false;
+            const cWrapper = cFwd.closest('.service-video-wrapper');
+            cWrapper.addEventListener('mouseenter', () => { cMouseOver = true; });
+            cWrapper.addEventListener('mouseleave', () => { cMouseOver = false; });
+            cWrapper.addEventListener('mousemove', () => { if (cMouseOver && !cPlaying) triggerC(); });
 
-            // Auto-play on scroll into view
-            const pObs = new IntersectionObserver((entries) => {
+            const cObs = new IntersectionObserver((entries) => {
                 entries.forEach(e => {
-                    if (e.isIntersecting && !pStarted) {
-                        pStarted = true;
-                        pPlaying = true;
-                        passionFwd.play().catch(() => { pPlaying = false; });
+                    if (e.isIntersecting && !cStarted) {
+                        cStarted = true;
+                        cPlaying = true;
+                        cFwd.play().catch(() => { cPlaying = false; });
                     }
                 });
             }, { threshold: 0.3 });
-            pObs.observe(pWrapper);
+            cObs.observe(cWrapper);
         })();
 
         // ─── ABOUT VIDEO: pool with forward/reverse, swap when off-screen ───
