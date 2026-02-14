@@ -460,7 +460,13 @@
                 <p>This is about more than orgasm. It's about aliveness, embodiment, and feeling fully here.</p>
             </div>
             <div class="service-video-wrapper" data-video-pool="orgasmic">
-                <video muted playsinline preload="none" class="section-video" style="width:100%;height:auto;mix-blend-mode:multiply">
+                <video id="org0fwd" muted playsinline preload="none" src="orgasmic-forward.mp4" style="width:100%;height:auto;">
+                </video>
+                <video id="org0rev" muted playsinline preload="none" src="orgasmic-reverse.mp4" style="width:100%;height:auto;display:none;">
+                </video>
+                <video id="org1fwd" muted playsinline preload="none" src="orgasmic2-forward.mp4" style="width:100%;height:auto;display:none;">
+                </video>
+                <video id="org1rev" muted playsinline preload="none" src="orgasmic2-reverse.mp4" style="width:100%;height:auto;display:none;">
                 </video>
             </div>
         </div>
@@ -986,6 +992,90 @@
                 });
             }, { threshold: 0 });
             pSwapObs.observe(pWrapper);
+        })();
+
+        // ─── ORGASMIC VIDEO: 2-video pool, forward then reverse on hover, swap off-screen ───
+        (() => {
+            const oPairs = [
+                { fwd: document.getElementById('org0fwd'), rev: document.getElementById('org0rev') },
+                { fwd: document.getElementById('org1fwd'), rev: document.getElementById('org1rev') },
+            ];
+            if (!oPairs[0].fwd) return;
+
+            let oIdx = Math.floor(Math.random() * oPairs.length);
+            let oPlaying = false;
+            let oState = 'idle';
+            let oStarted = false;
+
+            const hideAllO = () => {
+                oPairs.forEach(p => { p.fwd.style.display = 'none'; p.rev.style.display = 'none'; });
+            };
+            const showOFwd = () => { hideAllO(); oPairs[oIdx].fwd.style.display = 'block'; };
+            const showORev = () => { hideAllO(); oPairs[oIdx].rev.style.display = 'block'; };
+            showOFwd();
+
+            oPairs.forEach(p => {
+                p.fwd.addEventListener('ended', () => { oPlaying = false; oState = 'ended-fwd'; });
+                p.rev.addEventListener('ended', () => {
+                    oPlaying = false; oState = 'ended-rev';
+                    showOFwd(); oPairs[oIdx].fwd.currentTime = 0;
+                });
+            });
+
+            const triggerO = () => {
+                if (oPlaying) return;
+                if (oState === 'ended-fwd') {
+                    oPlaying = true; showORev();
+                    oPairs[oIdx].rev.currentTime = 0;
+                    oPairs[oIdx].rev.play().catch(() => { oPlaying = false; });
+                    oState = 'playing-rev';
+                } else if (oState === 'ended-rev' || oState === 'idle') {
+                    oPlaying = true; showOFwd();
+                    oPairs[oIdx].fwd.currentTime = 0;
+                    oPairs[oIdx].fwd.play().catch(() => { oPlaying = false; });
+                    oState = 'playing-fwd';
+                }
+            };
+
+            const oWrapper = oPairs[0].fwd.closest('.service-video-wrapper');
+            oPairs.forEach(p => {
+                [p.fwd, p.rev].forEach(v => {
+                    v.addEventListener('click', triggerO);
+                    v.addEventListener('mouseenter', triggerO);
+                    v.addEventListener('touchstart', triggerO);
+                });
+            });
+
+            let oMouseOver = false;
+            oWrapper.addEventListener('mouseenter', () => { oMouseOver = true; });
+            oWrapper.addEventListener('mouseleave', () => { oMouseOver = false; });
+            oWrapper.addEventListener('mousemove', () => { if (oMouseOver && !oPlaying) triggerO(); });
+
+            const oObs = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting && !oStarted) {
+                        oStarted = true; oPlaying = true; oState = 'playing-fwd';
+                        oPairs.forEach(p => {
+                            p.fwd.preload = 'auto'; p.fwd.load();
+                            p.rev.preload = 'auto'; p.rev.load();
+                        });
+                        oPairs[oIdx].fwd.play().catch(() => { oPlaying = false; });
+                    }
+                });
+            }, { threshold: 0.3 });
+            oObs.observe(oWrapper);
+
+            const oSwapObs = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (!e.isIntersecting && oPairs.length > 1) {
+                        let next;
+                        do { next = Math.floor(Math.random() * oPairs.length); } while (next === oIdx);
+                        oIdx = next; oPlaying = false; oState = 'idle'; oStarted = false;
+                        showOFwd();
+                    }
+                });
+            }, { threshold: 0 });
+            oSwapObs.observe(oWrapper);
         })();
 
         // ─── ABOUT VIDEO: pool with forward/reverse, swap when off-screen ───
