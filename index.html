@@ -526,12 +526,18 @@
             let pendingSwap = false; // queued swap for when hero leaves view
 
             const loadPair = (idx) => {
+                // Preload into memory first to avoid jank
+                const preFwd = new Audio(); // trick: preload video as media
+                preFwd.src = pool[idx].fwd;
+                const preRev = new Audio();
+                preRev.src = pool[idx].rev;
                 fwdVideo.src = pool[idx].fwd;
                 revVideo.src = pool[idx].rev;
+                fwdVideo.preload = 'auto';
+                revVideo.preload = 'auto';
                 fwdVideo.load();
                 revVideo.load();
                 playingForward = true;
-                // Reset to show forward video
                 fwdVideo.style.display = 'block';
                 revVideo.style.display = 'none';
             };
@@ -572,13 +578,13 @@
                 }
             };
 
-            // Only swap videos when hero is completely out of view
+            // Swap videos when hero is far enough off-screen that the new one is loaded before it scrolls back
+            // Use rootMargin to trigger swap BEFORE the hero comes into view
             const visObserver = new IntersectionObserver((entries) => {
                 entries.forEach(e => {
                     if (e.isIntersecting) {
                         isVisible = true;
                     } else {
-                        // Hero just left the viewport completely
                         isVisible = false;
                         if (pool.length > 1) {
                             let next;
@@ -589,7 +595,7 @@
                         }
                     }
                 });
-            }, { threshold: 0 }); // fires when 0% visible (completely gone)
+            }, { threshold: 0, rootMargin: '200px 0px 200px 0px' }); // swap when 200px outside viewport (preloads before visible)
             visObserver.observe(wrapper);
 
             const isMobile = window.matchMedia('(max-width: 900px)').matches || 'ontouchstart' in window;
