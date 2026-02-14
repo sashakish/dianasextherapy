@@ -970,31 +970,44 @@
             pWrapper.addEventListener('mouseleave', () => { pMouseOver = false; });
             pWrapper.addEventListener('mousemove', () => { if (pMouseOver && !pPlaying) triggerP(); });
 
+            let pLoaded = false;
+            const ensureLoaded = () => {
+                if (pLoaded) return;
+                pLoaded = true;
+                pPairs.forEach(p => {
+                    p.fwd.preload = 'auto'; p.fwd.load();
+                    p.rev.preload = 'auto'; p.rev.load();
+                });
+            };
+
+            // Auto-play forward every time section scrolls into view
             const pObs = new IntersectionObserver((entries) => {
                 entries.forEach(e => {
-                    if (e.isIntersecting && !pStarted) {
-                        pStarted = true;
-                        pPlaying = true;
-                        pState = 'playing-fwd';
-                        pPairs.forEach(p => {
-                            p.fwd.preload = 'auto'; p.fwd.load();
-                            p.rev.preload = 'auto'; p.rev.load();
-                        });
-                        pPairs[pIdx].fwd.play().catch(() => { pPlaying = false; });
+                    if (e.isIntersecting) {
+                        ensureLoaded();
+                        if (!pPlaying) {
+                            pPlaying = true;
+                            pState = 'playing-fwd';
+                            showOnly(pPairs[pIdx].fwd);
+                            pPairs[pIdx].fwd.currentTime = 0;
+                            pPairs[pIdx].fwd.play().catch(() => { pPlaying = false; });
+                        }
                     }
                 });
-            }, { threshold: 0.3 });
+            }, { threshold: 0.2 });
             pObs.observe(pWrapper);
 
+            // Swap pool when fully off-screen
             const pSwapObs = new IntersectionObserver((entries) => {
                 entries.forEach(e => {
                     if (!e.isIntersecting && pPairs.length > 1) {
+                        // Stop any playing video
+                        allVids.forEach(v => { v.pause(); v.currentTime = 0; });
                         let next;
                         do { next = Math.floor(Math.random() * pPairs.length); } while (next === pIdx);
                         pIdx = next;
                         pPlaying = false;
                         pState = 'idle';
-                        pStarted = false;
                         showOnly(pPairs[pIdx].fwd);
                     }
                 });
