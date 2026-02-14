@@ -435,14 +435,14 @@
                 <p>Desire ebbs and flows — that's human. But when disconnection lingers, it can feel like loss. Couples therapy creates space to rebuild communication, rediscover each other, and find your way back to genuine intimacy.</p>
                 <p>We work with desire discrepancy, emotional distance, and the everyday friction that quietly erodes connection.</p>
             </div>
-            <div class="service-video-wrapper" data-video-pool="passion">
-                <video id="pass0fwd" muted playsinline preload="none" src="passion-forward.mp4" style="width:100%;height:auto;mix-blend-mode:multiply">
+            <div class="service-video-wrapper" data-video-pool="passion" style="position:relative;">
+                <video id="pass0fwd" muted playsinline preload="none" src="passion-forward.mp4" style="width:100%;height:auto;position:relative;z-index:1;">
                 </video>
-                <video id="pass0rev" muted playsinline preload="none" src="passion-reverse.mp4" style="width:100%;height:auto;display:none;mix-blend-mode:multiply">
+                <video id="pass0rev" muted playsinline preload="none" src="passion-reverse.mp4" style="width:100%;height:auto;position:absolute;top:0;left:0;opacity:0;">
                 </video>
-                <video id="pass1fwd" muted playsinline preload="none" src="passion2-forward.mp4" style="width:100%;height:auto;display:none;mix-blend-mode:multiply">
+                <video id="pass1fwd" muted playsinline preload="none" src="passion2-forward.mp4" style="width:100%;height:auto;position:absolute;top:0;left:0;opacity:0;">
                 </video>
-                <video id="pass1rev" muted playsinline preload="none" src="passion2-reverse.mp4" style="width:100%;height:auto;display:none;mix-blend-mode:multiply">
+                <video id="pass1rev" muted playsinline preload="none" src="passion2-reverse.mp4" style="width:100%;height:auto;position:absolute;top:0;left:0;opacity:0;">
                 </video>
             </div>
         </div>
@@ -895,7 +895,7 @@
             cSwapObs.observe(cWrapper);
         })();
 
-        // ─── PASSION VIDEO: 2-video pool, forward then reverse on hover, swap off-screen ───
+        // ─── PASSION VIDEO: 2-video pool, opacity stacking, forward+reverse on hover, swap off-screen ───
         (() => {
             const pPairs = [
                 { fwd: document.getElementById('pass0fwd'), rev: document.getElementById('pass0rev') },
@@ -908,24 +908,27 @@
             let pState = 'idle';
             let pStarted = false;
 
-            const hideAllP = () => {
-                pPairs.forEach(p => {
-                    p.fwd.style.display = 'none';
-                    p.rev.style.display = 'none';
+            const allVids = pPairs.flatMap(p => [p.fwd, p.rev]);
+
+            const showOnly = (vid) => {
+                allVids.forEach(v => {
+                    v.style.opacity = '0';
+                    v.style.zIndex = '0';
+                    v.style.position = 'absolute';
                 });
+                vid.style.opacity = '1';
+                vid.style.zIndex = '1';
+                vid.style.position = 'relative';
             };
 
-            const showPFwd = () => { hideAllP(); pPairs[pIdx].fwd.style.display = 'block'; };
-            const showPRev = () => { hideAllP(); pPairs[pIdx].rev.style.display = 'block'; };
-
-            showPFwd();
+            showOnly(pPairs[pIdx].fwd);
 
             pPairs.forEach(p => {
                 p.fwd.addEventListener('ended', () => { pPlaying = false; pState = 'ended-fwd'; });
                 p.rev.addEventListener('ended', () => {
                     pPlaying = false;
                     pState = 'ended-rev';
-                    showPFwd();
+                    showOnly(pPairs[pIdx].fwd);
                     pPairs[pIdx].fwd.currentTime = 0;
                 });
             });
@@ -934,13 +937,13 @@
                 if (pPlaying) return;
                 if (pState === 'ended-fwd') {
                     pPlaying = true;
-                    showPRev();
+                    showOnly(pPairs[pIdx].rev);
                     pPairs[pIdx].rev.currentTime = 0;
                     pPairs[pIdx].rev.play().catch(() => { pPlaying = false; });
                     pState = 'playing-rev';
                 } else if (pState === 'ended-rev' || pState === 'idle') {
                     pPlaying = true;
-                    showPFwd();
+                    showOnly(pPairs[pIdx].fwd);
                     pPairs[pIdx].fwd.currentTime = 0;
                     pPairs[pIdx].fwd.play().catch(() => { pPlaying = false; });
                     pState = 'playing-fwd';
@@ -956,6 +959,11 @@
                     v.addEventListener('touchstart', triggerP);
                 });
             });
+
+            // Also trigger from wrapper itself (catches gaps between videos)
+            pWrapper.addEventListener('click', triggerP);
+            pWrapper.addEventListener('mouseenter', triggerP);
+            pWrapper.addEventListener('touchstart', triggerP);
 
             let pMouseOver = false;
             pWrapper.addEventListener('mouseenter', () => { pMouseOver = true; });
@@ -987,7 +995,7 @@
                         pPlaying = false;
                         pState = 'idle';
                         pStarted = false;
-                        showPFwd();
+                        showOnly(pPairs[pIdx].fwd);
                     }
                 });
             }, { threshold: 0 });
