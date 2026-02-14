@@ -569,30 +569,8 @@
                 }
             };
 
-            // Swap pool only when hero is fully off-screen for 500ms
-            let offScreenTimer = null;
-            const visObserver = new IntersectionObserver((entries) => {
-                entries.forEach(e => {
-                    if (e.isIntersecting) {
-                        isVisible = true;
-                        if (offScreenTimer) { clearTimeout(offScreenTimer); offScreenTimer = null; }
-                    } else {
-                        isVisible = false;
-                        if (offScreenTimer) clearTimeout(offScreenTimer);
-                        offScreenTimer = setTimeout(() => {
-                            if (!isVisible && pairs.length > 1) {
-                                let next;
-                                do { next = Math.floor(Math.random() * pairs.length); } while (next === currentIdx);
-                                currentIdx = next;
-                                playingForward = true;
-                                heroPlaying = false;
-                                activate(pairs[currentIdx].fwd);
-                            }
-                        }, 500);
-                    }
-                });
-            }, { threshold: 0 });
-            visObserver.observe(wrapper);
+            // Hero pool only changes on page reload (random pick above)
+            // No scroll-based swapping — hero is at top of page and any swap risks being visible
 
             const isMobile = window.matchMedia('(max-width: 900px)').matches || 'ontouchstart' in window;
 
