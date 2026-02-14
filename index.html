@@ -11,7 +11,7 @@
 
         :root {
             --cream: #FFFFFF;
-            --warm-white: #FAFBF6;
+            --warm-white: #FAFAF8;
             --blush: #E8D5CC;
             --dusty-rose: #C4A092;
             --deep-plum: #3D2B3D;
@@ -412,9 +412,13 @@
                 <p>Whether you're exploring your identity, navigating change, or simply wanting to feel more at home in your own skin — this is where it starts.</p>
             </div>
             <div class="service-video-wrapper" data-video-pool="confidence">
-                <video id="confidenceFwd" muted playsinline preload="none" class="section-video" src="confidence-forward.mp4" style="width:100%;height:auto">
+                <video id="conf0fwd" muted playsinline preload="none" class="section-video" src="confidence-forward.mp4" style="width:100%;height:auto;mix-blend-mode:multiply">
                 </video>
-                <video id="confidenceRev" muted playsinline preload="none" src="confidence-reverse.mp4" style="width:100%;height:auto;display:none">
+                <video id="conf0rev" muted playsinline preload="none" src="confidence-reverse.mp4" style="width:100%;height:auto;display:none;mix-blend-mode:multiply">
+                </video>
+                <video id="conf1fwd" muted playsinline preload="none" src="confidence2-forward.mp4" style="width:100%;height:auto;display:none;mix-blend-mode:multiply">
+                </video>
+                <video id="conf1rev" muted playsinline preload="none" src="confidence2-reverse.mp4" style="width:100%;height:auto;display:none;mix-blend-mode:multiply">
                 </video>
             </div>
         </div>
@@ -776,58 +780,68 @@
             video.addEventListener('touchstart', () => { if (!playing) playVideo(); });
         });
 
-        // ─── CONFIDENCE VIDEO: auto-play forward on scroll, reverse on mouse over ───
+        // ─── CONFIDENCE VIDEO: 2-video pool, forward then reverse on hover, swap off-screen ───
         (() => {
-            const cFwd = document.getElementById('confidenceFwd');
-            const cRev = document.getElementById('confidenceRev');
-            if (!cFwd || !cRev) return;
+            const cPairs = [
+                { fwd: document.getElementById('conf0fwd'), rev: document.getElementById('conf0rev') },
+                { fwd: document.getElementById('conf1fwd'), rev: document.getElementById('conf1rev') },
+            ];
+            if (!cPairs[0].fwd) return;
 
+            let cIdx = Math.floor(Math.random() * cPairs.length);
             let cPlaying = false;
-            let cState = 'idle'; // idle -> playing-fwd -> ended-fwd -> playing-rev -> ended-rev -> ended-fwd...
+            let cState = 'idle';
             let cStarted = false;
 
-            const showFwd = () => { cFwd.style.display = 'block'; cRev.style.display = 'none'; };
-            const showRev = () => { cRev.style.display = 'block'; cFwd.style.display = 'none'; };
+            const hideAllC = () => {
+                cPairs.forEach(p => {
+                    p.fwd.style.display = 'none';
+                    p.rev.style.display = 'none';
+                });
+            };
 
-            // Forward finishes: stop, wait for interaction
-            cFwd.addEventListener('ended', () => {
-                cPlaying = false;
-                cState = 'ended-fwd';
-            });
+            const showCFwd = () => { hideAllC(); cPairs[cIdx].fwd.style.display = 'block'; };
+            const showCRev = () => { hideAllC(); cPairs[cIdx].rev.style.display = 'block'; };
 
-            // Reverse finishes: show forward frame (reset), wait for interaction
-            cRev.addEventListener('ended', () => {
-                cPlaying = false;
-                cState = 'ended-rev';
-                showFwd();
-                cFwd.currentTime = 0;
+            showCFwd();
+
+            // Ended listeners for all pairs
+            cPairs.forEach(p => {
+                p.fwd.addEventListener('ended', () => { cPlaying = false; cState = 'ended-fwd'; });
+                p.rev.addEventListener('ended', () => {
+                    cPlaying = false;
+                    cState = 'ended-rev';
+                    showCFwd();
+                    cPairs[cIdx].fwd.currentTime = 0;
+                });
             });
 
             const triggerC = () => {
                 if (cPlaying) return;
                 if (cState === 'ended-fwd') {
-                    // Play reverse
                     cPlaying = true;
-                    showRev();
-                    cRev.currentTime = 0;
-                    cRev.play().catch(() => { cPlaying = false; });
+                    showCRev();
+                    cPairs[cIdx].rev.currentTime = 0;
+                    cPairs[cIdx].rev.play().catch(() => { cPlaying = false; });
                     cState = 'playing-rev';
                 } else if (cState === 'ended-rev' || cState === 'idle') {
-                    // Play forward again
                     cPlaying = true;
-                    showFwd();
-                    cFwd.currentTime = 0;
-                    cFwd.play().catch(() => { cPlaying = false; });
+                    showCFwd();
+                    cPairs[cIdx].fwd.currentTime = 0;
+                    cPairs[cIdx].fwd.play().catch(() => { cPlaying = false; });
                     cState = 'playing-fwd';
                 }
             };
 
-            const cWrapper = cFwd.closest('.service-video-wrapper');
+            const cWrapper = cPairs[0].fwd.closest('.service-video-wrapper');
 
-            [cFwd, cRev].forEach(v => {
-                v.addEventListener('click', triggerC);
-                v.addEventListener('mouseenter', triggerC);
-                v.addEventListener('touchstart', triggerC);
+            // Interaction listeners
+            cPairs.forEach(p => {
+                [p.fwd, p.rev].forEach(v => {
+                    v.addEventListener('click', triggerC);
+                    v.addEventListener('mouseenter', triggerC);
+                    v.addEventListener('touchstart', triggerC);
+                });
             });
 
             let cMouseOver = false;
@@ -835,21 +849,38 @@
             cWrapper.addEventListener('mouseleave', () => { cMouseOver = false; });
             cWrapper.addEventListener('mousemove', () => { if (cMouseOver && !cPlaying) triggerC(); });
 
-            // Auto-play forward on scroll into view + preload reverse
+            // Auto-play forward on scroll into view + preload all
             const cObs = new IntersectionObserver((entries) => {
                 entries.forEach(e => {
                     if (e.isIntersecting && !cStarted) {
                         cStarted = true;
                         cPlaying = true;
                         cState = 'playing-fwd';
-                        // Preload reverse video now so it's ready
-                        cRev.preload = 'auto';
-                        cRev.load();
-                        cFwd.play().catch(() => { cPlaying = false; });
+                        cPairs.forEach(p => {
+                            p.fwd.preload = 'auto'; p.fwd.load();
+                            p.rev.preload = 'auto'; p.rev.load();
+                        });
+                        cPairs[cIdx].fwd.play().catch(() => { cPlaying = false; });
                     }
                 });
             }, { threshold: 0.3 });
             cObs.observe(cWrapper);
+
+            // Swap pool when off-screen
+            const cSwapObs = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (!e.isIntersecting && cPairs.length > 1) {
+                        let next;
+                        do { next = Math.floor(Math.random() * cPairs.length); } while (next === cIdx);
+                        cIdx = next;
+                        cPlaying = false;
+                        cState = 'idle';
+                        cStarted = false;
+                        showCFwd();
+                    }
+                });
+            }, { threshold: 0 });
+            cSwapObs.observe(cWrapper);
         })();
 
         // ─── ABOUT VIDEO: pool with forward/reverse, swap when off-screen ───
