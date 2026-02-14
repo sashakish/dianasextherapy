@@ -11,7 +11,7 @@
 
         :root {
             --cream: #FFFFFF;
-            --warm-white: #FFFFFF;
+            --warm-white: #FAFAF8;
             --blush: #E8D5CC;
             --dusty-rose: #C4A092;
             --deep-plum: #3D2B3D;
@@ -71,6 +71,69 @@
         }
         nav a:hover { color: var(--dusty-rose); }
 
+        /* ─── BUTTONS ─── */
+        .btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 400;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+        .btn-primary {
+            background: var(--deep-plum);
+            color: var(--cream);
+            border-radius: 50px;
+        }
+        .btn-primary:hover {
+            background: #52375A;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(61, 43, 61, 0.25);
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--deep-plum);
+            border: 1px solid var(--dusty-rose);
+            border-radius: 50px;
+            margin-left: 1rem;
+        }
+        .btn-outline:hover {
+            background: var(--dusty-rose);
+            color: white;
+        }
+        .btn-light {
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--cream);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+        }
+        .btn-light:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        /* ─── SECTION COMMON ─── */
+        .section-label {
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--dusty-rose);
+            margin-bottom: 1rem;
+        }
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 3.5vw, 3rem);
+            font-weight: 300;
+            color: var(--deep-plum);
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
         /* ─── HERO ─── */
         .hero {
             min-height: 100vh;
@@ -119,9 +182,6 @@
             width: 100%;
             max-width: 580px;
         }
-        .hero-video-wrapper {
-            position: relative;
-        }
         .hero-vid {
             width: 100%;
             height: auto;
@@ -134,171 +194,121 @@
             transition: opacity 0.15s ease;
         }
         .hero-vid:first-child {
-            position: relative; /* first one sets the height */
+            position: relative;
         }
         .hero-vid.hero-active {
             opacity: 1;
             pointer-events: auto;
         }
 
-        /* ─── BUTTONS ─── */
-        .btn {
-            display: inline-block;
-            padding: 1rem 2.5rem;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 400;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            text-decoration: none;
-            border: none;
-            cursor: pointer;
-            transition: all 0.4s ease;
+        /* ─── SERVICE SECTIONS (full-width stacked) ─── */
+        .service-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6rem 3rem;
+            position: relative;
+            overflow: hidden;
         }
-        .btn-primary {
-            background: var(--deep-plum);
-            color: var(--cream);
-            border-radius: 50px;
+        .service-inner {
+            max-width: 1100px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+            align-items: center;
         }
-        .btn-primary:hover {
-            background: #52375A;
-            transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(61, 43, 61, 0.25);
+        .service-inner.reverse {
+            direction: rtl;
         }
-        .btn-outline {
-            background: transparent;
+        .service-inner.reverse > * {
+            direction: ltr;
+        }
+        .service-text h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.2rem, 4vw, 3.5rem);
+            font-weight: 300;
+            line-height: 1.15;
             color: var(--deep-plum);
-            border: 1px solid var(--dusty-rose);
-            border-radius: 50px;
-            margin-left: 1rem;
-        }
-        .btn-outline:hover {
-            background: var(--dusty-rose);
-            color: white;
-        }
-
-        /* ─── SECTION COMMON ─── */
-        section { padding: 7rem 3rem; }
-        .section-label {
-            font-size: 0.75rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: var(--dusty-rose);
             margin-bottom: 1rem;
         }
-        .section-title {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(2rem, 3.5vw, 3rem);
-            font-weight: 300;
-            color: var(--deep-plum);
+        .service-text h2 em {
+            font-style: italic;
+            font-weight: 400;
+            color: var(--dusty-rose);
+        }
+        .service-text p {
+            font-size: 1.05rem;
+            color: #666;
+            line-height: 1.9;
             margin-bottom: 1.5rem;
-            line-height: 1.2;
+        }
+        .service-video-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        .service-video-wrapper video {
+            width: 100%;
+            height: auto;
+            display: block;
+            mix-blend-mode: multiply;
         }
 
-        /* ─── ABOUT ─── */
-        .about {
-            background: var(--warm-white);
+        /* Section color variations */
+        .section-warm { background: var(--warm-white); }
+        .section-white { background: var(--cream); }
+        .section-blush { background: #FDF6F3; }
+        .section-sage { background: #F4F7F3; }
+
+        /* Dark section */
+        .section-dark {
+            background: var(--deep-plum);
         }
-        .about-content {
-            text-align: center;
+        .section-dark .service-text h2 {
+            color: var(--cream);
+        }
+        .section-dark .service-text h2 em {
+            color: var(--muted-gold);
+        }
+        .section-dark .service-text p {
+            color: rgba(255, 255, 255, 0.65);
+        }
+        .section-dark .section-label {
+            color: var(--muted-gold);
+        }
+
+        /* ─── ABOUT DIANA ─── */
+        .about {
+            padding: 7rem 3rem;
+        }
+        .about-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
         }
         .about-content p {
             font-size: 1.05rem;
             color: #666;
             line-height: 1.9;
+            margin-bottom: 1rem;
+        }
+        .about-video {
+            order: -1;
+        }
+        .about-video video {
+            width: 100%;
+            height: auto;
+            display: block;
         }
         .divider {
             width: 60px;
             height: 1px;
             background: var(--blush);
-            margin: 2.5rem auto;
-        }
-
-        /* ─── SERVICES ─── */
-        .services { background: var(--cream); }
-        .services-header { text-align: center; margin-bottom: 4rem; }
-        .services-grid {
-            max-width: 1100px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2.5rem;
-        }
-        .service-card {
-            background: var(--warm-white);
-            padding: 2.5rem;
-            border-radius: 16px;
-            border: 1px solid rgba(232, 213, 204, 0.5);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        .service-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 50px rgba(61, 43, 61, 0.08);
-        }
-        .service-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, var(--blush), var(--dusty-rose));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.5rem;
-            font-size: 1.2rem;
-        }
-        .service-card h3 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.4rem;
-            font-weight: 500;
-            color: var(--deep-plum);
-            margin-bottom: 0.75rem;
-        }
-        .service-card p {
-            font-size: 0.95rem;
-            color: #777;
-            line-height: 1.7;
-        }
-
-        /* ─── APPROACH ─── */
-        .approach {
-            background: var(--deep-plum);
-            color: var(--cream);
-        }
-        .approach .section-label { color: var(--muted-gold); }
-        .approach .section-title { color: var(--cream); }
-        .approach-content {
-            max-width: 900px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-        }
-        .approach-text p {
-            color: rgba(250, 247, 242, 0.7);
-            font-size: 1rem;
-            line-height: 1.9;
-            margin-bottom: 1.5rem;
-        }
-        .approach-values {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-            padding-top: 0.5rem;
-        }
-        .value-item {
-            padding-left: 1.5rem;
-            border-left: 2px solid var(--muted-gold);
-        }
-        .value-item h4 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.3rem;
-            font-weight: 400;
-            margin-bottom: 0.3rem;
-        }
-        .value-item p {
-            font-size: 0.9rem;
-            color: rgba(250, 247, 242, 0.55);
-            line-height: 1.6;
+            margin: 2rem 0;
         }
 
         /* ─── CTA ─── */
@@ -339,40 +349,16 @@
             transform: translateY(0);
         }
 
-        /* ─── ABOUT WITH VIDEO ─── */
-        .about-inner {
-            max-width: 1100px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
-        }
-        .about-video {
-            order: -1;
-        }
-        .about-video video {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-        @media (max-width: 900px) {
-            .about-inner {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-            .about-video {
-                order: 1;
-            }
-        }
-
         /* ─── RESPONSIVE ─── */
         @media (max-width: 900px) {
             .hero-inner { grid-template-columns: 1fr; text-align: center; gap: 3rem; }
             .hero-text p { margin-left: auto; margin-right: auto; }
-            .hero-video-wrapper { width: 100%; max-width: 100%; height: auto; }
-            .services-grid { grid-template-columns: 1fr; max-width: 400px; }
-            .approach-content { grid-template-columns: 1fr; }
+            .hero-video-wrapper { width: 100%; max-width: 100%; }
+            .service-inner { grid-template-columns: 1fr; gap: 3rem; }
+            .service-inner.reverse { direction: ltr; }
+            .service-section { min-height: auto; padding: 4rem 2rem; }
+            .about-inner { grid-template-columns: 1fr; gap: 2rem; }
+            .about-video { order: 1; }
             nav ul { display: none; }
         }
     </style>
@@ -383,14 +369,15 @@
     <nav id="nav">
         <div class="logo">Intimate Connections</div>
         <ul>
+            <li><a href="#confidence">Services</a></li>
             <li><a href="#about">About</a></li>
-            <li><a href="#services">Services</a></li>
-            <li><a href="#approach">Approach</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
     </nav>
 
-    <!-- Hero -->
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- HERO -->
+    <!-- ═══════════════════════════════════════════ -->
     <section class="hero">
         <div class="hero-inner">
             <div class="hero-text fade-up">
@@ -398,7 +385,7 @@
                 <p>A safe, compassionate space to explore your sexuality, deepen connection, and heal — individually or with your partner.</p>
                 <div>
                     <a href="#contact" class="btn btn-primary">Book a Session</a>
-                    <a href="#about" class="btn btn-outline">Learn More</a>
+                    <a href="#confidence" class="btn btn-outline">Explore Services</a>
                 </div>
             </div>
             <div class="hero-video-container fade-up">
@@ -412,82 +399,103 @@
         </div>
     </section>
 
-    <!-- About -->
-    <section class="about" id="about">
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- EXPAND CONFIDENCE -->
+    <!-- ═══════════════════════════════════════════ -->
+    <section class="service-section section-warm" id="confidence">
+        <div class="service-inner fade-up">
+            <div class="service-text">
+                <p class="section-label">Expand</p>
+                <h2>Expand <em>Confidence</em></h2>
+                <p>Your relationship with yourself is the foundation of every intimate connection. Together, we'll uncover what holds you back — body image, past experiences, or unspoken fears — and build a confident, embodied sense of self.</p>
+                <p>Whether you're exploring your identity, navigating change, or simply wanting to feel more at home in your own skin — this is where it starts.</p>
+            </div>
+            <div class="service-video-wrapper" data-video-pool="confidence">
+                <!-- Videos will be added here as you provide them -->
+                <video muted playsinline preload="none" class="section-video" style="width:100%;height:auto;mix-blend-mode:multiply">
+                </video>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- REIGNITE PASSION -->
+    <!-- ═══════════════════════════════════════════ -->
+    <section class="service-section section-white" id="passion">
+        <div class="service-inner reverse fade-up">
+            <div class="service-text">
+                <p class="section-label">Reignite</p>
+                <h2>Reignite <em>Passion</em></h2>
+                <p>Desire ebbs and flows — that's human. But when disconnection lingers, it can feel like loss. Couples therapy creates space to rebuild communication, rediscover each other, and find your way back to genuine intimacy.</p>
+                <p>We work with desire discrepancy, emotional distance, and the everyday friction that quietly erodes connection.</p>
+            </div>
+            <div class="service-video-wrapper" data-video-pool="passion">
+                <video muted playsinline preload="none" class="section-video" style="width:100%;height:auto;mix-blend-mode:multiply">
+                </video>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- BE ORGASMIC -->
+    <!-- ═══════════════════════════════════════════ -->
+    <section class="service-section section-blush" id="orgasmic">
+        <div class="service-inner fade-up">
+            <div class="service-text">
+                <p class="section-label">Experience</p>
+                <h2>Be <em>Orgasmic</em></h2>
+                <p>Pleasure is your birthright — not a luxury. Many people have never been taught how their bodies work, or carry shame that blocks sensation. Through somatic awareness and evidence-based techniques, we'll help you access deeper pleasure and presence.</p>
+                <p>This is about more than orgasm. It's about aliveness, embodiment, and feeling fully here.</p>
+            </div>
+            <div class="service-video-wrapper" data-video-pool="orgasmic">
+                <video muted playsinline preload="none" class="section-video" style="width:100%;height:auto;mix-blend-mode:multiply">
+                </video>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- KETAMINE ASSISTED THERAPY -->
+    <!-- ═══════════════════════════════════════════ -->
+    <section class="service-section section-dark" id="ketamine">
+        <div class="service-inner reverse fade-up">
+            <div class="service-text">
+                <p class="section-label">Transform</p>
+                <h2>Ketamine-Assisted <em>Therapy</em></h2>
+                <p>For those who feel stuck — when talk therapy alone isn't enough — ketamine-assisted therapy offers a powerful path to breakthroughs. In a carefully held, medically supervised setting, ketamine can help dissolve rigid patterns, access buried emotions, and open new neural pathways for healing.</p>
+                <p>Particularly effective for trauma, treatment-resistant depression, anxiety, and deep-seated blocks around intimacy and connection.</p>
+            </div>
+            <div class="service-video-wrapper" data-video-pool="ketamine">
+                <video muted playsinline preload="none" class="section-video" style="width:100%;height:auto;mix-blend-mode:multiply">
+                </video>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- ABOUT DIANA -->
+    <!-- ═══════════════════════════════════════════ -->
+    <section class="about section-white" id="about">
         <div class="about-inner">
-        <div class="about-content fade-up">
-            <p class="section-label">About the Practice</p>
-            <h2 class="section-title">Sexuality is a fundamental part of being human</h2>
-            <div class="divider"></div>
-            <p>Too often, we carry silence, shame, or confusion around our intimate lives. Whether you're navigating desire discrepancy, recovering from trauma, exploring identity, or simply wanting a more fulfilling connection — therapy can help.</p>
-            <br>
-            <p>Our practice offers evidence-based sex therapy in a warm, non-judgmental environment. Every body, every identity, every relationship structure is welcome here.</p>
-        </div>
-        <div class="about-video fade-up">
-            <video id="aboutFwd" muted playsinline style="width:100%;height:auto;display:block">
-            </video>
-            <video id="aboutRev" muted playsinline style="width:100%;height:auto;display:none">
-            </video>
-        </div>
-        </div>
-    </section>
-
-    <!-- Services -->
-    <section class="services" id="services">
-        <div class="services-header fade-up">
-            <p class="section-label">What We Offer</p>
-            <h2 class="section-title">Specialized therapy for your intimate life</h2>
-        </div>
-        <div class="services-grid">
-            <div class="service-card fade-up">
-                <div class="service-icon">🤝</div>
-                <h3>Couples Therapy</h3>
-                <p>Rebuild communication, navigate desire differences, and create deeper emotional and physical intimacy together.</p>
+            <div class="about-content fade-up">
+                <p class="section-label">About the Practice</p>
+                <h2 class="section-title">Sexuality is a fundamental part of being human</h2>
+                <div class="divider"></div>
+                <p>Too often, we carry silence, shame, or confusion around our intimate lives. Whether you're navigating desire discrepancy, recovering from trauma, exploring identity, or simply wanting a more fulfilling connection — therapy can help.</p>
+                <p>Our practice offers evidence-based sex therapy in a warm, non-judgmental environment. Every body, every identity, every relationship structure is welcome here.</p>
             </div>
-            <div class="service-card fade-up">
-                <div class="service-icon">🌿</div>
-                <h3>Individual Therapy</h3>
-                <p>Explore your relationship with your own sexuality, body image, arousal concerns, or the effects of past experiences.</p>
-            </div>
-            <div class="service-card fade-up">
-                <div class="service-icon">💫</div>
-                <h3>Sexual Health & Education</h3>
-                <p>Evidence-based guidance on desire, pleasure, function, and the mind-body connection — grounded in science, free of stigma.</p>
+            <div class="about-video fade-up">
+                <video id="aboutFwd" muted playsinline preload="none" style="width:100%;height:auto;display:block">
+                </video>
+                <video id="aboutRev" muted playsinline preload="none" style="width:100%;height:auto;display:none">
+                </video>
             </div>
         </div>
     </section>
 
-    <!-- Approach -->
-    <section class="approach" id="approach">
-        <div class="approach-content">
-            <div class="approach-text fade-up">
-                <p class="section-label">Our Approach</p>
-                <h2 class="section-title">Healing happens in<br>the space between</h2>
-                <p>We integrate somatic awareness, attachment theory, and modern sexology to address the whole person — not just symptoms. Our work is collaborative, culturally responsive, and always at your pace.</p>
-                <p>Sessions are available in-person and via secure telehealth.</p>
-            </div>
-            <div class="approach-values fade-up">
-                <div class="value-item">
-                    <h4>Confidential & Safe</h4>
-                    <p>Your privacy is sacred. Everything shared stays here.</p>
-                </div>
-                <div class="value-item">
-                    <h4>Inclusive & Affirming</h4>
-                    <p>All orientations, identities, and relationship structures are honored.</p>
-                </div>
-                <div class="value-item">
-                    <h4>Evidence-Based</h4>
-                    <p>Grounded in research, informed by lived experience.</p>
-                </div>
-                <div class="value-item">
-                    <h4>Shame-Free</h4>
-                    <p>There are no wrong questions. Only human ones.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
+    <!-- ═══════════════════════════════════════════ -->
     <!-- CTA -->
+    <!-- ═══════════════════════════════════════════ -->
     <section class="cta" id="contact">
         <div class="fade-up">
             <p class="section-label">Take the First Step</p>
@@ -503,24 +511,41 @@
     </footer>
 
     <script>
-        // Scroll nav
+        // ─── NAV SCROLL ───
         const nav = document.getElementById('nav');
         window.addEventListener('scroll', () => {
             nav.classList.toggle('scrolled', window.scrollY > 50);
         });
 
-        // Fade-up on scroll
-        const observer = new IntersectionObserver((entries) => {
+        // ─── FADE-UP ON SCROLL ───
+        const fadeObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
+                if (entry.isIntersecting) entry.target.classList.add('visible');
             });
         }, { threshold: 0.15 });
+        document.querySelectorAll('.fade-up').forEach(el => fadeObserver.observe(el));
 
-        document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+        // ─── LAZY LOAD VIDEOS ───
+        // Only load videos when they're within 500px of the viewport
+        const lazyVideoObserver = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    const video = e.target;
+                    if (video.preload === 'none' || video.preload === '') {
+                        video.preload = 'auto';
+                        if (video.dataset.src) {
+                            video.src = video.dataset.src;
+                        }
+                        video.load();
+                    }
+                    lazyVideoObserver.unobserve(video);
+                }
+            });
+        }, { rootMargin: '500px 0px 500px 0px' });
 
-        // ─── HERO VIDEO: all videos stacked via opacity, no display/src changes ───
+        document.querySelectorAll('video[preload="none"]').forEach(v => lazyVideoObserver.observe(v));
+
+        // ─── HERO VIDEO: stacked, random on load, forward/reverse ───
         (() => {
             const wrapper = document.querySelector('.hero-video-wrapper');
             if (!wrapper) return;
@@ -534,7 +559,6 @@
             let currentIdx = Math.floor(Math.random() * pairs.length);
             let playingForward = true;
             let heroPlaying = false;
-            let isVisible = true;
 
             const activate = (vid) => {
                 allVids.forEach(v => v.classList.remove('hero-active'));
@@ -546,7 +570,6 @@
             pairs[currentIdx].fwd.play().catch(() => {});
             heroPlaying = true;
 
-            // Ended listeners
             pairs.forEach(p => {
                 p.fwd.addEventListener('ended', () => { heroPlaying = false; playingForward = true; });
                 p.rev.addEventListener('ended', () => { heroPlaying = false; playingForward = false; });
@@ -570,7 +593,6 @@
             };
 
             // Hero pool only changes on page reload (random pick above)
-            // No scroll-based swapping — hero is at top of page and any swap risks being visible
 
             const isMobile = window.matchMedia('(max-width: 900px)').matches || 'ontouchstart' in window;
 
@@ -588,17 +610,43 @@
                 heroObserver.observe(wrapper);
             } else {
                 let mouseIsOver = false;
-                wrapper.addEventListener('mouseenter', () => {
-                    mouseIsOver = true;
-                    triggerHero();
-                });
+                wrapper.addEventListener('mouseenter', () => { mouseIsOver = true; triggerHero(); });
                 wrapper.addEventListener('mouseleave', () => { mouseIsOver = false; });
                 wrapper.addEventListener('click', triggerHero);
-                wrapper.addEventListener('mousemove', () => {
-                    if (mouseIsOver && !heroPlaying) triggerHero();
-                });
+                wrapper.addEventListener('mousemove', () => { if (mouseIsOver && !heroPlaying) triggerHero(); });
             }
         })();
+
+        // ─── SECTION VIDEOS: auto-play when scrolled into view ───
+        document.querySelectorAll('.section-video').forEach(video => {
+            let started = false;
+            let playing = false;
+
+            video.addEventListener('ended', () => { playing = false; });
+
+            const playVideo = () => {
+                if (playing) return;
+                playing = true;
+                video.currentTime = 0;
+                video.play().catch(() => { playing = false; });
+            };
+
+            // Auto-play on scroll into view
+            const sectionObs = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting && !started) {
+                        started = true;
+                        playVideo();
+                    }
+                });
+            }, { threshold: 0.3 });
+            sectionObs.observe(video);
+
+            // Re-play on interaction
+            video.addEventListener('click', () => { if (!playing) { started = false; playVideo(); } });
+            video.addEventListener('mouseenter', () => { if (!playing) playVideo(); });
+            video.addEventListener('touchstart', () => { if (!playing) playVideo(); });
+        });
 
         // ─── ABOUT VIDEO: pool with forward/reverse, swap when off-screen ───
         (() => {
@@ -658,7 +706,6 @@
             aboutFwd.addEventListener('click', triggerAbout);
             aboutRev.addEventListener('click', triggerAbout);
 
-            // Re-trigger on mousemove if mouse is still over the video after it ends
             let aboutMouseOver = false;
             aboutWrapper.addEventListener('mouseenter', () => { aboutMouseOver = true; });
             aboutWrapper.addEventListener('mouseleave', () => { aboutMouseOver = false; });
@@ -666,7 +713,7 @@
                 if (aboutMouseOver && !aboutPlaying) triggerAbout();
             });
 
-            // Auto-play forward when scrolled into view
+            // Auto-play when scrolled into view
             const aboutPlayObserver = new IntersectionObserver((entries) => {
                 entries.forEach(e => {
                     if (e.isIntersecting && !aboutStarted) {
@@ -678,7 +725,7 @@
             }, { threshold: 0.3 });
             aboutPlayObserver.observe(aboutWrapper);
 
-            // Swap pool video only when completely off-screen
+            // Swap pool when completely off-screen
             const aboutSwapObserver = new IntersectionObserver((entries) => {
                 entries.forEach(e => {
                     if (!e.isIntersecting && aboutPool.length > 1) {
