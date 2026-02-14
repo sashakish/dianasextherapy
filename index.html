@@ -578,24 +578,33 @@
                 }
             };
 
-            // Swap videos when hero is far enough off-screen that the new one is loaded before it scrolls back
-            // Use rootMargin to trigger swap BEFORE the hero comes into view
+            // Swap videos only after hero has been fully off-screen for 500ms
+            // This prevents visible jarring swaps during scroll
+            let offScreenTimer = null;
+            let swapReady = false;
+
             const visObserver = new IntersectionObserver((entries) => {
                 entries.forEach(e => {
                     if (e.isIntersecting) {
                         isVisible = true;
+                        // Cancel any pending swap if user scrolls back quickly
+                        if (offScreenTimer) { clearTimeout(offScreenTimer); offScreenTimer = null; }
                     } else {
                         isVisible = false;
-                        if (pool.length > 1) {
-                            let next;
-                            do { next = Math.floor(Math.random() * pool.length); } while (next === currentIdx);
-                            currentIdx = next;
-                            loadPair(currentIdx);
-                            heroPlaying = false;
-                        }
+                        // Wait 500ms to make sure hero is truly off-screen, then swap + preload
+                        if (offScreenTimer) clearTimeout(offScreenTimer);
+                        offScreenTimer = setTimeout(() => {
+                            if (!isVisible && pool.length > 1) {
+                                let next;
+                                do { next = Math.floor(Math.random() * pool.length); } while (next === currentIdx);
+                                currentIdx = next;
+                                loadPair(currentIdx);
+                                heroPlaying = false;
+                            }
+                        }, 500);
                     }
                 });
-            }, { threshold: 0, rootMargin: '200px 0px 200px 0px' }); // swap when 200px outside viewport (preloads before visible)
+            }, { threshold: 0 });
             visObserver.observe(wrapper);
 
             const isMobile = window.matchMedia('(max-width: 900px)').matches || 'ontouchstart' in window;
