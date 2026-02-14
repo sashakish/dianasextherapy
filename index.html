@@ -217,10 +217,8 @@
             pointer-events: none;
             transition: opacity 0.15s ease;
         }
-        .passion-vid:first-child {
-            position: relative;
-        }
         .passion-vid.passion-active {
+            position: relative;
             opacity: 1;
             pointer-events: auto;
         }
@@ -240,10 +238,8 @@
             pointer-events: none;
             transition: opacity 0.15s ease;
         }
-        .ket-vid:first-child {
-            position: relative;
-        }
         .ket-vid.ket-active {
+            position: relative;
             opacity: 1;
             pointer-events: auto;
         }
@@ -982,24 +978,18 @@
                 }
             };
 
-            // Auto-play forward on first scroll into view
-            var pFirstPlay = true;
+            // Auto-play forward every time section scrolls into view
             var pAutoObs = new IntersectionObserver(function(entries) {
                 entries.forEach(function(e) {
                     if (e.isIntersecting && !pPlaying) {
-                        if (pFirstPlay) {
-                            pFirstPlay = false;
-                            pPlaying = true;
-                            pPlayingFwd = true;
-                            activateP(pPairs[pIdx].fwd);
-                            pPairs[pIdx].fwd.currentTime = 0;
-                            pPairs[pIdx].fwd.play().catch(function() { pPlaying = false; });
-                        } else {
-                            triggerPassion();
-                        }
+                        pPlaying = true;
+                        pPlayingFwd = true;
+                        activateP(pPairs[pIdx].fwd);
+                        pPairs[pIdx].fwd.currentTime = 0;
+                        pPairs[pIdx].fwd.play().catch(function() { pPlaying = false; });
                     }
                 });
-            }, { threshold: 0.3 });
+            }, { threshold: 0.1 });
             pAutoObs.observe(pWrapper);
 
             var isMobile = window.matchMedia('(max-width: 900px)').matches || 'ontouchstart' in window;
@@ -1023,7 +1013,6 @@
                         pIdx = next;
                         pPlaying = false;
                         pPlayingFwd = true;
-                        pFirstPlay = true;
                         activateP(pPairs[pIdx].fwd);
                     }
                 });
