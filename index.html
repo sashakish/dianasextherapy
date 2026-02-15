@@ -1433,12 +1433,14 @@
                 if (playingForward) {
                     activate(pair.rev);
                     pair.rev.currentTime = 0;
-                    pair.rev.play().catch(() => {});
+                    pair.rev.muted = true;
+                    pair.rev.play().catch(() => { heroPlaying = false; });
                     playingForward = false;
                 } else {
                     activate(pair.fwd);
                     pair.fwd.currentTime = 0;
-                    pair.fwd.play().catch(() => {});
+                    pair.fwd.muted = true;
+                    pair.fwd.play().catch(() => { heroPlaying = false; });
                     playingForward = true;
                 }
             };
@@ -1970,6 +1972,7 @@
             dFwd.addEventListener('ended', () => {
                 dRev.style.display = 'block'; dFwd.style.display = 'none';
                 dRev.currentTime = 0;
+                dRev.muted = true;
                 dRev.play().catch(() => { dPlaying = false; });
             });
 
@@ -1985,7 +1988,8 @@
                 dPlaying = true;
                 dFwd.style.display = 'block'; dRev.style.display = 'none';
                 dFwd.currentTime = 0;
-                dFwd.play().catch(() => { dPlaying = false; });
+                dFwd.muted = true;
+                dFwd.play().catch(() => { dPlaying = false; dStarted = false; });
             };
 
             const dWrapper = dFwd.closest('.diana-video-wrapper');
