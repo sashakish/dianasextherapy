@@ -341,8 +341,20 @@
             line-height: 1.9;
             margin-bottom: 1rem;
         }
-        .about-video {
-            order: -1;
+        .about-inner-right {
+            grid-template-columns: 1fr 1fr;
+        }
+        .about-inner-right .about-video {
+            order: 2;
+        }
+        .about-inner-right .about-content {
+            order: 1;
+        }
+        .about-credentials {
+            font-size: 0.95rem;
+            color: #888;
+            font-style: italic;
+            line-height: 1.7;
         }
         .about-video video {
             width: 100%;
@@ -510,7 +522,8 @@
             .service-inner.reverse { direction: ltr; }
             .service-section { min-height: auto; padding: 4rem 2rem; }
             .about-inner { grid-template-columns: 1fr; gap: 2rem; }
-            .about-video { order: 1; }
+            .about-inner-right .about-video { order: 2; }
+            .about-inner-right .about-content { order: 1; }
             nav ul { display: none; }
         }
     </style>
@@ -643,13 +656,15 @@
     <!-- ABOUT DIANA -->
     <!-- ═══════════════════════════════════════════ -->
     <section class="about section-white" id="about">
-        <div class="about-inner">
+        <div class="about-inner about-inner-right">
             <div class="about-content fade-up">
                 <p class="section-label">About the Practice</p>
-                <h2 class="section-title">Sexuality is a fundamental part of being human</h2>
+                <h2 class="section-title">Meet <em>Diana Urman</em></h2>
                 <div class="divider"></div>
-                <p>Too often, we carry silence, shame, or confusion around our intimate lives. Whether you're navigating desire discrepancy, recovering from trauma, exploring identity, or simply wanting a more fulfilling connection, therapy can help.</p>
-                <p>Our practice offers evidence-based sex therapy in a warm, non-judgmental environment. Every body, every identity, every relationship structure is welcome here.</p>
+                <p>Diana views sexuality from the perspective of pleasure and quality of life, not from a dysfunction-based model. Her professional and personal goal is to assist clients in the process of self-healing and growth, helping them realize their full potential through expressing their sexuality.</p>
+                <p>Whether you want to increase your confidence, explore fantasies, or discover a new level of intimacy with your partner, Diana can help. Her specialties include treating issues with erectile dysfunction, sexual trauma, loss of desire, and relationships in couples, women, and men.</p>
+                <p>Diana holds a PhD in Human Sexuality from the Institute for Advanced Study of Human Sexuality and a graduate degree (MSW) in Clinical Social Work. She is a California State Licensed Clinical Social Worker (LCSW #26883) and Certified Clinical Sexologist.</p>
+                <p class="about-credentials">Advanced training in Attachment Theory, Imago Therapy, Integrative Model of Couples Therapy, Differentiation Model, and the Somatica Method. Member of AASECT. Certified Sex Educator (SFSI). Crucible® trained with David Schnarch.</p>
             </div>
             <div class="about-video fade-up">
                 <video id="aboutFwd" poster="posters/about-video.jpg" muted playsinline preload="none" style="width:100%;height:auto;display:block">
