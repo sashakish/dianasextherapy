@@ -1233,7 +1233,7 @@
             pSwapObs.observe(pWrapper);
         })();
 
-        // ─── KETAMINE VIDEO: 2-video pool, forward then immediately reverse ───
+        // ─── KETAMINE VIDEO: 2-video pool, one video at a time ───
         (function() {
             var kWrapper = document.querySelector('.ketamine-video-wrapper');
             if (!kWrapper) return;
@@ -1246,6 +1246,7 @@
 
             var kIdx = Math.floor(Math.random() * kPairs.length);
             var kPlaying = false;
+            var kPlayingFwd = true;
 
             var activateK = function(vid) {
                 allKVids.forEach(function(v) { v.classList.remove('ket-active'); });
@@ -1253,27 +1254,26 @@
             };
             activateK(kPairs[kIdx].fwd);
 
-            // Forward ends → immediately play reverse
             kPairs.forEach(function(p) {
-                p.fwd.addEventListener('ended', function() {
-                    activateK(p.rev);
-                    p.rev.currentTime = 0;
-                    p.rev.play().catch(function() { kPlaying = false; });
-                });
-                p.rev.addEventListener('ended', function() {
-                    kPlaying = false;
-                    activateK(kPairs[kIdx].fwd);
-                    kPairs[kIdx].fwd.currentTime = 0;
-                });
+                p.fwd.addEventListener('ended', function() { kPlaying = false; kPlayingFwd = true; });
+                p.rev.addEventListener('ended', function() { kPlaying = false; kPlayingFwd = false; });
             });
 
             var triggerK = function() {
                 if (kPlaying) return;
                 kPlaying = true;
                 var pair = kPairs[kIdx];
-                activateK(pair.fwd);
-                pair.fwd.currentTime = 0;
-                pair.fwd.play().catch(function() { kPlaying = false; });
+                if (kPlayingFwd) {
+                    activateK(pair.fwd);
+                    pair.fwd.currentTime = 0;
+                    pair.fwd.play().catch(function() { kPlaying = false; });
+                    kPlayingFwd = false;
+                } else {
+                    activateK(pair.rev);
+                    pair.rev.currentTime = 0;
+                    pair.rev.play().catch(function() { kPlaying = false; });
+                    kPlayingFwd = true;
+                }
             };
 
             var kAutoObs = new IntersectionObserver(function(entries) {
