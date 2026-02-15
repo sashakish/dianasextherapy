@@ -645,7 +645,7 @@
     <section class="about section-white" id="about">
         <div class="about-inner">
             <div class="about-content fade-up">
-                <p class="section-label">About the Practice</p>
+                <p class="section-label">Our Approach</p>
                 <h2 class="section-title">Sexuality is a fundamental part of being human</h2>
                 <div class="divider"></div>
                 <p>Too often, we carry silence, shame, or confusion around our intimate lives. Whether you're navigating desire discrepancy, recovering from trauma, exploring identity, or simply wanting a more fulfilling connection, therapy can help.</p>
@@ -656,6 +656,26 @@
                 </video>
                 <video id="aboutRev" poster="posters/about-video.jpg" muted playsinline preload="none" style="width:100%;height:auto;display:none">
                 </video>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- ABOUT DIANA -->
+    <!-- ═══════════════════════════════════════════ -->
+    <section class="service-section section-warm" id="diana">
+        <div class="service-inner fade-up">
+            <div class="service-text">
+                <p class="section-label">About Diana</p>
+                <h2>Meet <em>Diana Urman</em></h2>
+                <p>Diana views sexuality from the perspective of pleasure and quality of life, not from a dysfunction-based model. Her goal is to assist clients in the process of self-healing and growth, helping them realize their full potential through expressing their sexuality.</p>
+                <p>Whether you want to increase your confidence, explore fantasies, or discover a new level of intimacy with your partner, Diana can help. Her specialties include treating issues with erectile dysfunction, sexual trauma, loss of desire, and relationships in couples, women, and men.</p>
+                <p>Diana holds a PhD in Human Sexuality from the Institute for Advanced Study of Human Sexuality and a graduate degree (MSW) in Clinical Social Work. She is a California Licensed Clinical Social Worker (LCSW #26883) and Certified Clinical Sexologist.</p>
+                <p style="font-size:0.95rem;color:#888;font-style:italic;">Advanced training in Attachment Theory, Imago Therapy, Integrative Couples Therapy, Differentiation Model, and the Somatica Method. Member of AASECT. Certified Sex Educator (SFSI). Crucible® trained with David Schnarch.</p>
+            </div>
+            <div class="service-video-wrapper diana-video-wrapper">
+                <video id="diana0fwd" width="724" height="960" muted playsinline preload="auto" src="diana-forward.mp4" poster="posters/diana-forward.jpg" class="diana-vid diana-active" style="width:100%;height:auto;"></video>
+                <video id="diana0rev" width="724" height="960" muted playsinline preload="auto" src="diana-reverse.mp4" poster="posters/diana-forward.jpg" class="diana-vid" style="width:100%;height:auto;display:none;"></video>
             </div>
         </div>
     </section>
@@ -1456,6 +1476,63 @@
                 });
             }, { threshold: 0 });
             aboutSwapObserver.observe(aboutWrapper);
+        })();
+    </script>
+
+        // ─── DIANA VIDEO: forward/reverse on interaction ───
+        (() => {
+            const dFwd = document.getElementById('diana0fwd');
+            const dRev = document.getElementById('diana0rev');
+            if (!dFwd || !dRev) return;
+
+            let dPlaying = false;
+            let dState = 'idle';
+            let dStarted = false;
+
+            dFwd.addEventListener('ended', () => { dPlaying = false; dState = 'ended-fwd'; });
+            dRev.addEventListener('ended', () => {
+                dPlaying = false; dState = 'ended-rev';
+                dFwd.style.display = 'block'; dRev.style.display = 'none';
+                dFwd.currentTime = 0;
+            });
+
+            const triggerD = () => {
+                if (dPlaying) return;
+                if (dState === 'ended-fwd') {
+                    dPlaying = true;
+                    dRev.style.display = 'block'; dFwd.style.display = 'none';
+                    dRev.currentTime = 0;
+                    dRev.play().catch(() => { dPlaying = false; });
+                    dState = 'playing-rev';
+                } else if (dState === 'ended-rev' || dState === 'idle') {
+                    dPlaying = true;
+                    dFwd.style.display = 'block'; dRev.style.display = 'none';
+                    dFwd.currentTime = 0;
+                    dFwd.play().catch(() => { dPlaying = false; });
+                    dState = 'playing-fwd';
+                }
+            };
+
+            const dWrapper = dFwd.closest('.diana-video-wrapper');
+            [dFwd, dRev].forEach(v => {
+                v.addEventListener('click', triggerD);
+                v.addEventListener('mouseenter', triggerD);
+                v.addEventListener('touchstart', triggerD);
+            });
+            let dMouse = false;
+            dWrapper.addEventListener('mouseenter', () => { dMouse = true; });
+            dWrapper.addEventListener('mouseleave', () => { dMouse = false; });
+            dWrapper.addEventListener('mousemove', () => { if (dMouse && !dPlaying) triggerD(); });
+
+            const dObs = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting && !dStarted) {
+                        dStarted = true; dPlaying = true; dState = 'playing-fwd';
+                        dFwd.play().catch(() => { dPlaying = false; });
+                    }
+                });
+            }, { threshold: 0.3 });
+            dObs.observe(dWrapper);
         })();
     </script>
 
