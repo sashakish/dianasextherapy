@@ -1713,5 +1713,21 @@
     })();
     </script>
 
+    <!-- Mobile Video Optimization -->
+    <script>
+    (function() {
+        // Only swap to mobile videos on smaller screens
+        if (window.innerWidth <= 900) {
+            // Find all video elements with .mp4 src
+            document.querySelectorAll('video[src]').forEach(function(video) {
+                var src = video.getAttribute('src');
+                if (src && src.endsWith('.mp4') && !src.startsWith('mobile/')) {
+                    video.setAttribute('src', 'mobile/' + src);
+                }
+            });
+        }
+    })();
+    </script>
+
 </body>
 </html>
