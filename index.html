@@ -1322,6 +1322,32 @@
         });
 
         // ─── FADE-UP ON SCROLL ───
+        // Safari autoplay fix: ensure all videos have muted property set
+        // Safari requires both the attribute AND the JS property
+        document.querySelectorAll('video').forEach(v => {
+            v.muted = true;
+            v.setAttribute('muted', '');
+            v.setAttribute('playsinline', '');
+        });
+
+        // Safari interaction unlock: on first user gesture, try playing all visible videos
+        let safariUnlocked = false;
+        const unlockSafari = () => {
+            if (safariUnlocked) return;
+            safariUnlocked = true;
+            document.querySelectorAll('video').forEach(v => {
+                v.muted = true;
+                // Create and immediately pause a play context to unlock audio/video
+                v.play().then(() => { v.pause(); v.currentTime = 0; }).catch(() => {});
+            });
+            document.removeEventListener('touchstart', unlockSafari);
+            document.removeEventListener('click', unlockSafari);
+            document.removeEventListener('scroll', unlockSafari);
+        };
+        document.addEventListener('touchstart', unlockSafari, { once: true });
+        document.addEventListener('click', unlockSafari, { once: true });
+        document.addEventListener('scroll', unlockSafari, { once: true });
+
         const fadeObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) entry.target.classList.add('visible');
