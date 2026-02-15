@@ -362,25 +362,20 @@
             pointer-events: auto;
         }
 
-        /* ─── PRESS BAR ─── */
-        .press-bar {
-            background: var(--warm-white);
-            padding: 2.5rem 2rem;
-            border-top: 1px solid rgba(196, 160, 146, 0.2);
-            border-bottom: 1px solid rgba(196, 160, 146, 0.2);
-        }
+        /* ─── PRESS BAR (inside hero) ─── */
         .press-inner {
             max-width: 1100px;
             margin: 0 auto;
+            padding: 3rem 2rem 1rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 3rem;
+            gap: 3.5rem;
             flex-wrap: wrap;
-            opacity: 0.5;
+            opacity: 0.45;
         }
         .press-inner img {
-            height: 28px;
+            height: 40px;
             width: auto;
             object-fit: contain;
             filter: grayscale(100%);
@@ -391,8 +386,8 @@
             opacity: 1;
         }
         @media (max-width: 768px) {
-            .press-inner { gap: 1.5rem; }
-            .press-inner img { height: 20px; }
+            .press-inner { gap: 2rem; padding: 2rem 1.5rem 0.5rem; }
+            .press-inner img { height: 28px; }
         }
 
         /* ─── SERVICE SECTIONS (full-width stacked) ─── */
@@ -858,12 +853,6 @@
                 </div>
             </div>
         </div>
-    </section>
-
-    <!-- ═══════════════════════════════════════════ -->
-    <!-- PRESS / AS SEEN IN -->
-    <!-- ═══════════════════════════════════════════ -->
-    <section class="press-bar">
         <div class="press-inner">
             <img src="press/cosmopolitan.png" alt="Cosmopolitan" loading="lazy">
             <img src="press/huffpost.png" alt="HuffPost" loading="lazy">
