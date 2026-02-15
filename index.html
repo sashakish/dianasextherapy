@@ -383,7 +383,6 @@
             position: relative;
             max-width: 800px;
             margin: 0 auto;
-            min-height: 280px;
         }
         .testimonial-quote {
             font-family: 'Cormorant Garamond', serif;
@@ -578,6 +577,9 @@
             }
             nav ul.mobile-open { display: flex; }
             .nav-toggle { display: block; }
+            .cta { padding: 4rem 1.5rem; }
+            .cta p { font-size: 1rem; }
+            .testimonials { padding: 3rem 1.5rem 1rem; }
         }
     </style>
 </head>
@@ -814,8 +816,7 @@
                 <a href="https://diana.clientsecure.me" class="btn btn-primary" data-spwidget-scope-id="29b87bc7-3414-4619-a781-ada56529d6ac" data-spwidget-scope-uri="diana" data-spwidget-application-id="7c72cb9f9a9b913654bb89d6c7b4e71a77911b30192051da35384b4d0c6d505b" data-spwidget-scope-global data-spwidget-autobind>Schedule Free Consultation</a>
             </div>
             <script src="https://widget-cdn.simplepractice.com/assets/integration-1.0.js"></script>
-            <p style="font-size:0.9rem;color:#aaa;margin-top:1rem;">Existing clients: <a href="mailto:diana@dianaurman.com" style="color:var(--dusty-rose);text-decoration:none;">diana@dianaurman.com</a></p>
-            <p style="font-size:0.95rem;color:var(--dusty-rose);margin-top:1.5rem;">In-person and video sessions available.</p>
+            <p style="font-size:0.9rem;color:#aaa;margin-top:1rem;">Existing clients: <a href="mailto:diana@dianaurman.com" style="color:var(--dusty-rose);text-decoration:none;">diana@dianaurman.com</a><br><span style="font-size:0.95rem;color:var(--dusty-rose);">In-person and video sessions available.</span></p>
         </div>
     </section>
 
@@ -1634,6 +1635,22 @@
         var current = 0;
         var autoTimer = null;
         var paused = false;
+
+        // Measure tallest card and lock height to prevent jumping
+        function setTrackHeight() {
+            var maxH = 0;
+            cards.forEach(function(c) {
+                c.style.position = 'relative';
+                c.style.opacity = '1';
+                var h = c.offsetHeight;
+                if (h > maxH) maxH = h;
+                c.style.position = '';
+                c.style.opacity = '';
+            });
+            track.style.minHeight = maxH + 'px';
+        }
+        setTrackHeight();
+        window.addEventListener('resize', setTrackHeight);
 
         // Show first card
         cards[0].classList.add('active-testimonial');
