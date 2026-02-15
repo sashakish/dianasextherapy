@@ -1516,9 +1516,10 @@
             const aboutRev = document.getElementById('aboutRev');
             if (!aboutFwd || !aboutRev) return;
 
+            var mobilePrefix = (window.innerWidth <= 900) ? 'mobile/' : '';
             const aboutPool = [
-                { fwd: 'about-video.mp4', rev: 'about-video-reverse.mp4' },
-                { fwd: 'about-video-2.mp4', rev: 'about-video-2-reverse.mp4' },
+                { fwd: mobilePrefix + 'about-video.mp4', rev: mobilePrefix + 'about-video-reverse.mp4' },
+                { fwd: mobilePrefix + 'about-video-2.mp4', rev: mobilePrefix + 'about-video-2-reverse.mp4' },
             ];
 
             let aboutIdx = Math.floor(Math.random() * aboutPool.length);
@@ -1729,5 +1730,18 @@
     })();
     </script>
 
+    <!-- Mobile: swap to half-res videos -->
+    <script>
+    (function() {
+        if (window.innerWidth > 900) return;
+        var prefix = 'mobile/';
+        document.querySelectorAll('video[src]').forEach(function(v) {
+            var s = v.getAttribute('src');
+            if (s && s.endsWith('.mp4') && !s.startsWith('mobile/')) {
+                v.setAttribute('src', prefix + s);
+            }
+        });
+    })();
+    </script>
 </body>
 </html>
