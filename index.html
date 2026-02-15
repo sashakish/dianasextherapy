@@ -1330,19 +1330,17 @@
             v.setAttribute('playsinline', '');
         });
 
-        // Safari interaction unlock: on first user gesture, try playing all visible videos
+        // Safari: on first gesture, re-trigger hero video play
         let safariUnlocked = false;
         const unlockSafari = () => {
             if (safariUnlocked) return;
             safariUnlocked = true;
-            document.querySelectorAll('video').forEach(v => {
-                v.muted = true;
-                // Create and immediately pause a play context to unlock audio/video
-                v.play().then(() => { v.pause(); v.currentTime = 0; }).catch(() => {});
-            });
-            document.removeEventListener('touchstart', unlockSafari);
-            document.removeEventListener('click', unlockSafari);
-            document.removeEventListener('scroll', unlockSafari);
+            // Just re-trigger the hero video which may have failed autoplay
+            const heroVid = document.querySelector('.hero-vid.hero-active');
+            if (heroVid && heroVid.paused) {
+                heroVid.muted = true;
+                heroVid.play().catch(() => {});
+            }
         };
         document.addEventListener('touchstart', unlockSafari, { once: true });
         document.addEventListener('click', unlockSafari, { once: true });
