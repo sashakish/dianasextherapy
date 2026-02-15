@@ -867,6 +867,19 @@
         <p>&copy; <script>document.write(new Date().getFullYear())</script> Diana Urman, PhD, LCSW &nbsp;·&nbsp; License #26883 &nbsp;·&nbsp; Design by <a href="https://sashakish.github.io/unuanova/" target="_blank" style="color:var(--dusty-rose);text-decoration:none;">Unua Nova</a></p>
     </footer>
 
+    <!-- Mobile: swap to half-res videos BEFORE handlers run -->
+    <script>
+    (function() {
+        if (window.innerWidth > 900) return;
+        document.querySelectorAll('video[src]').forEach(function(v) {
+            var s = v.getAttribute('src');
+            if (s && s.endsWith('.mp4') && !s.startsWith('mobile/')) {
+                v.setAttribute('src', 'mobile/' + s);
+            }
+        });
+    })();
+    </script>
+
     <canvas id="stardust" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;"></canvas>
 
     <script>
@@ -1730,18 +1743,6 @@
     })();
     </script>
 
-    <!-- Mobile: swap to half-res videos -->
-    <script>
-    (function() {
-        if (window.innerWidth > 900) return;
-        var prefix = 'mobile/';
-        document.querySelectorAll('video[src]').forEach(function(v) {
-            var s = v.getAttribute('src');
-            if (s && s.endsWith('.mp4') && !s.startsWith('mobile/')) {
-                v.setAttribute('src', prefix + s);
-            }
-        });
-    })();
-    </script>
+
 </body>
 </html>
