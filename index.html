@@ -849,7 +849,7 @@
             </div>
             <div class="hero-video-container fade-up">
                 <div class="hero-video-wrapper">
-                    <video id="hero0fwd" muted playsinline preload="auto" src="hero1-forward.mp4" poster="posters/hero1-forward.jpg" class="hero-vid hero-active"></video>
+                    <video id="hero0fwd" muted playsinline autoplay preload="auto" src="hero1-forward.mp4" poster="posters/hero1-forward.jpg" class="hero-vid hero-active"></video>
                     <video id="hero0rev" muted playsinline preload="auto" src="hero1-reverse.mp4" poster="posters/hero1-forward.jpg" class="hero-vid"></video>
                     <video id="hero1fwd" muted playsinline preload="auto" src="hero2-forward.mp4" poster="posters/hero2-forward.jpg" class="hero-vid"></video>
                     <video id="hero1rev" muted playsinline preload="auto" src="hero2-reverse.mp4" poster="posters/hero2-forward.jpg" class="hero-vid"></video>
@@ -1371,8 +1371,26 @@
 
             // Initial state
             activate(pairs[currentIdx].fwd);
-            pairs[currentIdx].fwd.play().catch(() => {});
-            heroPlaying = true;
+            const initialPlay = () => {
+                const v = pairs[currentIdx].fwd;
+                v.muted = true;
+                v.setAttribute('muted', '');
+                v.setAttribute('playsinline', '');
+                v.play().then(() => { heroPlaying = true; }).catch(() => {
+                    heroPlaying = false;
+                    // Safari fallback: play on first user interaction
+                    const kickstart = () => {
+                        v.play().then(() => { heroPlaying = true; }).catch(() => {});
+                        document.removeEventListener('touchstart', kickstart);
+                        document.removeEventListener('click', kickstart);
+                        document.removeEventListener('scroll', kickstart);
+                    };
+                    document.addEventListener('touchstart', kickstart, { once: true });
+                    document.addEventListener('click', kickstart, { once: true });
+                    document.addEventListener('scroll', kickstart, { once: true });
+                });
+            };
+            initialPlay();
 
             pairs.forEach(p => {
                 p.fwd.addEventListener('ended', () => { heroPlaying = false; playingForward = true; });
