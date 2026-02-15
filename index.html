@@ -340,6 +340,49 @@
             pointer-events: auto;
         }
 
+        /* Diana video: opacity stacking (no display:none — Safari unloads hidden videos) */
+        .diana-video-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        .diana-vid {
+            width: 100%;
+            height: auto;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.15s ease;
+        }
+        .diana-vid.diana-active {
+            position: relative;
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Confidence video: opacity stacking */
+        .conf-video-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        .conf-vid {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 464 / 688;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.15s ease;
+        }
+        .conf-vid.conf-active {
+            position: relative;
+            opacity: 1;
+            pointer-events: auto;
+        }
+
         .ketamine-video-wrapper {
             position: relative;
             width: 100%;
@@ -888,14 +931,14 @@
                     <li>Tap into your inner wisdom to speak your truth</li>
                 </ul>
             </div>
-            <div class="service-video-wrapper" data-video-pool="confidence">
-                <video id="conf0fwd" muted playsinline preload="metadata" class="section-video" src="confidence-forward.mp4" poster="posters/confidence-forward.jpg" style="width:100%;height:auto;">
+            <div class="service-video-wrapper conf-video-wrapper" data-video-pool="confidence">
+                <video id="conf0fwd" muted playsinline preload="metadata" class="section-video conf-vid conf-active" src="confidence-forward.mp4" poster="posters/confidence-forward.jpg">
                 </video>
-                <video id="conf0rev" muted playsinline preload="metadata" src="confidence-reverse.mp4" poster="posters/confidence-forward.jpg" style="width:100%;height:auto;display:none;">
+                <video id="conf0rev" muted playsinline preload="metadata" class="conf-vid" src="confidence-reverse.mp4" poster="posters/confidence-forward.jpg">
                 </video>
-                <video id="conf1fwd" muted playsinline preload="metadata" src="confidence2-forward.mp4" poster="posters/confidence2-forward.jpg" style="width:100%;height:auto;display:none;">
+                <video id="conf1fwd" muted playsinline preload="metadata" class="conf-vid" src="confidence2-forward.mp4" poster="posters/confidence2-forward.jpg">
                 </video>
-                <video id="conf1rev" muted playsinline preload="metadata" src="confidence2-reverse.mp4" poster="posters/confidence2-forward.jpg" style="width:100%;height:auto;display:none;">
+                <video id="conf1rev" muted playsinline preload="metadata" class="conf-vid" src="confidence2-reverse.mp4" poster="posters/confidence2-forward.jpg">
                 </video>
             </div>
         </div>
@@ -1023,7 +1066,7 @@
             </div>
             <div class="service-video-wrapper diana-video-wrapper">
                 <video id="diana0fwd" width="724" height="960" muted autoplay playsinline preload="auto" src="diana-forward.mp4" poster="posters/diana-forward.jpg" class="diana-vid diana-active" style="width:100%;height:auto;"></video>
-                <video id="diana0rev" width="724" height="960" muted autoplay playsinline preload="auto" src="diana-reverse.mp4" poster="posters/diana-forward.jpg" class="diana-vid" style="width:100%;height:auto;display:none;"></video>
+                <video id="diana0rev" width="724" height="960" muted autoplay playsinline preload="auto" src="diana-reverse.mp4" poster="posters/diana-forward.jpg" class="diana-vid" style="width:100%;height:auto;"></video>
             </div>
         </div>
     </section>
@@ -1516,13 +1559,13 @@
 
             const hideAllC = () => {
                 cPairs.forEach(p => {
-                    p.fwd.style.display = 'none';
-                    p.rev.style.display = 'none';
+                    p.fwd.classList.remove('conf-active');
+                    p.rev.classList.remove('conf-active');
                 });
             };
 
-            const showCFwd = () => { hideAllC(); cPairs[cIdx].fwd.style.display = 'block'; };
-            const showCRev = () => { hideAllC(); cPairs[cIdx].rev.style.display = 'block'; };
+            const showCFwd = () => { hideAllC(); cPairs[cIdx].fwd.classList.add('conf-active'); };
+            const showCRev = () => { hideAllC(); cPairs[cIdx].rev.classList.add('conf-active'); };
 
             showCFwd();
 
@@ -1889,14 +1932,14 @@
                 aboutFwd.load();
                 aboutRev.load();
                 aboutPlayingFwd = true;
-                aboutFwd.style.display = 'block';
-                aboutRev.style.display = 'none';
+                aboutFwd.style.opacity = '1'; aboutFwd.style.position = 'relative'; aboutFwd.style.pointerEvents = 'auto';
+                aboutRev.style.opacity = '0'; aboutRev.style.position = 'absolute'; aboutRev.style.pointerEvents = 'none';
             };
 
             const aboutSwap = (toVideo, fromVideo) => {
                 toVideo.currentTime = 0;
-                toVideo.style.display = 'block';
-                fromVideo.style.display = 'none';
+                toVideo.style.opacity = '1'; toVideo.style.position = 'relative'; toVideo.style.pointerEvents = 'auto';
+                fromVideo.style.opacity = '0'; fromVideo.style.position = 'absolute'; fromVideo.style.pointerEvents = 'none';
                 toVideo.play().catch(() => {});
             };
 
@@ -1970,7 +2013,7 @@
 
             // Forward ends → immediately play reverse
             dFwd.addEventListener('ended', () => {
-                dRev.style.display = 'block'; dFwd.style.display = 'none';
+                dFwd.classList.remove('diana-active'); dRev.classList.add('diana-active');
                 dRev.currentTime = 0;
                 dRev.muted = true;
                 dRev.play().catch(() => { dPlaying = false; });
@@ -1979,14 +2022,14 @@
             // Reverse ends → back to forward frame, ready for next trigger
             dRev.addEventListener('ended', () => {
                 dPlaying = false;
-                dFwd.style.display = 'block'; dRev.style.display = 'none';
+                dRev.classList.remove('diana-active'); dFwd.classList.add('diana-active');
                 dFwd.currentTime = 0;
             });
 
             const triggerD = () => {
                 if (dPlaying) return;
                 dPlaying = true;
-                dFwd.style.display = 'block'; dRev.style.display = 'none';
+                dRev.classList.remove('diana-active'); dFwd.classList.add('diana-active');
                 dFwd.currentTime = 0;
                 dFwd.muted = true;
                 dFwd.play().catch(() => { dPlaying = false; dStarted = false; });
