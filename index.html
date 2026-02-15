@@ -1462,6 +1462,15 @@
                         });
                         oPairs[oIdx].fwd.play().catch(() => { oPlaying = false; });
                     }
+                    if (!e.isIntersecting) {
+                        // Pause and hide all orgasmic videos when off-screen
+                        oPairs.forEach(p => {
+                            p.fwd.pause(); p.rev.pause();
+                        });
+                        oPlaying = false;
+                        oState = 'idle';
+                        oStarted = false;
+                    }
                 });
             }, { threshold: 0.3 });
             oObs.observe(oWrapper);
@@ -1471,7 +1480,7 @@
                     if (!e.isIntersecting && oPairs.length > 1) {
                         let next;
                         do { next = Math.floor(Math.random() * oPairs.length); } while (next === oIdx);
-                        oIdx = next; oPlaying = false; oState = 'idle'; oStarted = false;
+                        oIdx = next;
                         showOFwd();
                     }
                 });
