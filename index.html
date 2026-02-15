@@ -1478,38 +1478,35 @@
             aboutSwapObserver.observe(aboutWrapper);
         })();
 
-        // ─── DIANA VIDEO: forward/reverse on interaction ───
+        // ─── DIANA VIDEO: auto forward then immediately reverse, loop on interaction ───
         (() => {
             const dFwd = document.getElementById('diana0fwd');
             const dRev = document.getElementById('diana0rev');
             if (!dFwd || !dRev) return;
 
             let dPlaying = false;
-            let dState = 'idle';
             let dStarted = false;
 
-            dFwd.addEventListener('ended', () => { dPlaying = false; dState = 'ended-fwd'; });
+            // Forward ends → immediately play reverse
+            dFwd.addEventListener('ended', () => {
+                dRev.style.display = 'block'; dFwd.style.display = 'none';
+                dRev.currentTime = 0;
+                dRev.play().catch(() => { dPlaying = false; });
+            });
+
+            // Reverse ends → back to forward frame, ready for next trigger
             dRev.addEventListener('ended', () => {
-                dPlaying = false; dState = 'ended-rev';
+                dPlaying = false;
                 dFwd.style.display = 'block'; dRev.style.display = 'none';
                 dFwd.currentTime = 0;
             });
 
             const triggerD = () => {
                 if (dPlaying) return;
-                if (dState === 'ended-fwd') {
-                    dPlaying = true;
-                    dRev.style.display = 'block'; dFwd.style.display = 'none';
-                    dRev.currentTime = 0;
-                    dRev.play().catch(() => { dPlaying = false; });
-                    dState = 'playing-rev';
-                } else if (dState === 'ended-rev' || dState === 'idle') {
-                    dPlaying = true;
-                    dFwd.style.display = 'block'; dRev.style.display = 'none';
-                    dFwd.currentTime = 0;
-                    dFwd.play().catch(() => { dPlaying = false; });
-                    dState = 'playing-fwd';
-                }
+                dPlaying = true;
+                dFwd.style.display = 'block'; dRev.style.display = 'none';
+                dFwd.currentTime = 0;
+                dFwd.play().catch(() => { dPlaying = false; });
             };
 
             const dWrapper = dFwd.closest('.diana-video-wrapper');
@@ -1526,8 +1523,8 @@
             const dObs = new IntersectionObserver((entries) => {
                 entries.forEach(e => {
                     if (e.isIntersecting && !dStarted) {
-                        dStarted = true; dPlaying = true; dState = 'playing-fwd';
-                        dFwd.play().catch(() => { dPlaying = false; });
+                        dStarted = true;
+                        triggerD();
                     }
                 });
             }, { threshold: 0.3 });
