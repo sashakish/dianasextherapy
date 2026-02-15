@@ -224,6 +224,27 @@
             pointer-events: auto;
         }
 
+        .orgasmic-video-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        .org-vid {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 464 / 688;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.15s ease;
+        }
+        .org-vid.org-active {
+            position: relative;
+            opacity: 1;
+            pointer-events: auto;
+        }
+
         .ketamine-video-wrapper {
             position: relative;
             width: 100%;
@@ -255,6 +276,7 @@
             padding: 6rem 3rem;
             position: relative;
             overflow: hidden;
+            z-index: 1;
         }
         .service-inner {
             max-width: 1100px;
@@ -677,15 +699,11 @@
                 <p>Pleasure is your birthright, not a luxury. Many people have never been taught how their bodies work, or carry shame that blocks sensation. Through somatic awareness and evidence-based techniques, we'll help you access deeper pleasure and presence.</p>
                 <p>This is about more than orgasm. It's about aliveness, embodiment, and feeling fully here.</p>
             </div>
-            <div class="service-video-wrapper" data-video-pool="orgasmic">
-                <video id="org0fwd" muted playsinline preload="metadata" src="orgasmic-forward.mp4" poster="posters/orgasmic-forward.jpg" style="width:100%;height:auto;">
-                </video>
-                <video id="org0rev" muted playsinline preload="metadata" src="orgasmic-reverse.mp4" poster="posters/orgasmic-forward.jpg" style="width:100%;height:auto;display:none;">
-                </video>
-                <video id="org1fwd" muted playsinline preload="metadata" src="orgasmic2-forward.mp4" poster="posters/orgasmic2-forward.jpg" style="width:100%;height:auto;display:none;">
-                </video>
-                <video id="org1rev" muted playsinline preload="metadata" src="orgasmic2-reverse.mp4" poster="posters/orgasmic2-forward.jpg" style="width:100%;height:auto;display:none;">
-                </video>
+            <div class="service-video-wrapper orgasmic-video-wrapper" data-video-pool="orgasmic">
+                <video id="org0fwd" muted playsinline preload="metadata" src="orgasmic-forward.mp4" poster="posters/orgasmic-forward.jpg" class="org-vid org-active"></video>
+                <video id="org0rev" muted playsinline preload="metadata" src="orgasmic-reverse.mp4" poster="posters/orgasmic-forward.jpg" class="org-vid"></video>
+                <video id="org1fwd" muted playsinline preload="metadata" src="orgasmic2-forward.mp4" poster="posters/orgasmic2-forward.jpg" class="org-vid"></video>
+                <video id="org1rev" muted playsinline preload="metadata" src="orgasmic2-reverse.mp4" poster="posters/orgasmic2-forward.jpg" class="org-vid"></video>
             </div>
         </div>
     </section>
@@ -1409,10 +1427,13 @@
             let oStarted = false;
 
             const hideAllO = () => {
-                oPairs.forEach(p => { p.fwd.style.display = 'none'; p.rev.style.display = 'none'; });
+                oPairs.forEach(p => {
+                    p.fwd.classList.remove('org-active');
+                    p.rev.classList.remove('org-active');
+                });
             };
-            const showOFwd = () => { hideAllO(); oPairs[oIdx].fwd.style.display = 'block'; };
-            const showORev = () => { hideAllO(); oPairs[oIdx].rev.style.display = 'block'; };
+            const showOFwd = () => { hideAllO(); oPairs[oIdx].fwd.classList.add('org-active'); };
+            const showORev = () => { hideAllO(); oPairs[oIdx].rev.classList.add('org-active'); };
             showOFwd();
 
             oPairs.forEach(p => {
@@ -1438,19 +1459,18 @@
                 }
             };
 
-            const oWrapper = oPairs[0].fwd.closest('.service-video-wrapper');
-            oPairs.forEach(p => {
-                [p.fwd, p.rev].forEach(v => {
-                    v.addEventListener('click', triggerO);
-                    v.addEventListener('mouseenter', triggerO);
-                    v.addEventListener('touchstart', triggerO);
-                });
-            });
-
-            let oMouseOver = false;
-            oWrapper.addEventListener('mouseenter', () => { oMouseOver = true; });
-            oWrapper.addEventListener('mouseleave', () => { oMouseOver = false; });
-            oWrapper.addEventListener('mousemove', () => { if (oMouseOver && !oPlaying) triggerO(); });
+            const oWrapper = document.querySelector('.orgasmic-video-wrapper');
+            
+            var isMobileO = window.matchMedia('(max-width: 900px)').matches || 'ontouchstart' in window;
+            if (isMobileO) {
+                oWrapper.addEventListener('touchstart', triggerO);
+            } else {
+                let oMouseOver = false;
+                oWrapper.addEventListener('mouseenter', () => { oMouseOver = true; triggerO(); });
+                oWrapper.addEventListener('mouseleave', () => { oMouseOver = false; });
+                oWrapper.addEventListener('click', triggerO);
+                oWrapper.addEventListener('mousemove', () => { if (oMouseOver && !oPlaying) triggerO(); });
+            }
 
             const oObs = new IntersectionObserver((entries) => {
                 entries.forEach(e => {
