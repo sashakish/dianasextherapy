@@ -512,6 +512,94 @@
             letter-spacing: 0.05em;
         }
 
+        /* ─── SERVICE BULLETS ─── */
+        .service-bullets {
+            list-style: none;
+            padding: 0;
+            margin: 0.5rem 0 1.5rem;
+        }
+        .service-bullets li {
+            font-size: 0.95rem;
+            color: #777;
+            line-height: 1.7;
+            padding-left: 1rem;
+            position: relative;
+            margin-bottom: 0.3rem;
+        }
+        .service-bullets li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.6rem;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--dusty-rose);
+        }
+        .service-bullets-light li {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        .service-bullets-light li::before {
+            background: var(--muted-gold);
+        }
+
+        /* ─── FAQ ─── */
+        .faq {
+            padding: 6rem 3rem;
+            background: var(--cream);
+        }
+        .faq .section-label,
+        .faq .section-title { text-align: center; }
+        .faq .section-title { margin-bottom: 3rem; }
+        .faq-list {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .faq-item {
+            border-bottom: 1px solid var(--blush);
+        }
+        .faq-question {
+            width: 100%;
+            background: none;
+            border: none;
+            padding: 1.25rem 2rem 1.25rem 0;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: var(--deep-plum);
+            text-align: left;
+            cursor: pointer;
+            position: relative;
+            line-height: 1.4;
+        }
+        .faq-question::after {
+            content: '+';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.4rem;
+            color: var(--dusty-rose);
+            transition: transform 0.3s;
+        }
+        .faq-question.faq-open::after {
+            content: '−';
+        }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.4s ease;
+        }
+        .faq-answer.faq-show {
+            max-height: 300px;
+            padding-bottom: 1.25rem;
+        }
+        .faq-answer p {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.8;
+        }
+
         /* ─── CREDENTIALS LIST ─── */
         .credentials-list {
             font-size: 0.9rem;
@@ -654,7 +742,13 @@
                 <p class="section-label">Expand</p>
                 <h2>Expand <em>Confidence</em></h2>
                 <p>Your relationship with yourself is the foundation of every intimate connection. Together, we'll uncover what holds you back, body image, past experiences, or unspoken fears, and build a confident, embodied sense of self.</p>
-                <p>Whether you're exploring your identity, navigating change, or simply wanting to feel more at home in your own skin, this is where it starts.</p>
+                <ul class="service-bullets">
+                    <li>Overcome shyness and performance anxiety</li>
+                    <li>Learn to self-define and express your desires</li>
+                    <li>Address erectile dysfunction</li>
+                    <li>Learn ejaculation control</li>
+                    <li>Tap into your inner wisdom to speak your truth</li>
+                </ul>
             </div>
             <div class="service-video-wrapper" data-video-pool="confidence">
                 <video id="conf0fwd" muted playsinline preload="metadata" class="section-video" src="confidence-forward.mp4" poster="posters/confidence-forward.jpg" style="width:100%;height:auto;">
@@ -678,7 +772,13 @@
                 <p class="section-label">Reignite</p>
                 <h2>Reignite <em>Passion</em></h2>
                 <p>Desire ebbs and flows, that's human. But when disconnection lingers, it can feel like loss. Couples therapy creates space to rebuild communication, rediscover each other, and find your way back to genuine intimacy.</p>
-                <p>We work with desire discrepancy, emotional distance, and the everyday friction that quietly erodes connection.</p>
+                <ul class="service-bullets">
+                    <li>Uncover relationship gridlocks and negative patterns</li>
+                    <li>Learn to communicate desires without defensiveness</li>
+                    <li>Recover from an affair and rebuild trust</li>
+                    <li>Enhance your erotic menu and explore fantasies together</li>
+                    <li>Explore beliefs about monogamy and non-monogamy</li>
+                </ul>
             </div>
             <div class="service-video-wrapper passion-video-wrapper" data-video-pool="passion">
                 <video id="pass0fwd" width="464" height="688" muted playsinline preload="auto" src="passion-forward.mp4" poster="posters/passion-forward.jpg" class="passion-vid passion-active"></video>
@@ -698,7 +798,13 @@
                 <p class="section-label">Experience</p>
                 <h2>Be <em>Orgasmic</em></h2>
                 <p>Pleasure is your birthright, not a luxury. Many people have never been taught how their bodies work, or carry shame that blocks sensation. Through somatic awareness and evidence-based techniques, we'll help you access deeper pleasure and presence.</p>
-                <p>This is about more than orgasm. It's about aliveness, embodiment, and feeling fully here.</p>
+                <ul class="service-bullets">
+                    <li>Discover impediments to orgasm</li>
+                    <li>Learn how to pleasure yourself and teach your partner</li>
+                    <li>Increase sexual desire and feel erotically vibrant</li>
+                    <li>Explore your body's full potential</li>
+                    <li>Address physical discomfort or past trauma</li>
+                </ul>
             </div>
             <div class="service-video-wrapper orgasmic-video-wrapper" data-video-pool="orgasmic">
                 <video id="org0fwd" muted playsinline preload="metadata" src="orgasmic-forward.mp4" poster="posters/orgasmic-forward.jpg" class="org-vid org-active"></video>
@@ -718,7 +824,13 @@
                 <p class="section-label">Transform</p>
                 <h2>Ketamine-Assisted <em>Therapy</em></h2>
                 <p>For those who feel stuck, when talk therapy alone isn't enough, ketamine-assisted therapy offers a powerful path to breakthroughs. In a carefully held, medically supervised setting, ketamine can help dissolve rigid patterns, access buried emotions, and open new neural pathways for healing.</p>
-                <p>Particularly effective for trauma, treatment-resistant depression, anxiety, and deep-seated blocks around intimacy and connection.</p>
+                <ul class="service-bullets service-bullets-light">
+                    <li>Dissolve rigid emotional patterns</li>
+                    <li>Access buried emotions and open new neural pathways</li>
+                    <li>Enhance connection and intimacy in your relationship</li>
+                    <li>Effective for trauma, treatment-resistant depression, and anxiety</li>
+                    <li>Deep-seated blocks around intimacy and connection</li>
+                </ul>
             </div>
             <div class="service-video-wrapper ketamine-video-wrapper" data-video-pool="ketamine">
                 <video id="ket0fwd" width="464" height="688" muted playsinline preload="auto" src="ketamine-forward.mp4" poster="posters/ketamine-forward.jpg" class="ket-vid ket-active"></video>
@@ -819,6 +931,42 @@
                         <p class="testimonial-author">S.</p>
                     </div>
                 </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- FAQ -->
+    <!-- ═══════════════════════════════════════════ -->
+    <section class="faq" id="faq">
+        <div class="fade-up">
+            <p class="section-label">Common Questions</p>
+            <h2 class="section-title">Q & A</h2>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <button class="faq-question">What is sex therapy?</button>
+                    <div class="faq-answer"><p>Sex therapy is a form of talk therapy where you can expect the therapist to evaluate your concerns and assess your relevant history. One of the purposes of sex therapy is to increase your level of confidence in and out of the bedroom. Sex therapy can also help you improve your already great sex life. The most frequent therapeutic outcome is the relief that comes with being able to freely share sexual feelings, thoughts, and fantasies.</p></div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">How can I be open about intimate issues with someone I've just met?</button>
+                    <div class="faq-answer"><p>Your ability and willingness to be open and honest about your difficulties and concerns are key elements of your success in sex and relationship therapy. One of my roles as a therapist is to provide an open and safe environment where you feel safe to express your fears and difficulties.</p></div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">Are there homework assignments after each session?</button>
+                    <div class="faq-answer"><p>Not always, but frequently I will ask you to read certain books and/or complete exercises which may help you with some of the difficulties you are experiencing.</p></div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">What if I feel uncomfortable sharing when my partner is present?</button>
+                    <div class="faq-answer"><p>While it is essential to see both partners in couples therapy sessions, very frequently, especially in the beginning of treatment, it may be necessary to see partners separately to alleviate transitional discomfort.</p></div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">Can I start therapy alone and include my partner later?</button>
+                    <div class="faq-answer"><p>Absolutely. Very frequently my clients start their therapy as a solo experience and choose to include their partners later, once they've achieved certain goals and objectives on their own.</p></div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">Does couples therapy include any hands-on exercises?</button>
+                    <div class="faq-answer"><p>While there is no physical touch between client(s) and therapist, couples may participate in a series of graduated physical touching exercises in the presence of the therapist.</p></div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -1668,6 +1816,24 @@
             }, { threshold: 0.3 });
             dObs.observe(dWrapper);
         })();
+    </script>
+
+    <!-- FAQ Accordion -->
+    <script>
+    document.querySelectorAll('.faq-question').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var answer = this.nextElementSibling;
+            var isOpen = this.classList.contains('faq-open');
+            // Close all
+            document.querySelectorAll('.faq-question').forEach(function(b) { b.classList.remove('faq-open'); });
+            document.querySelectorAll('.faq-answer').forEach(function(a) { a.classList.remove('faq-show'); });
+            // Toggle clicked
+            if (!isOpen) {
+                this.classList.add('faq-open');
+                answer.classList.add('faq-show');
+            }
+        });
+    });
     </script>
 
     <!-- Testimonial Carousel -->
