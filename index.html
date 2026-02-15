@@ -1329,6 +1329,11 @@
         }, { threshold: 0.15 });
         document.querySelectorAll('.fade-up').forEach(el => fadeObserver.observe(el));
 
+        // Safari fallback: if fade-ups haven't triggered after 2s, force them visible
+        setTimeout(() => {
+            document.querySelectorAll('.fade-up:not(.visible)').forEach(el => el.classList.add('visible'));
+        }, 2000);
+
         // ─── LAZY LOAD VIDEOS ───
         // Only load videos when they're within 500px of the viewport
         const lazyVideoObserver = new IntersectionObserver((entries) => {
