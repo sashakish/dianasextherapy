@@ -4,24 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sex and Relationship Therapy and Coaching | Diana Urman, PhD, LCSW</title>
-    <meta name="description" content="Diana Urman offers sex therapy, relationship counseling, and ketamine-assisted therapy in San Francisco, Calistoga, and Santa Barbara. PhD in Human Sexuality, LCSW #26883. Free 15-minute consultation.">
-    <meta name="keywords" content="sex therapy, relationship therapy, couples counseling, sex therapist San Francisco, sex therapist Napa Valley, sex therapist Santa Barbara, ketamine assisted therapy, erectile dysfunction, desire, intimacy, LCSW, Diana Urman">
+    <meta name="description" content="Diana Urman, PhD, LCSW — sex therapist and clinical sexologist with 13+ years in private practice. Specializing in desire, orgasm difficulties, sexual trauma, couples therapy, and ketamine-assisted psychotherapy in San Francisco (Noe Valley), Napa Valley (Calistoga), and Santa Barbara. Free consultation.">
+    <meta name="keywords" content="sex therapist San Francisco, sex therapist Napa Valley, sex therapist Santa Barbara, couples therapy, sex therapy, relationship counseling, low desire, orgasm difficulties, sexual trauma, ketamine assisted therapy, somatic sex therapy, clinical sexologist, erectile dysfunction, intimacy, LCSW, Diana Urman, Noe Valley therapist, Calistoga therapist">
     <link rel="canonical" href="https://dianasextherapy.com/">
 
     <!-- Open Graph -->
     <meta property="og:title" content="Sex and Relationship Therapy and Coaching | Diana Urman, PhD, LCSW">
-    <meta property="og:description" content="A safe, compassionate space to explore your sexuality, deepen connection, and heal. Serving San Francisco, Calistoga, and Santa Barbara.">
+    <meta property="og:description" content="13+ years helping individuals and couples with desire, orgasm difficulties, sexual trauma, and intimacy. Somatic, psychedelic-assisted, and energetic approaches. Noe Valley, Napa Valley, Santa Barbara.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://dianasextherapy.com/">
-    <meta property="og:image" content="https://dianasextherapy.com/og-image.jpg">
+    <meta property="og:url" content="https://sashakish.github.io/dianasextherapy/">
+    <meta property="og:image" content="https://sashakish.github.io/dianasextherapy/og-image.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Sex and Relationship Therapy | Diana Urman, PhD, LCSW">
-    <meta name="twitter:description" content="Sex therapy, relationship counseling, and ketamine-assisted therapy. Free 15-minute consultation.">
-    <meta name="twitter:image" content="https://dianasextherapy.com/og-image.jpg">
+    <meta name="twitter:description" content="13+ years in private practice. Specializing in desire, orgasm difficulties, sexual trauma, couples therapy, and ketamine-assisted psychotherapy. San Francisco, Napa Valley, Santa Barbara.">
+    <meta name="twitter:image" content="https://sashakish.github.io/dianasextherapy/og-image.jpg">
 
     <!-- Mobile browser -->
     <meta name="theme-color" content="#3D2B3D">
@@ -45,11 +45,11 @@
       "@type": "ProfessionalService",
       "name": "Diana Urman, PhD, LCSW - Sex and Relationship Therapy",
       "description": "Sex therapy, relationship counseling, couples therapy, and ketamine-assisted therapy.",
-      "url": "https://dianasextherapy.com/",
+      "url": "https://sashakish.github.io/dianasextherapy/",
       "telephone": "+14157295173",
       "email": "diana@dianaurman.com",
       "priceRange": "$$",
-      "image": "https://dianasextherapy.com/logo.png",
+      "image": "https://sashakish.github.io/dianasextherapy/logo.png",
       "address": [
         {
           "@type": "PostalAddress",
@@ -237,7 +237,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 6rem 3rem 1.5rem;
+            padding: 6rem 3rem;
             position: relative;
             overflow: hidden;
         }
@@ -340,49 +340,6 @@
             pointer-events: auto;
         }
 
-        /* Diana video: opacity stacking (no display:none — Safari unloads hidden videos) */
-        .diana-video-wrapper {
-            position: relative;
-            width: 100%;
-        }
-        .diana-vid {
-            width: 100%;
-            height: auto;
-            position: absolute;
-            top: 0;
-            left: 0;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.15s ease;
-        }
-        .diana-vid.diana-active {
-            position: relative;
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        /* Confidence video: opacity stacking */
-        .conf-video-wrapper {
-            position: relative;
-            width: 100%;
-        }
-        .conf-vid {
-            width: 100%;
-            height: auto;
-            aspect-ratio: 464 / 688;
-            position: absolute;
-            top: 0;
-            left: 0;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.15s ease;
-        }
-        .conf-vid.conf-active {
-            position: relative;
-            opacity: 1;
-            pointer-events: auto;
-        }
-
         .ketamine-video-wrapper {
             position: relative;
             width: 100%;
@@ -403,37 +360,6 @@
             position: relative;
             opacity: 1;
             pointer-events: auto;
-        }
-
-        /* ─── PRESS BAR ─── */
-        .press-bar {
-            background: #FFFFFF;
-            padding: 0 2rem 1rem;
-        }
-        .press-inner {
-            max-width: 1100px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 2rem;
-            flex-wrap: wrap;
-            opacity: 0.75;
-        }
-        .press-inner img {
-            height: 40px;
-            width: auto;
-            object-fit: contain;
-            filter: grayscale(60%);
-            transition: filter 0.3s ease, opacity 0.3s ease;
-        }
-        .press-inner img:hover {
-            filter: grayscale(0%);
-            opacity: 1;
-        }
-        @media (max-width: 768px) {
-            .press-inner { gap: 2rem; padding: 2rem 1.5rem 0.5rem; }
-            .press-inner img { height: 28px; }
         }
 
         /* ─── SERVICE SECTIONS (full-width stacked) ─── */
@@ -892,25 +818,12 @@
             </div>
             <div class="hero-video-container fade-up">
                 <div class="hero-video-wrapper">
-                    <video id="hero0fwd" muted playsinline autoplay preload="auto" src="hero1-forward.mp4" poster="posters/hero1-forward.jpg" class="hero-vid hero-active"></video>
+                    <video id="hero0fwd" muted playsinline preload="auto" src="hero1-forward.mp4" poster="posters/hero1-forward.jpg" class="hero-vid hero-active"></video>
                     <video id="hero0rev" muted playsinline preload="auto" src="hero1-reverse.mp4" poster="posters/hero1-forward.jpg" class="hero-vid"></video>
                     <video id="hero1fwd" muted playsinline preload="auto" src="hero2-forward.mp4" poster="posters/hero2-forward.jpg" class="hero-vid"></video>
                     <video id="hero1rev" muted playsinline preload="auto" src="hero2-reverse.mp4" poster="posters/hero2-forward.jpg" class="hero-vid"></video>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- ═══════════════════════════════════════════ -->
-    <!-- PRESS / AS SEEN IN -->
-    <!-- ═══════════════════════════════════════════ -->
-    <section class="press-bar">
-        <div class="press-inner">
-            <img src="press/cosmopolitan.png" alt="Cosmopolitan" loading="lazy">
-            <img src="press/sfchronicle.png" alt="San Francisco Chronicle" loading="lazy" style="height:70px">
-            <img src="press/huffpost.png" alt="HuffPost" loading="lazy">
-            <img src="press/vice.png" alt="Vice" loading="lazy" style="height:55px">
-            <img src="press/greenstate.png" alt="GreenState" loading="lazy">
         </div>
     </section>
 
@@ -931,14 +844,14 @@
                     <li>Tap into your inner wisdom to speak your truth</li>
                 </ul>
             </div>
-            <div class="service-video-wrapper conf-video-wrapper" data-video-pool="confidence">
-                <video id="conf0fwd" muted playsinline preload="metadata" class="section-video conf-vid conf-active" src="confidence-forward.mp4" poster="posters/confidence-forward.jpg">
+            <div class="service-video-wrapper" data-video-pool="confidence">
+                <video id="conf0fwd" muted playsinline preload="metadata" class="section-video" src="confidence-forward.mp4" poster="posters/confidence-forward.jpg" style="width:100%;height:auto;">
                 </video>
-                <video id="conf0rev" muted playsinline preload="metadata" class="conf-vid" src="confidence-reverse.mp4" poster="posters/confidence-forward.jpg">
+                <video id="conf0rev" muted playsinline preload="metadata" src="confidence-reverse.mp4" poster="posters/confidence-forward.jpg" style="width:100%;height:auto;display:none;">
                 </video>
-                <video id="conf1fwd" muted playsinline preload="metadata" class="conf-vid" src="confidence2-forward.mp4" poster="posters/confidence2-forward.jpg">
+                <video id="conf1fwd" muted playsinline preload="metadata" src="confidence2-forward.mp4" poster="posters/confidence2-forward.jpg" style="width:100%;height:auto;display:none;">
                 </video>
-                <video id="conf1rev" muted playsinline preload="metadata" class="conf-vid" src="confidence2-reverse.mp4" poster="posters/confidence2-forward.jpg">
+                <video id="conf1rev" muted playsinline preload="metadata" src="confidence2-reverse.mp4" poster="posters/confidence2-forward.jpg" style="width:100%;height:auto;display:none;">
                 </video>
             </div>
         </div>
@@ -1031,9 +944,9 @@
                 <p class="section-label">Our Approach</p>
                 <h2 class="section-title">Pleasure and quality of life, not dysfunction</h2>
                 <div class="divider"></div>
-                <p>I view sexuality from the perspective of pleasure and quality of life, not from a dysfunction-based model. My professional and personal goal is to assist my clients in the process of self-healing and growth, helping them realize their full potential through expressing their sexuality.</p>
-                <p>Whether you want to increase your confidence, explore fantasies, or discover a new level of intimacy with your partner, I can help. My specialties include treating issues with erectile dysfunction, sexual trauma, loss of desire, and relationships in couples, women, and men.</p>
-                <p>My work is incredibly rewarding, and I truly love being able to empower my clients.</p>
+                <p>I became a therapist because I believe pleasure, connection, and erotic aliveness are essential to a life well lived, not luxuries, and certainly not things to feel shame about.</p>
+                <p>Since 2011, I've worked with individuals and couples facing the issues no one talks about openly: low desire, orgasm difficulties, sexual trauma, body shame, infidelity recovery, mismatched libidos, and the quiet erosion of intimacy that happens in long-term relationships.</p>
+                <p>What makes my practice different is how I work. Traditional talk therapy has its place, but the body holds what the mind can't always access. I integrate somatic experiencing, psychedelic-assisted therapy, and energetic healing alongside evidence-based clinical methods. My doctoral research validated the link between attachment patterns and sexual desire, and that research lives in every session I lead.</p>
             </div>
             <div class="about-video fade-up">
                 <video id="aboutFwd" poster="posters/about-video.jpg" muted playsinline preload="none" style="width:100%;height:auto;display:block">
@@ -1052,21 +965,24 @@
             <div class="service-text">
                 <p class="section-label">About Diana</p>
                 <h2>Meet <em>Diana Urman</em></h2>
-                <p>I have a PhD in Human Sexuality from the Institute for Advanced Study of Human Sexuality, as well as a graduate degree (MSW) in Clinical Social Work. I am a California State Licensed Clinical Social Worker (LCSW #26883) and Certified Clinical Sexologist.</p>
+                <p>With over 13 years in private practice, I've helped hundreds of individuals and couples reclaim pleasure, deepen intimacy, and heal what feels broken.</p>
+                <p>I hold a PhD in Human Sexuality, a graduate degree (MSW) in Clinical Social Work, and I am a California Licensed Clinical Social Worker (LCSW #26883) and Certified Clinical Sexologist. My doctoral research validated the link between attachment patterns and sexual desire.</p>
+                <p>I've developed cannabis-informed protocols for Female Orgasmic Disorder, practice ketamine-assisted psychotherapy, and draw from Somatica, Crucible, and Vortex Healing traditions. Whether you're navigating desire discrepancy, sexual trauma, performance anxiety, or simply want more from your intimate life, I meet you where you are with zero judgment.</p>
                 <ul class="credentials-list">
-                    <li>Advanced training in Attachment Theory, Imago Therapy, Integrative Model of Couples Therapy, Differentiation Model, and the Somatica Method</li>
+                    <li>Doctoral research on attachment theory and sexual desire</li>
+                    <li>Pioneer of cannabis-informed protocols for orgasm difficulties</li>
+                    <li>Ketamine-assisted psychotherapy practitioner</li>
+                    <li>Vortex Healing® lineage trained</li>
+                    <li>Somatica Method and Crucible® trained (David Schnarch)</li>
                     <li>Member of AASECT (American Association of Sexuality Educators, Counselors and Therapists)</li>
                     <li>Certified Sex Educator, San Francisco Sex Information (SFSI)</li>
-                    <li>Somatica Professional Couples Training</li>
-                    <li>David Schnarch training: Crucible® Mind Mapping Therapy, Treating Extra-Relationship Affairs, 5-day Clinical Practicum, Crucible® Intimacy and Desire</li>
-                    <li>Tammy Nelson workshop: Creating Connected Couples</li>
                     <li>The Couples Institute study group with Dr. Ellyn Bader and Dr. Peter Pearson</li>
                 </ul>
-                <p>I'd love to learn more about you and why you might be considering therapy. <a href="#contact" style="color:var(--dusty-rose);text-decoration:none;font-weight:500;">Schedule a free phone consultation today.</a></p>
+                <p>I see clients in Noe Valley (San Francisco), Napa Valley (Calistoga), and Santa Barbara, as well as virtually throughout California. <a href="#contact" style="color:var(--dusty-rose);text-decoration:none;font-weight:500;">Schedule a free consultation today.</a></p>
             </div>
             <div class="service-video-wrapper diana-video-wrapper">
-                <video id="diana0fwd" width="724" height="960" muted autoplay playsinline preload="auto" src="diana-forward.mp4" poster="posters/diana-forward.jpg" class="diana-vid diana-active" style="width:100%;height:auto;"></video>
-                <video id="diana0rev" width="724" height="960" muted autoplay playsinline preload="auto" src="diana-reverse.mp4" poster="posters/diana-forward.jpg" class="diana-vid" style="width:100%;height:auto;"></video>
+                <video id="diana0fwd" width="724" height="960" muted playsinline preload="auto" src="diana-forward.mp4" poster="posters/diana-forward.jpg" class="diana-vid diana-active" style="width:100%;height:auto;"></video>
+                <video id="diana0rev" width="724" height="960" muted playsinline preload="auto" src="diana-reverse.mp4" poster="posters/diana-forward.jpg" class="diana-vid" style="width:100%;height:auto;display:none;"></video>
             </div>
         </div>
     </section>
@@ -1365,41 +1281,12 @@
         });
 
         // ─── FADE-UP ON SCROLL ───
-        // Safari autoplay fix: ensure all videos have muted property set
-        // Safari requires both the attribute AND the JS property
-        document.querySelectorAll('video').forEach(v => {
-            v.muted = true;
-            v.setAttribute('muted', '');
-            v.setAttribute('playsinline', '');
-        });
-
-        // Safari: on first gesture, re-trigger hero video play
-        let safariUnlocked = false;
-        const unlockSafari = () => {
-            if (safariUnlocked) return;
-            safariUnlocked = true;
-            // Just re-trigger the hero video which may have failed autoplay
-            const heroVid = document.querySelector('.hero-vid.hero-active');
-            if (heroVid && heroVid.paused) {
-                heroVid.muted = true;
-                heroVid.play().catch(() => {});
-            }
-        };
-        document.addEventListener('touchstart', unlockSafari, { once: true });
-        document.addEventListener('click', unlockSafari, { once: true });
-        document.addEventListener('scroll', unlockSafari, { once: true });
-
         const fadeObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) entry.target.classList.add('visible');
             });
         }, { threshold: 0.15 });
         document.querySelectorAll('.fade-up').forEach(el => fadeObserver.observe(el));
-
-        // Safari fallback: if fade-ups haven't triggered after 2s, force them visible
-        setTimeout(() => {
-            document.querySelectorAll('.fade-up:not(.visible)').forEach(el => el.classList.add('visible'));
-        }, 2000);
 
         // ─── LAZY LOAD VIDEOS ───
         // Only load videos when they're within 500px of the viewport
@@ -1443,26 +1330,8 @@
 
             // Initial state
             activate(pairs[currentIdx].fwd);
-            const initialPlay = () => {
-                const v = pairs[currentIdx].fwd;
-                v.muted = true;
-                v.setAttribute('muted', '');
-                v.setAttribute('playsinline', '');
-                v.play().then(() => { heroPlaying = true; }).catch(() => {
-                    heroPlaying = false;
-                    // Safari fallback: play on first user interaction
-                    const kickstart = () => {
-                        v.play().then(() => { heroPlaying = true; }).catch(() => {});
-                        document.removeEventListener('touchstart', kickstart);
-                        document.removeEventListener('click', kickstart);
-                        document.removeEventListener('scroll', kickstart);
-                    };
-                    document.addEventListener('touchstart', kickstart, { once: true });
-                    document.addEventListener('click', kickstart, { once: true });
-                    document.addEventListener('scroll', kickstart, { once: true });
-                });
-            };
-            initialPlay();
+            pairs[currentIdx].fwd.play().catch(() => {});
+            heroPlaying = true;
 
             pairs.forEach(p => {
                 p.fwd.addEventListener('ended', () => { heroPlaying = false; playingForward = true; });
@@ -1476,14 +1345,12 @@
                 if (playingForward) {
                     activate(pair.rev);
                     pair.rev.currentTime = 0;
-                    pair.rev.muted = true;
-                    pair.rev.play().catch(() => { heroPlaying = false; });
+                    pair.rev.play().catch(() => {});
                     playingForward = false;
                 } else {
                     activate(pair.fwd);
                     pair.fwd.currentTime = 0;
-                    pair.fwd.muted = true;
-                    pair.fwd.play().catch(() => { heroPlaying = false; });
+                    pair.fwd.play().catch(() => {});
                     playingForward = true;
                 }
             };
@@ -1559,13 +1426,13 @@
 
             const hideAllC = () => {
                 cPairs.forEach(p => {
-                    p.fwd.classList.remove('conf-active');
-                    p.rev.classList.remove('conf-active');
+                    p.fwd.style.display = 'none';
+                    p.rev.style.display = 'none';
                 });
             };
 
-            const showCFwd = () => { hideAllC(); cPairs[cIdx].fwd.classList.add('conf-active'); };
-            const showCRev = () => { hideAllC(); cPairs[cIdx].rev.classList.add('conf-active'); };
+            const showCFwd = () => { hideAllC(); cPairs[cIdx].fwd.style.display = 'block'; };
+            const showCRev = () => { hideAllC(); cPairs[cIdx].rev.style.display = 'block'; };
 
             showCFwd();
 
@@ -1932,14 +1799,14 @@
                 aboutFwd.load();
                 aboutRev.load();
                 aboutPlayingFwd = true;
-                aboutFwd.style.opacity = '1'; aboutFwd.style.position = 'relative'; aboutFwd.style.pointerEvents = 'auto';
-                aboutRev.style.opacity = '0'; aboutRev.style.position = 'absolute'; aboutRev.style.pointerEvents = 'none';
+                aboutFwd.style.display = 'block';
+                aboutRev.style.display = 'none';
             };
 
             const aboutSwap = (toVideo, fromVideo) => {
                 toVideo.currentTime = 0;
-                toVideo.style.opacity = '1'; toVideo.style.position = 'relative'; toVideo.style.pointerEvents = 'auto';
-                fromVideo.style.opacity = '0'; fromVideo.style.position = 'absolute'; fromVideo.style.pointerEvents = 'none';
+                toVideo.style.display = 'block';
+                fromVideo.style.display = 'none';
                 toVideo.play().catch(() => {});
             };
 
@@ -2013,26 +1880,24 @@
 
             // Forward ends → immediately play reverse
             dFwd.addEventListener('ended', () => {
-                dFwd.classList.remove('diana-active'); dRev.classList.add('diana-active');
+                dRev.style.display = 'block'; dFwd.style.display = 'none';
                 dRev.currentTime = 0;
-                dRev.muted = true;
                 dRev.play().catch(() => { dPlaying = false; });
             });
 
             // Reverse ends → back to forward frame, ready for next trigger
             dRev.addEventListener('ended', () => {
                 dPlaying = false;
-                dRev.classList.remove('diana-active'); dFwd.classList.add('diana-active');
+                dFwd.style.display = 'block'; dRev.style.display = 'none';
                 dFwd.currentTime = 0;
             });
 
             const triggerD = () => {
                 if (dPlaying) return;
                 dPlaying = true;
-                dRev.classList.remove('diana-active'); dFwd.classList.add('diana-active');
+                dFwd.style.display = 'block'; dRev.style.display = 'none';
                 dFwd.currentTime = 0;
-                dFwd.muted = true;
-                dFwd.play().catch(() => { dPlaying = false; dStarted = false; });
+                dFwd.play().catch(() => { dPlaying = false; });
             };
 
             const dWrapper = dFwd.closest('.diana-video-wrapper');
