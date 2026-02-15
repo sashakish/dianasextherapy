@@ -370,6 +370,105 @@
             margin: 0 auto 2.5rem;
         }
 
+        /* ─── TESTIMONIALS ─── */
+        .testimonials {
+            background: var(--warm-white);
+            padding: 6rem 3rem;
+            overflow: hidden;
+        }
+        .testimonials .section-label,
+        .testimonials .section-title { text-align: center; }
+        .testimonials .section-title { margin-bottom: 3rem; }
+        .testimonial-track {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+        .testimonial-viewport {
+            overflow: hidden;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+        .testimonial-card {
+            min-width: 100%;
+            padding: 2rem 1rem;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        .testimonial-quote {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.35rem;
+            font-style: italic;
+            font-weight: 400;
+            color: var(--deep-plum);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        .testimonial-quote::before {
+            content: '\201C';
+            font-size: 4rem;
+            color: var(--dusty-rose);
+            position: absolute;
+            top: -1.5rem;
+            left: -0.5rem;
+            font-style: normal;
+            line-height: 1;
+            opacity: 0.6;
+        }
+        .testimonial-author {
+            font-family: 'Nunito Sans', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--dusty-rose);
+            letter-spacing: 0.05em;
+        }
+        .testimonial-dots {
+            text-align: center;
+            margin-top: 2rem;
+        }
+        .testimonial-dots button {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: none;
+            background: var(--blush);
+            margin: 0 5px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+            padding: 0;
+        }
+        .testimonial-dots button.active {
+            background: var(--dusty-rose);
+            transform: scale(1.3);
+        }
+        .testimonial-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+        .testimonial-nav button {
+            background: none;
+            border: 1px solid var(--blush);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--dusty-rose);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .testimonial-nav button:hover {
+            background: var(--dusty-rose);
+            color: white;
+            border-color: var(--dusty-rose);
+        }
+
         /* ─── CONTACT INFO ─── */
         .contact-info {
             background: var(--cream);
@@ -602,6 +701,57 @@
                 </video>
                 <video id="aboutRev" muted playsinline preload="none" style="width:100%;height:auto;display:none">
                 </video>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- TESTIMONIALS -->
+    <!-- ═══════════════════════════════════════════ -->
+    <section class="testimonials" id="testimonials">
+        <div class="fade-up">
+            <p class="section-label">Client Stories</p>
+            <h2 class="section-title">What Clients Are Saying</h2>
+            <div class="testimonial-viewport">
+                <div class="testimonial-track" id="testimonialTrack">
+                    <div class="testimonial-card">
+                        <p class="testimonial-quote">I have been meeting with Diana for over a year and have gained so much knowledge and confidence from our sessions. From the very beginning I felt comfortable enough to openly discuss whatever is on my mind without judgment. She has the calm and expertise to listen, offer guidance, and suggest resources for a wide range of topics.</p>
+                        <p class="testimonial-author">Phoebe C.</p>
+                    </div>
+                    <div class="testimonial-card">
+                        <p class="testimonial-quote">Diana and I have been meeting for 8 months now and I have gained so much from her knowledge and expertise in love and relationships. In her compassionate yet firm way she has helped me to evaluate my own self-imposed 'stories' and listen to my mind and body without judgement. I find I am a calmer, more compassionate, self respecting person today.</p>
+                        <p class="testimonial-author">Adrienne L.</p>
+                    </div>
+                    <div class="testimonial-card">
+                        <p class="testimonial-quote">Diana is a wonderful support to me and I look forward to our sessions every time. She makes our time together so productive that I always leave feeling like I have accomplished something or made a breakthrough.</p>
+                        <p class="testimonial-author">Madeleine G.</p>
+                    </div>
+                    <div class="testimonial-card">
+                        <p class="testimonial-quote">It is easy to underestimate the progress she helps you achieve and take it for granted because positive changes settle quickly. It sometimes took me a thorough look back at myself six months ago that made me realize how far Diana helped me travel. I highly recommend Diana for anyone who is interested in soul searching deep-dive style.</p>
+                        <p class="testimonial-author">Natalia L.</p>
+                    </div>
+                    <div class="testimonial-card">
+                        <p class="testimonial-quote">Diana is among the very best, in my experience. Her calm, straightforward manner put me at ease instantly. She has always been insightful and helpful. She occasionally also suggests outside readings, which have always proven very useful. I recommend her highly!</p>
+                        <p class="testimonial-author">Rob S.</p>
+                    </div>
+                    <div class="testimonial-card">
+                        <p class="testimonial-quote">Along the way, I have gained problem solving and coping skills, as well as a greater sense of self. Her kind, gentle nature creates an environment which allows you to feel comfortable opening up. I leave each session feeling more prepared and confident to handle whatever lies ahead!</p>
+                        <p class="testimonial-author">P.</p>
+                    </div>
+                    <div class="testimonial-card">
+                        <p class="testimonial-quote">Diana Urman leads a personalized, yet goal-oriented approach to self awareness and discovery. Her compassionate yet direct practices have helped me achieve practical results I have not experienced with other therapeutic methods.</p>
+                        <p class="testimonial-author">A.</p>
+                    </div>
+                    <div class="testimonial-card">
+                        <p class="testimonial-quote">Specializing in sex and relationships, Diana has given me insight into the most priceless endeavor: fostering and maintaining a healthy, giving, and compassionate relationship with my partner.</p>
+                        <p class="testimonial-author">S.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-nav">
+                <button id="testimPrev" aria-label="Previous testimonial">&#8249;</button>
+                <div class="testimonial-dots" id="testimonialDots"></div>
+                <button id="testimNext" aria-label="Next testimonial">&#8250;</button>
             </div>
         </div>
     </section>
@@ -1359,6 +1509,51 @@
             }, { threshold: 0 });
             aboutSwapObserver.observe(aboutWrapper);
         })();
+    </script>
+
+    <!-- Testimonial Carousel -->
+    <script>
+    (function() {
+        const track = document.getElementById('testimonialTrack');
+        const dotsWrap = document.getElementById('testimonialDots');
+        const cards = track.querySelectorAll('.testimonial-card');
+        const total = cards.length;
+        let current = 0;
+        let autoTimer;
+
+        // Build dots
+        for (let i = 0; i < total; i++) {
+            const dot = document.createElement('button');
+            dot.setAttribute('aria-label', 'Go to testimonial ' + (i + 1));
+            if (i === 0) dot.classList.add('active');
+            dot.addEventListener('click', function() { goTo(i); });
+            dotsWrap.appendChild(dot);
+        }
+        const dots = dotsWrap.querySelectorAll('button');
+
+        function goTo(idx) {
+            current = ((idx % total) + total) % total;
+            track.style.transform = 'translateX(-' + (current * 100) + '%)';
+            dots.forEach(function(d, i) { d.classList.toggle('active', i === current); });
+            resetAuto();
+        }
+
+        document.getElementById('testimPrev').addEventListener('click', function() { goTo(current - 1); });
+        document.getElementById('testimNext').addEventListener('click', function() { goTo(current + 1); });
+
+        // Auto-rotate
+        function resetAuto() {
+            clearInterval(autoTimer);
+            autoTimer = setInterval(function() { goTo(current + 1); }, 5000);
+        }
+
+        // Pause on hover
+        var section = document.querySelector('.testimonials');
+        section.addEventListener('mouseenter', function() { clearInterval(autoTimer); });
+        section.addEventListener('mouseleave', function() { resetAuto(); });
+
+        resetAuto();
+    })();
     </script>
 
 </body>
