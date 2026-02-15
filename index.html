@@ -526,17 +526,57 @@
             transform: translateY(0);
         }
 
+        /* ─── HAMBURGER MENU ─── */
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+        .nav-toggle span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: var(--soft-charcoal);
+            margin: 5px 0;
+            transition: all 0.3s;
+        }
+        .nav-toggle.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+        .nav-toggle.active span:nth-child(2) { opacity: 0; }
+        .nav-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
         /* ─── RESPONSIVE ─── */
         @media (max-width: 900px) {
-            .hero-inner { grid-template-columns: 1fr; text-align: center; gap: 3rem; }
+            .hero { padding: 5rem 2rem 3rem; min-height: auto; }
+            .hero-inner { grid-template-columns: 1fr; text-align: center; gap: 2rem; }
+            .hero-text h1 { font-size: 2.4rem; }
             .hero-text p { margin-left: auto; margin-right: auto; }
-            .hero-video-wrapper { width: 100%; max-width: 100%; }
-            .service-inner { grid-template-columns: 1fr; gap: 3rem; }
+            .hero-video-wrapper { width: 80%; max-width: 350px; margin: 0 auto; }
+            .hero-text .btn { display: block; margin: 0.5rem auto; max-width: 280px; }
+            .hero-text .btn-outline { margin-left: 0; }
+            .service-inner { grid-template-columns: 1fr; gap: 2rem; }
             .service-inner.reverse { direction: ltr; }
-            .service-section { min-height: auto; padding: 4rem 2rem; }
+            .service-section { min-height: auto; padding: 3rem 1.5rem; }
             .about-inner { grid-template-columns: 1fr; gap: 2rem; }
             .about-video { order: 1; }
-            nav ul { display: none; }
+            nav { padding: 1rem 1.5rem; }
+            nav .logo img { height: 45px; }
+            nav ul {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(255,255,255,0.95);
+                backdrop-filter: blur(20px);
+                padding: 1.5rem;
+                gap: 1.5rem;
+                text-align: center;
+            }
+            nav ul.mobile-open { display: flex; }
+            .nav-toggle { display: block; }
         }
     </style>
 </head>
@@ -545,7 +585,10 @@
     <!-- Nav -->
     <nav id="nav">
         <a href="#" class="logo"><img src="logo.png" alt="Diana Urman"></a>
-        <ul>
+        <button class="nav-toggle" id="navToggle" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+        <ul id="navMenu">
             <li><a href="#confidence">Services</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#contact">Contact</a></li>
@@ -934,6 +977,20 @@
         const nav = document.getElementById('nav');
         window.addEventListener('scroll', () => {
             nav.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        // ─── HAMBURGER MENU ───
+        const navToggle = document.getElementById('navToggle');
+        const navMenu = document.getElementById('navMenu');
+        navToggle.addEventListener('click', () => {
+            navToggle.classList.toggle('active');
+            navMenu.classList.toggle('mobile-open');
+        });
+        navMenu.querySelectorAll('a').forEach(a => {
+            a.addEventListener('click', () => {
+                navToggle.classList.remove('active');
+                navMenu.classList.remove('mobile-open');
+            });
         });
 
         // ─── FADE-UP ON SCROLL ───
