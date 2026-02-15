@@ -380,20 +380,10 @@
         .testimonials .section-title { text-align: center; }
         .testimonials .section-title { margin-bottom: 3rem; }
         .testimonial-track {
-            display: flex;
-            transition: transform 0.5s ease;
-        }
-        .testimonial-viewport {
-            overflow: hidden;
+            position: relative;
             max-width: 800px;
             margin: 0 auto;
-            position: relative;
-        }
-        .testimonial-card {
-            min-width: 100%;
-            padding: 2rem 1rem;
-            text-align: center;
-            box-sizing: border-box;
+            min-height: 200px;
         }
         .testimonial-quote {
             font-family: 'Cormorant Garamond', serif;
@@ -423,53 +413,15 @@
             color: var(--dusty-rose);
             letter-spacing: 0.05em;
         }
-        .testimonial-dots {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            margin-top: 2rem;
+        .testimonial-card {
+            opacity: 0;
+            transition: opacity 1.5s ease;
+            position: absolute;
+            top: 0; left: 0; width: 100%;
         }
-        .testimonial-dots button {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            border: none;
-            background: var(--blush);
-            cursor: pointer;
-            transition: background 0.3s, transform 0.3s;
-            padding: 0;
-            display: inline-block;
-        }
-        .testimonial-dots button.active {
-            background: var(--dusty-rose);
-            transform: scale(1.3);
-        }
-        .testimonial-nav {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 2rem;
-            margin-top: 1.5rem;
-        }
-        .testimonial-nav button.testimonial-arrow {
-            background: none;
-            border: 1px solid var(--blush);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            cursor: pointer;
-            font-size: 1.2rem;
-            color: var(--dusty-rose);
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .testimonial-nav button.testimonial-arrow:hover {
-            background: var(--dusty-rose);
-            color: white;
-            border-color: var(--dusty-rose);
+        .testimonial-card.active-testimonial {
+            opacity: 1;
+            position: relative;
         }
 
         /* ─── CONTACT INFO ─── */
@@ -715,7 +667,6 @@
         <div class="fade-up">
             <p class="section-label">Client Stories</p>
             <h2 class="section-title">What Clients Are Saying</h2>
-            <div class="testimonial-viewport">
                 <div class="testimonial-track" id="testimonialTrack">
                     <div class="testimonial-card">
                         <p class="testimonial-quote">I have been meeting with Diana for over a year and have gained so much knowledge and confidence from our sessions. From the very beginning I felt comfortable enough to openly discuss whatever is on my mind without judgment. She has the calm and expertise to listen, offer guidance, and suggest resources for a wide range of topics.</p>
@@ -750,12 +701,6 @@
                         <p class="testimonial-author">S.</p>
                     </div>
                 </div>
-            </div>
-            <div class="testimonial-nav">
-                <button id="testimPrev" class="testimonial-arrow" aria-label="Previous testimonial">&#8249;</button>
-                <div class="testimonial-dots" id="testimonialDots"></div>
-                <button id="testimNext" class="testimonial-arrow" aria-label="Next testimonial">&#8250;</button>
-            </div>
         </div>
     </section>
 
@@ -1518,38 +1463,24 @@
     <script>
     (function() {
         var track = document.getElementById('testimonialTrack');
-        var dotsWrap = document.getElementById('testimonialDots');
         var cards = track.querySelectorAll('.testimonial-card');
         var total = cards.length;
         var current = 0;
         var autoTimer = null;
         var paused = false;
 
-        // Build dots
-        for (var i = 0; i < total; i++) {
-            var dot = document.createElement('button');
-            dot.setAttribute('aria-label', 'Go to testimonial ' + (i + 1));
-            if (i === 0) dot.classList.add('active');
-            (function(idx) {
-                dot.addEventListener('click', function() { goTo(idx); });
-            })(i);
-            dotsWrap.appendChild(dot);
-        }
-        var dots = dotsWrap.querySelectorAll('button');
+        // Show first card
+        cards[0].classList.add('active-testimonial');
 
         function goTo(idx) {
+            cards[current].classList.remove('active-testimonial');
             current = ((idx % total) + total) % total;
-            track.style.transform = 'translateX(-' + (current * 100) + '%)';
-            dots.forEach(function(d, j) { d.classList.toggle('active', j === current); });
+            cards[current].classList.add('active-testimonial');
         }
 
-        document.getElementById('testimPrev').addEventListener('click', function() { goTo(current - 1); if (!paused) resetAuto(); });
-        document.getElementById('testimNext').addEventListener('click', function() { goTo(current + 1); if (!paused) resetAuto(); });
-
-        // Click on carousel to pause/resume
-        var viewport = document.querySelector('.testimonial-viewport');
-        viewport.style.cursor = 'pointer';
-        viewport.addEventListener('click', function() {
+        // Click to pause/resume
+        track.style.cursor = 'pointer';
+        track.addEventListener('click', function() {
             paused = !paused;
             if (paused) {
                 clearInterval(autoTimer);
@@ -1559,10 +1490,10 @@
             }
         });
 
-        // Auto-rotate every 10 seconds
+        // Auto-rotate with gentle crossfade every 5 seconds
         function resetAuto() {
             clearInterval(autoTimer);
-            autoTimer = setInterval(function() { goTo(current + 1); }, 10000);
+            autoTimer = setInterval(function() { goTo(current + 1); }, 5000);
         }
 
         resetAuto();
