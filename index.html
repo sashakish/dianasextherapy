@@ -115,7 +115,7 @@
             --sage: #8FA08A;
         }
 
-        html { scroll-behavior: smooth; }
+        html { scroll-behavior: auto; }
 
         body {
             font-family: 'Nunito Sans', -apple-system, sans-serif;
@@ -1273,6 +1273,20 @@
             navToggle.classList.toggle('active');
             navMenu.classList.toggle('mobile-open');
         });
+        function slowScrollTo(el, duration) {
+            const start = window.pageYOffset;
+            const end = el.getBoundingClientRect().top + start - 60;
+            const distance = end - start;
+            let startTime = null;
+            function ease(t) { return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2; }
+            function step(timestamp) {
+                if (!startTime) startTime = timestamp;
+                const progress = Math.min((timestamp - startTime) / duration, 1);
+                window.scrollTo(0, start + distance * ease(progress));
+                if (progress < 1) requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
+        }
         navMenu.querySelectorAll('a').forEach(a => {
             a.addEventListener('click', (e) => {
                 navToggle.classList.remove('active');
@@ -1283,8 +1297,8 @@
                     const target = document.querySelector(href);
                     if (target) {
                         setTimeout(() => {
-                            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        }, 300); // wait for menu to close
+                            slowScrollTo(target, 1500);
+                        }, 350);
                     }
                 }
             });
