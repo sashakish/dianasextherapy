@@ -1657,6 +1657,12 @@
             });
         });
 
+        // ─── LOGO CLICK: SMOOTH SCROLL TO TOP ───
+        document.querySelector('nav .logo').addEventListener('click', (e) => {
+            e.preventDefault();
+            slowScrollTo(document.body, 1500);
+        });
+
         // ─── FADE-UP ON SCROLL ───
         const fadeObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
