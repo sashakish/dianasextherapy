@@ -589,8 +589,38 @@
             font-weight: 500;
         }
         .contact-email a:hover { text-decoration: underline; }
+
+        /* ─── PRESS BAR ─── */
+        .press-bar {
+            background: #FFFFFF;
+            padding: 0.5rem 2rem 1.5rem;
+        }
+        .press-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            opacity: 0.75;
+        }
+        .press-inner img {
+            height: 40px;
+            width: auto;
+            object-fit: contain;
+            filter: grayscale(60%);
+            transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+        .press-inner img:hover {
+            filter: grayscale(0%);
+            opacity: 1;
+        }
+
         @media (max-width: 768px) {
             .contact-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+            .press-inner { gap: 2rem; padding: 2rem 1.5rem 0.5rem; }
+            .press-inner img { height: 28px; }
         }
 
         /* ─── FOOTER ─── */
@@ -824,6 +854,19 @@
                     <video id="hero1rev" muted playsinline preload="auto" src="hero2-reverse.mp4" poster="posters/hero2-forward.jpg" class="hero-vid"></video>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- PRESS / AS SEEN IN -->
+    <!-- ═══════════════════════════════════════════ -->
+    <section class="press-bar">
+        <div class="press-inner">
+            <img src="press/cosmopolitan.png" alt="Cosmopolitan" loading="lazy">
+            <img src="press/sfchronicle.png" alt="San Francisco Chronicle" loading="lazy" style="height:70px">
+            <img src="press/huffpost.png" alt="HuffPost" loading="lazy">
+            <img src="press/vice.png" alt="Vice" loading="lazy" style="height:55px">
+            <img src="press/greenstate.png" alt="GreenState" loading="lazy">
         </div>
     </section>
 
