@@ -2146,70 +2146,116 @@
         var ctaEl = document.getElementById('cta');
         if (ctaEl) ctaObs.observe(ctaEl);
       }
-      // Track video interactions
-      // 1. Video play events (hover/tap/click triggers)
+      // === COMPREHENSIVE VIDEO TRACKING ===
+      function getVideoSection(el) {
+        var section = el.closest('[data-video-pool]') || el.closest('.hero-video-wrapper') || el.closest('.about-video');
+        if (!section) return 'unknown';
+        return section.getAttribute('data-video-pool') ||
+          (section.classList.contains('hero-video-wrapper') ? 'hero' :
+          (section.classList.contains('about-video') ? 'about_diana' : 'unknown'));
+      }
+      function getVideoFile(video) {
+        var src = video.currentSrc || video.src || '';
+        return src.split('/').pop().split('?')[0] || video.id || 'unknown';
+      }
+
+      // 1. Video play, pause, replay, progress, complete
       document.querySelectorAll('video').forEach(function(video) {
-        var section = video.closest('[data-video-pool]') || video.closest('.hero-video-wrapper') || video.closest('.about-video');
-        var sectionName = 'unknown';
-        if (section) {
-          sectionName = section.getAttribute('data-video-pool') || 
-            (section.classList.contains('hero-video-wrapper') ? 'hero' : 
-            (section.classList.contains('about-video') ? 'about_diana' : 'unknown'));
-        }
-        var playTracked = false;
+        var sectionName = getVideoSection(video);
+        var playCount = 0;
+        var milestones = {};
+
         video.addEventListener('play', function() {
-          if (!playTracked) {
-            playTracked = true;
-            gtag('event', 'video_play', {
-              event_category: 'video',
-              event_label: sectionName,
-              video_id: video.id || video.src.split('/').pop()
-            });
+          playCount++;
+          var file = getVideoFile(video);
+          if (playCount === 1) {
+            gtag('event', 'video_play', { event_category: 'video', event_label: sectionName, video_file: file });
+          } else {
+            gtag('event', 'video_replay', { event_category: 'video', event_label: sectionName, video_file: file, play_count: playCount });
           }
+        });
+
+        video.addEventListener('pause', function() {
+          if (video.ended) return;
+          var pct = video.duration ? Math.round((video.currentTime / video.duration) * 100) : 0;
+          gtag('event', 'video_pause', { event_category: 'video', event_label: sectionName, video_file: getVideoFile(video), percent_watched: pct });
+        });
+
+        video.addEventListener('timeupdate', function() {
+          if (!video.duration) return;
+          var pct = Math.round((video.currentTime / video.duration) * 100);
+          [25, 50, 75].forEach(function(m) {
+            if (pct >= m && !milestones[m]) {
+              milestones[m] = true;
+              gtag('event', 'video_progress', { event_category: 'video', event_label: sectionName, video_file: getVideoFile(video), milestone: m });
+            }
+          });
+        });
+
+        video.addEventListener('ended', function() {
+          gtag('event', 'video_complete', { event_category: 'video', event_label: sectionName, video_file: getVideoFile(video) });
+          milestones = {};
         });
       });
 
-      // 2. Track user-initiated video interactions (click/tap on video wrappers)
+      // 2. Click/tap interactions on video wrappers
       document.querySelectorAll('.hero-video-wrapper, [data-video-pool], .about-video').forEach(function(wrapper) {
-        var sectionName = wrapper.getAttribute('data-video-pool') || 
+        var sectionName = wrapper.getAttribute('data-video-pool') ||
           (wrapper.classList.contains('hero-video-wrapper') ? 'hero' : 'about_diana');
-        var interacted = false;
         wrapper.addEventListener('click', function() {
-          if (!interacted) {
-            interacted = true;
-            gtag('event', 'video_interaction', {
-              event_category: 'video',
-              event_label: sectionName + '_click'
-            });
-          }
+          gtag('event', 'video_interaction', { event_category: 'video', event_label: sectionName + '_click' });
         });
       });
 
-      // 3. Track video section scroll-into-view (which sections do people see?)
+      // === SECTION VISIBILITY + DWELL TIME TRACKING ===
       if ('IntersectionObserver' in window) {
-        var videoSections = [
+        var allSections = [
           { sel: '.hero-video-wrapper', name: 'hero' },
           { sel: '[data-video-pool="confidence"]', name: 'confidence' },
           { sel: '[data-video-pool="passion"]', name: 'passion' },
           { sel: '[data-video-pool="orgasmic"]', name: 'orgasmic' },
           { sel: '[data-video-pool="ketamine"]', name: 'ketamine' },
-          { sel: '.about-video', name: 'about_diana' }
+          { sel: '#approach', name: 'our_approach' },
+          { sel: '#about', name: 'about_diana' },
+          { sel: '.testimonials-section', name: 'testimonials' },
+          { sel: '#cta', name: 'cta' },
+          { sel: '#contact', name: 'contact' }
         ];
-        videoSections.forEach(function(vs) {
+
+        allSections.forEach(function(vs) {
           var el = document.querySelector(vs.sel);
           if (!el) return;
-          var sent = false;
+          var firstView = false;
+          var enterTime = 0;
+          var totalDwell = 0;
+
           new IntersectionObserver(function(entries) {
             entries.forEach(function(entry) {
-              if (entry.isIntersecting && !sent) {
-                sent = true;
-                gtag('event', 'video_section_view', {
-                  event_category: 'video',
-                  event_label: vs.name
-                });
+              if (entry.isIntersecting) {
+                enterTime = Date.now();
+                if (!firstView) {
+                  firstView = true;
+                  gtag('event', 'section_view', { event_category: 'engagement', event_label: vs.name });
+                }
+              } else if (enterTime) {
+                var dwellMs = Date.now() - enterTime;
+                totalDwell += dwellMs;
+                enterTime = 0;
+                if (dwellMs >= 2000) {
+                  gtag('event', 'section_dwell', { event_category: 'engagement', event_label: vs.name, dwell_seconds: Math.round(dwellMs / 1000), value: Math.round(dwellMs / 1000) });
+                }
               }
             });
           }, { threshold: 0.3 }).observe(el);
+
+          window.addEventListener('beforeunload', function() {
+            if (enterTime) {
+              totalDwell += Date.now() - enterTime;
+            }
+            if (totalDwell >= 2000) {
+              gtag('event', 'section_total_dwell', { event_category: 'engagement', event_label: vs.name, total_seconds: Math.round(totalDwell / 1000), value: Math.round(totalDwell / 1000) });
+            }
+          });
         });
       }
     })();
