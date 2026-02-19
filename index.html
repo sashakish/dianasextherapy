@@ -2145,6 +2145,72 @@
         var ctaEl = document.getElementById('cta');
         if (ctaEl) ctaObs.observe(ctaEl);
       }
+      // Track video interactions
+      // 1. Video play events (hover/tap/click triggers)
+      document.querySelectorAll('video').forEach(function(video) {
+        var section = video.closest('[data-video-pool]') || video.closest('.hero-video-wrapper') || video.closest('.about-video');
+        var sectionName = 'unknown';
+        if (section) {
+          sectionName = section.getAttribute('data-video-pool') || 
+            (section.classList.contains('hero-video-wrapper') ? 'hero' : 
+            (section.classList.contains('about-video') ? 'about_diana' : 'unknown'));
+        }
+        var playTracked = false;
+        video.addEventListener('play', function() {
+          if (!playTracked) {
+            playTracked = true;
+            gtag('event', 'video_play', {
+              event_category: 'video',
+              event_label: sectionName,
+              video_id: video.id || video.src.split('/').pop()
+            });
+          }
+        });
+      });
+
+      // 2. Track user-initiated video interactions (click/tap on video wrappers)
+      document.querySelectorAll('.hero-video-wrapper, [data-video-pool], .about-video').forEach(function(wrapper) {
+        var sectionName = wrapper.getAttribute('data-video-pool') || 
+          (wrapper.classList.contains('hero-video-wrapper') ? 'hero' : 'about_diana');
+        var interacted = false;
+        wrapper.addEventListener('click', function() {
+          if (!interacted) {
+            interacted = true;
+            gtag('event', 'video_interaction', {
+              event_category: 'video',
+              event_label: sectionName + '_click'
+            });
+          }
+        });
+      });
+
+      // 3. Track video section scroll-into-view (which sections do people see?)
+      if ('IntersectionObserver' in window) {
+        var videoSections = [
+          { sel: '.hero-video-wrapper', name: 'hero' },
+          { sel: '[data-video-pool="confidence"]', name: 'confidence' },
+          { sel: '[data-video-pool="passion"]', name: 'passion' },
+          { sel: '[data-video-pool="orgasmic"]', name: 'orgasmic' },
+          { sel: '[data-video-pool="ketamine"]', name: 'ketamine' },
+          { sel: '.about-video', name: 'about_diana' }
+        ];
+        videoSections.forEach(function(vs) {
+          var el = document.querySelector(vs.sel);
+          if (!el) return;
+          var sent = false;
+          new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+              if (entry.isIntersecting && !sent) {
+                sent = true;
+                gtag('event', 'video_section_view', {
+                  event_category: 'video',
+                  event_label: vs.name
+                });
+              }
+            });
+          }, { threshold: 0.3 }).observe(el);
+        });
+      }
     })();
     </script>
 
