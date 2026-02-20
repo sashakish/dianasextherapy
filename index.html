@@ -2262,5 +2262,14 @@
     </script>
 
 
+<script>
+/* Cache-bust all media after mobile swap (watermark update Feb 2026) */
+document.querySelectorAll('video[src],video[poster]').forEach(function(v){
+    ['src','poster'].forEach(function(a){
+        var val=v.getAttribute(a);
+        if(val && !val.includes('?'))v.setAttribute(a,val+'?v=2');
+    });
+});
+</script>
 </body>
 </html>
