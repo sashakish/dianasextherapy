@@ -711,7 +711,8 @@
             margin-bottom: 0.4rem;
         }
         .inquiry-field input,
-        .inquiry-field select {
+        .inquiry-field select,
+        .inquiry-field textarea {
             width: 100%;
             box-sizing: border-box;
             border: 1px solid rgba(255, 255, 255, 0.35);
@@ -722,7 +723,8 @@
             padding: 0.8rem 0.9rem;
         }
         .inquiry-field input:focus,
-        .inquiry-field select:focus {
+        .inquiry-field select:focus,
+        .inquiry-field textarea:focus {
             outline: 3px solid rgba(208, 143, 155, 0.45);
             border-color: var(--dusty-rose);
         }
@@ -1304,24 +1306,33 @@
                 <a href="https://diana.clientsecure.me" class="btn btn-primary" data-spwidget-scope-id="29b87bc7-3414-4619-a781-ada56529d6ac" data-spwidget-scope-uri="diana" data-spwidget-application-id="7c72cb9f9a9b913654bb89d6c7b4e71a77911b30192051da35384b4d0c6d505b" data-spwidget-scope-global data-spwidget-autobind>Schedule Free Consultation</a>
             </div>
             <script src="https://widget-cdn.simplepractice.com/assets/integration-1.0.js"></script>
-            <div class="inquiry-panel">
-                <h3>Prefer a Personal Reply?</h3>
-                <p class="inquiry-intro">Send a brief inquiry and Diana will follow up with you directly.</p>
-                <p class="inquiry-privacy">For your privacy, this form does not ask about symptoms, diagnoses, or other sensitive health information.</p>
-                <form id="private-inquiry-form">
-                    <div class="inquiry-field">
-                        <label for="inquiry-name">Name</label>
-                        <input id="inquiry-name" name="name" type="text" autocomplete="name" placeholder="Your name" required>
-                    </div>
-                    <div class="inquiry-field">
-                        <label for="inquiry-contact">Email or phone number</label>
-                        <input id="inquiry-contact" name="contact" type="text" autocomplete="email" placeholder="How Diana can reach you" required>
-                    </div>
-                    <button class="btn btn-primary inquiry-submit" type="submit">Send Private Inquiry</button>
-                    <p class="inquiry-note">Selecting “Send” opens your email app with these details filled in. Nothing is stored on this website.</p>
-                </form>
-            </div>
             <p style="font-size:0.9rem;color:#aaa;margin-top:1rem;">Existing clients: <a href="mailto:diana@dianaurman.com" style="color:var(--dusty-rose);text-decoration:none;">diana@dianaurman.com</a><br><span style="font-size:0.95rem;color:var(--dusty-rose);">In-person and video sessions available.</span></p>
+        </div>
+    </section>
+
+    <!-- General inquiry form, separate from consultation scheduling -->
+    <section style="padding:4rem 1.5rem;background:var(--deep-plum);">
+        <div class="inquiry-panel fade-up" style="max-width:760px;margin:0 auto;">
+            <p class="section-label">Questions</p>
+            <h2 class="section-title" style="color:#fff;text-align:center;">Send Diana an <em>Inquiry</em></h2>
+            <p class="inquiry-intro">Have a question? Send Diana a message and she will reply directly.</p>
+            <p class="inquiry-privacy">Please do not include sensitive health information in this form.</p>
+            <form id="private-inquiry-form">
+                <div class="inquiry-field">
+                    <label for="inquiry-name">Name</label>
+                    <input id="inquiry-name" name="name" type="text" autocomplete="name" placeholder="Your name" required>
+                </div>
+                <div class="inquiry-field">
+                    <label for="inquiry-contact">Email or phone number</label>
+                    <input id="inquiry-contact" name="contact" type="text" autocomplete="email" placeholder="How Diana can reply to you" required>
+                </div>
+                <div class="inquiry-field">
+                    <label for="inquiry-message">Your question</label>
+                    <textarea id="inquiry-message" name="message" rows="5" placeholder="What would you like to ask Diana?" required></textarea>
+                </div>
+                <button class="btn btn-primary inquiry-submit" type="submit">Send Inquiry</button>
+                <p class="inquiry-note">Selecting “Send” opens your email app with your message filled in. Nothing is stored on this website.</p>
+            </form>
         </div>
     </section>
 
@@ -2329,7 +2340,7 @@
           var body = [
             'Hello Diana,',
             '',
-            'I would like to request a free 15-minute consultation.',
+            data.get('message'),
             '',
             'Name: ' + data.get('name'),
             'Contact information: ' + data.get('contact'),
@@ -2343,7 +2354,7 @@
             });
           }
           window.location.href = 'mailto:diana@dianaurman.com?subject=' +
-            encodeURIComponent('Free consultation inquiry') + '&body=' + encodeURIComponent(body);
+            encodeURIComponent('Website inquiry') + '&body=' + encodeURIComponent(body);
         });
       }
 
