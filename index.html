@@ -671,6 +671,80 @@
         }
         .contact-email a:hover { text-decoration: underline; }
 
+        /* ─── PRIVATE INQUIRY FORM ─── */
+        .inquiry-panel {
+            max-width: 680px;
+            margin: 2.5rem auto 0;
+            padding: 2rem;
+            text-align: left;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 18px;
+        }
+        .inquiry-panel h3 {
+            color: #fff;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.65rem;
+            font-weight: 500;
+            margin: 0 0 0.5rem;
+            text-align: center;
+        }
+        .inquiry-intro,
+        .inquiry-privacy {
+            color: #e8e0e7;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            text-align: center;
+        }
+        .inquiry-privacy { margin: 0.4rem 0 1.4rem; }
+        .inquiry-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .inquiry-field { margin-bottom: 1rem; }
+        .inquiry-field label {
+            display: block;
+            color: #fff;
+            font-size: 0.82rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+        }
+        .inquiry-field input,
+        .inquiry-field select {
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            border-radius: 10px;
+            background: #fff;
+            color: var(--deep-plum);
+            font: inherit;
+            padding: 0.8rem 0.9rem;
+        }
+        .inquiry-field input:focus,
+        .inquiry-field select:focus {
+            outline: 3px solid rgba(208, 143, 155, 0.45);
+            border-color: var(--dusty-rose);
+        }
+        .inquiry-submit {
+            display: block;
+            width: 100%;
+            border: 0;
+            cursor: pointer;
+            margin-top: 0.3rem;
+        }
+        .inquiry-note {
+            color: #d8cfd7;
+            font-size: 0.78rem;
+            line-height: 1.5;
+            margin: 0.9rem 0 0;
+            text-align: center;
+        }
+        @media (max-width: 600px) {
+            .inquiry-panel { padding: 1.4rem; }
+            .inquiry-row { grid-template-columns: 1fr; gap: 0; }
+        }
+
         /* ─── PRESS BAR ─── */
         .press-bar {
             background: #FFFFFF;
@@ -1230,6 +1304,49 @@
                 <a href="https://diana.clientsecure.me" class="btn btn-primary" data-spwidget-scope-id="29b87bc7-3414-4619-a781-ada56529d6ac" data-spwidget-scope-uri="diana" data-spwidget-application-id="7c72cb9f9a9b913654bb89d6c7b4e71a77911b30192051da35384b4d0c6d505b" data-spwidget-scope-global data-spwidget-autobind>Schedule Free Consultation</a>
             </div>
             <script src="https://widget-cdn.simplepractice.com/assets/integration-1.0.js"></script>
+            <div class="inquiry-panel">
+                <h3>Prefer a Personal Reply?</h3>
+                <p class="inquiry-intro">Send a brief inquiry and Diana will follow up with you directly.</p>
+                <p class="inquiry-privacy">For your privacy, this form does not ask about symptoms, diagnoses, or other sensitive health information.</p>
+                <form id="private-inquiry-form">
+                    <div class="inquiry-row">
+                        <div class="inquiry-field">
+                            <label for="inquiry-name">First name</label>
+                            <input id="inquiry-name" name="name" type="text" autocomplete="given-name" required>
+                        </div>
+                        <div class="inquiry-field">
+                            <label for="inquiry-email">Email</label>
+                            <input id="inquiry-email" name="email" type="email" autocomplete="email" required>
+                        </div>
+                    </div>
+                    <div class="inquiry-row">
+                        <div class="inquiry-field">
+                            <label for="inquiry-phone">Phone <span style="font-weight:400;">(optional)</span></label>
+                            <input id="inquiry-phone" name="phone" type="tel" autocomplete="tel">
+                        </div>
+                        <div class="inquiry-field">
+                            <label for="inquiry-contact">How should Diana contact you?</label>
+                            <select id="inquiry-contact" name="contact_method" required>
+                                <option value="Email">Email</option>
+                                <option value="Phone">Phone</option>
+                                <option value="Text message">Text message</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="inquiry-field">
+                        <label for="inquiry-location">Where are you located?</label>
+                        <select id="inquiry-location" name="location" required>
+                            <option value="" selected disabled>Select an area</option>
+                            <option value="San Francisco / Bay Area">San Francisco / Bay Area</option>
+                            <option value="Napa Valley / Calistoga">Napa Valley / Calistoga</option>
+                            <option value="Santa Barbara area">Santa Barbara area</option>
+                            <option value="Elsewhere in California">Elsewhere in California</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary inquiry-submit" type="submit">Send Private Inquiry</button>
+                    <p class="inquiry-note">Selecting “Send” opens your email app with these details filled in. Nothing is stored on this website.</p>
+                </form>
+            </div>
             <p style="font-size:0.9rem;color:#aaa;margin-top:1rem;">Existing clients: <a href="mailto:diana@dianaurman.com" style="color:var(--dusty-rose);text-decoration:none;">diana@dianaurman.com</a><br><span style="font-size:0.95rem;color:var(--dusty-rose);">In-person and video sessions available.</span></p>
         </div>
     </section>
@@ -2228,6 +2345,36 @@
           });
         });
       });
+
+      // Keep brief inquiries private: compose in the visitor's own email app
+      var inquiryForm = document.getElementById('private-inquiry-form');
+      if (inquiryForm) {
+        inquiryForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          var data = new FormData(inquiryForm);
+          var body = [
+            'Hello Diana,',
+            '',
+            'I would like to request a free 15-minute consultation.',
+            '',
+            'First name: ' + data.get('name'),
+            'Email: ' + data.get('email'),
+            'Phone: ' + (data.get('phone') || 'Not provided'),
+            'Preferred contact method: ' + data.get('contact_method'),
+            'Location: ' + data.get('location'),
+            '',
+            'Thank you.'
+          ].join('\n');
+          if (typeof gtag === 'function') {
+            gtag('event', 'inquiry_form_submit', {
+              event_category: 'conversion',
+              event_label: 'private_email_inquiry'
+            });
+          }
+          window.location.href = 'mailto:diana@dianaurman.com?subject=' +
+            encodeURIComponent('Free consultation inquiry') + '&body=' + encodeURIComponent(body);
+        });
+      }
 
       // Track contact section scroll-into-view
       if ('IntersectionObserver' in window) {
