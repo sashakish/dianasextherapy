@@ -1309,39 +1309,13 @@
                 <p class="inquiry-intro">Send a brief inquiry and Diana will follow up with you directly.</p>
                 <p class="inquiry-privacy">For your privacy, this form does not ask about symptoms, diagnoses, or other sensitive health information.</p>
                 <form id="private-inquiry-form">
-                    <div class="inquiry-row">
-                        <div class="inquiry-field">
-                            <label for="inquiry-name">First name</label>
-                            <input id="inquiry-name" name="name" type="text" autocomplete="given-name" required>
-                        </div>
-                        <div class="inquiry-field">
-                            <label for="inquiry-email">Email</label>
-                            <input id="inquiry-email" name="email" type="email" autocomplete="email" required>
-                        </div>
-                    </div>
-                    <div class="inquiry-row">
-                        <div class="inquiry-field">
-                            <label for="inquiry-phone">Phone <span style="font-weight:400;">(optional)</span></label>
-                            <input id="inquiry-phone" name="phone" type="tel" autocomplete="tel">
-                        </div>
-                        <div class="inquiry-field">
-                            <label for="inquiry-contact">How should Diana contact you?</label>
-                            <select id="inquiry-contact" name="contact_method" required>
-                                <option value="Email">Email</option>
-                                <option value="Phone">Phone</option>
-                                <option value="Text message">Text message</option>
-                            </select>
-                        </div>
+                    <div class="inquiry-field">
+                        <label for="inquiry-name">Name</label>
+                        <input id="inquiry-name" name="name" type="text" autocomplete="name" placeholder="Your name" required>
                     </div>
                     <div class="inquiry-field">
-                        <label for="inquiry-location">Where are you located?</label>
-                        <select id="inquiry-location" name="location" required>
-                            <option value="" selected disabled>Select an area</option>
-                            <option value="San Francisco / Bay Area">San Francisco / Bay Area</option>
-                            <option value="Napa Valley / Calistoga">Napa Valley / Calistoga</option>
-                            <option value="Santa Barbara area">Santa Barbara area</option>
-                            <option value="Elsewhere in California">Elsewhere in California</option>
-                        </select>
+                        <label for="inquiry-contact">Email or phone number</label>
+                        <input id="inquiry-contact" name="contact" type="text" autocomplete="email" placeholder="How Diana can reach you" required>
                     </div>
                     <button class="btn btn-primary inquiry-submit" type="submit">Send Private Inquiry</button>
                     <p class="inquiry-note">Selecting “Send” opens your email app with these details filled in. Nothing is stored on this website.</p>
@@ -2357,11 +2331,8 @@
             '',
             'I would like to request a free 15-minute consultation.',
             '',
-            'First name: ' + data.get('name'),
-            'Email: ' + data.get('email'),
-            'Phone: ' + (data.get('phone') || 'Not provided'),
-            'Preferred contact method: ' + data.get('contact_method'),
-            'Location: ' + data.get('location'),
+            'Name: ' + data.get('name'),
+            'Contact information: ' + data.get('contact'),
             '',
             'Thank you.'
           ].join('\n');
