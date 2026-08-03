@@ -1310,32 +1310,6 @@
         </div>
     </section>
 
-    <!-- General inquiry form, separate from consultation scheduling -->
-    <section style="padding:4rem 1.5rem;background:var(--deep-plum);">
-        <div class="inquiry-panel fade-up" style="max-width:760px;margin:0 auto;">
-            <p class="section-label">Questions</p>
-            <h2 class="section-title" style="color:#fff;text-align:center;">Send Diana an <em>Inquiry</em></h2>
-            <p class="inquiry-intro">Have a question? Send Diana a message and she will reply directly.</p>
-            <p class="inquiry-privacy">Please do not include sensitive health information in this form.</p>
-            <form id="private-inquiry-form">
-                <div class="inquiry-field">
-                    <label for="inquiry-name">Name</label>
-                    <input id="inquiry-name" name="name" type="text" autocomplete="name" placeholder="Your name" required>
-                </div>
-                <div class="inquiry-field">
-                    <label for="inquiry-contact">Email or phone number</label>
-                    <input id="inquiry-contact" name="contact" type="text" autocomplete="email" placeholder="How Diana can reply to you" required>
-                </div>
-                <div class="inquiry-field">
-                    <label for="inquiry-message">Your question</label>
-                    <textarea id="inquiry-message" name="message" rows="5" placeholder="What would you like to ask Diana?" required></textarea>
-                </div>
-                <button class="btn btn-primary inquiry-submit" type="submit">Send Inquiry</button>
-                <p class="inquiry-note">Selecting “Send” opens your email app with your message filled in. Nothing is stored on this website.</p>
-            </form>
-        </div>
-    </section>
-
     <!-- Contact Info -->
     <section class="contact-info" id="locations">
         <div class="fade-up">
@@ -1355,7 +1329,7 @@
                     <p>Santa Barbara Office, CA 93067<br><a href="tel:+14157295173">(415) 729-5173</a></p>
                 </div>
             </div>
-            <p class="contact-email"><a href="mailto:diana@dianaurman.com">diana@dianaurman.com</a></p>
+            <p class="contact-email"><a href="mailto:diana@dianaurman.com">diana@dianaurman.com</a><br><a href="inquiry/" style="display:inline-block;margin-top:0.9rem;">Send a general inquiry</a></p>
         </div>
     </section>
 
@@ -2330,33 +2304,6 @@
           });
         });
       });
-
-      // Keep brief inquiries private: compose in the visitor's own email app
-      var inquiryForm = document.getElementById('private-inquiry-form');
-      if (inquiryForm) {
-        inquiryForm.addEventListener('submit', function(e) {
-          e.preventDefault();
-          var data = new FormData(inquiryForm);
-          var body = [
-            'Hello Diana,',
-            '',
-            data.get('message'),
-            '',
-            'Name: ' + data.get('name'),
-            'Contact information: ' + data.get('contact'),
-            '',
-            'Thank you.'
-          ].join('\n');
-          if (typeof gtag === 'function') {
-            gtag('event', 'inquiry_form_submit', {
-              event_category: 'conversion',
-              event_label: 'private_email_inquiry'
-            });
-          }
-          window.location.href = 'mailto:diana@dianaurman.com?subject=' +
-            encodeURIComponent('Website inquiry') + '&body=' + encodeURIComponent(body);
-        });
-      }
 
       // Track contact section scroll-into-view
       if ('IntersectionObserver' in window) {
