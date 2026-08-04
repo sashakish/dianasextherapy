@@ -172,6 +172,7 @@
       "@context": "https://schema.org",
       "@type": "FAQPage",
       "mainEntity": [
+        {"@type": "Question", "name": "What are your fees?", "acceptedAnswer": {"@type": "Answer", "text": "Individual sessions are 45 minutes and $240. Couples sessions are 60 minutes and $325."}},
         {"@type": "Question", "name": "What is sex therapy?", "acceptedAnswer": {"@type": "Answer", "text": "Sex therapy is a form of talk therapy where the therapist evaluates your concerns and assesses your relevant history. One of the purposes is to increase your confidence in and out of the bedroom. The most frequent therapeutic outcome is the relief that comes with being able to freely share sexual feelings, thoughts, and fantasies."}},
         {"@type": "Question", "name": "Do you accept insurance?", "acceptedAnswer": {"@type": "Answer", "text": "I am an out-of-network provider. I provide a superbill that you may submit to your insurance company for possible reimbursement."}},
         {"@type": "Question", "name": "What methodology do you use?", "acceptedAnswer": {"@type": "Answer", "text": "I use an integrative approach combining sex therapy and relationship therapy, focusing on personal development and increasing your capacity for intimacy and passion. This methodology uses spontaneous sexual behavior as a window into yourself and your partner, emphasizing personal growth over conventional communication-focused approaches."}},
@@ -288,15 +289,61 @@
             font-weight: 500;
         }
         .service-path-card p { font-size: 0.96rem; line-height: 1.65; }
-        .fee-details {
-            max-width: 760px;
-            margin: 2.25rem auto 0;
-            padding: 1.5rem 1.75rem;
-            background: rgba(232, 213, 204, 0.35);
-            border-radius: 8px;
+        .service-card-link {
+            display: inline-block;
+            margin-top: 1.15rem;
+            color: var(--dusty-rose);
+            font-size: 0.76rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
         }
-        .fee-details strong { color: var(--deep-plum); }
-
+        .specialties-wrap {
+            margin-top: 3.5rem;
+            padding-top: 3rem;
+            border-top: 1px solid rgba(61, 43, 61, 0.12);
+        }
+        .specialties-intro {
+            max-width: 680px;
+            margin: 0 auto 2rem;
+            color: #5f5960;
+            line-height: 1.7;
+        }
+        .specialty-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.9rem;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: left;
+        }
+        .specialty-item {
+            display: flex;
+            align-items: center;
+            min-height: 68px;
+            padding: 1rem 1.2rem;
+            border: 1px solid rgba(61, 43, 61, 0.1);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.72);
+            color: var(--deep-plum);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.22rem;
+            font-weight: 500;
+            line-height: 1.25;
+            text-decoration: none;
+            transition: border-color 0.25s, background 0.25s;
+        }
+        .specialty-item::before {
+            content: '·';
+            margin-right: 0.7rem;
+            color: var(--dusty-rose);
+            font-size: 1.6rem;
+            line-height: 1;
+        }
+        .specialty-item:hover {
+            border-color: var(--dusty-rose);
+            background: #fff;
+        }
         /* ─── BUTTONS ─── */
         .btn {
             display: inline-block;
@@ -1046,6 +1093,9 @@
             .testimonials { padding: 3rem 1.5rem 1rem; }
             .service-path-grid { grid-template-columns: 1fr; }
             .service-paths { padding: 4rem 1.5rem; }
+            .specialty-grid { grid-template-columns: 1fr; }
+            .specialties-wrap { margin-top: 2.75rem; padding-top: 2.5rem; }
+            .specialty-item { min-height: 60px; font-size: 1.15rem; }
         }
     </style>
 </head>
@@ -1061,6 +1111,7 @@
             <li><a href="#services">Services</a></li>
             <li><a href="#approach">Our Approach</a></li>
             <li><a href="#diana">About Diana</a></li>
+            <li><a href="#faq">Q &amp; A</a></li>
             <li><a href="#contact">Book a Free Consultation</a></li>
         </ul>
     </nav>
@@ -1093,30 +1144,44 @@
         </div>
     </section>
 
-    <!-- Three clear ways to work together -->
+    <!-- Distinct client-facing services -->
     <section class="service-paths" id="services">
         <div class="service-paths-inner fade-up">
-            <p class="section-label">Ways to Work Together</p>
-            <h2 class="section-title">Specialized support for <em>you and your relationships</em></h2>
+            <p class="section-label">How I Can Help</p>
+            <h2 class="section-title">Specialized therapy for <em>sex, intimacy, and relationships</em></h2>
+            <p class="specialties-intro">Choose the type of support that fits your situation. We will clarify the right focus together during your free consultation.</p>
             <div class="service-path-grid">
                 <a class="service-path-card" href="#confidence">
-                    <h3>Individual Therapy</h3>
-                    <p>Explore sexuality, desire, confidence, trauma, body image, and intimacy in a private, affirming space.</p>
+                    <h3>Individual Sex Therapy</h3>
+                    <p>A private, affirming space to understand desire, arousal, orgasm, sexual confidence, trauma, and your relationship with your body.</p>
+                    <span class="service-card-link">Explore Individual Therapy →</span>
                 </a>
-                <a class="service-path-card" href="#passion">
-                    <h3>Couples Therapy</h3>
-                    <p>Rebuild trust and connection, work through recurring patterns, and create a more satisfying intimate relationship.</p>
+                <a class="service-path-card" href="/sex-therapy-for-couples-san-francisco/">
+                    <h3>Couples &amp; Relationship Therapy</h3>
+                    <p>Support for desire differences, recurring conflict, infidelity, communication difficulties, and rebuilding emotional and sexual closeness.</p>
+                    <span class="service-card-link">Explore Couples Therapy →</span>
                 </a>
-                <a class="service-path-card" href="#ketamine">
+                <a class="service-path-card" href="/ketamine-assisted-sex-therapy-san-francisco/">
                     <h3>Ketamine-Assisted Psychotherapy</h3>
-                    <p>Carefully supported work for clients seeking a deeper path through entrenched emotional and relational patterns.</p>
+                    <p>Carefully supported work for individuals and couples seeking a deeper path through entrenched emotional, sexual, or relational patterns.</p>
+                    <span class="service-card-link">Explore Ketamine-Assisted Therapy →</span>
                 </a>
             </div>
-            <div class="fee-details">
-                <p><strong>Individual sessions:</strong> 45 minutes, $240 &nbsp;·&nbsp; <strong>Couples sessions:</strong> 60 minutes, $325</p>
-                <p>Diana is an out-of-network provider and provides superbills that you may submit to your insurance company for possible reimbursement.</p>
+            <div class="specialties-wrap">
+                <p class="section-label">Common Concerns</p>
+                <h3 class="section-title" style="font-size:clamp(1.8rem,3vw,2.45rem);margin-bottom:0.75rem;">You do not need to know <em>where to begin</em></h3>
+                <p class="specialties-intro">We can identify the most helpful focus together. I commonly support clients with:</p>
+                <div class="specialty-grid">
+                    <a class="specialty-item" href="/low-desire-sex-therapy-san-francisco/">Low desire and desire differences</a>
+                    <a class="specialty-item" href="/orgasm-difficulties-therapy-san-francisco/">Arousal and orgasm difficulties</a>
+                    <a class="specialty-item" href="/painful-sex-therapy-san-francisco/">Sexual pain and performance anxiety</a>
+                    <a class="specialty-item" href="#confidence">Sexual trauma, shame, and body disconnection</a>
+                    <a class="specialty-item" href="#passion">Infidelity, recurring conflict, and loss of intimacy</a>
+                    <a class="specialty-item" href="#passion">Monogamy, non-monogamy, and sexual exploration</a>
+                </div>
             </div>
-            <a href="#contact" class="btn btn-primary" style="margin-top:2rem;">Book a Free Consultation</a>
+            <p style="max-width:650px;margin:2.5rem auto 1.25rem;color:#5f5960;line-height:1.7;">Not sure where to begin? A free 15-minute phone consultation can help us determine the best next step.</p>
+            <a href="#contact" class="btn btn-primary">Book a Free Consultation</a>
         </div>
     </section>
 
@@ -1350,6 +1415,10 @@
             <h2 class="section-title">Q & A</h2>
             <div class="faq-list">
                 <div class="faq-item">
+                    <button class="faq-question">What are your fees?</button>
+                    <div class="faq-answer"><p>Individual sessions are 45 minutes and $240. Couples sessions are 60 minutes and $325.</p></div>
+                </div>
+                <div class="faq-item">
                     <button class="faq-question">What is sex therapy?</button>
                     <div class="faq-answer"><p>Sex therapy is a form of talk therapy where you can expect the therapist to evaluate your concerns and assess your relevant history. One of the purposes of sex therapy is to increase your level of confidence in and out of the bedroom. Sex therapy can also help you improve your already great sex life. The most frequent therapeutic outcome is the relief that comes with being able to freely share sexual feelings, thoughts, and fantasies.</p></div>
                 </div>
@@ -1379,7 +1448,7 @@
                 </div>
                 <div class="faq-item">
                     <button class="faq-question">What methodology do you use for sex and relationship therapy?</button>
-                    <div class="faq-answer"><p>I use an integrative approach that combines both sex therapy and relationship therapy. This approach focuses on your personal development and ability to reach your sexual potential by increasing your capacity for intimacy and passion throughout the process of resolving sexual problems. Rather than telling you what to do or how to do it, this methodology uses your spontaneous sexual behavior as a window into yourself and your partner. This emphasis on personal growth differs from other conventional therapies that emphasize communication skills, empathic listening and negotiation. One of the main goals of this therapy is to increase your ability to tolerate anxiety and develop your skills to approach difficult topics with your partner.</p></div>
+                    <div class="faq-answer"><p>I use an integrative approach that combines both sex therapy and relationship therapy. This approach focuses on your personal development and ability to reach your sexual potential by increasing your capacity for intimacy and passion throughout the process of resolving sexual problems. Rather than telling you what to do or how to do it, this methodology uses your spontaneous sexual behavior as a window into yourself and your partner. This emphasis on personal growth differs from other conventional therapies that emphasize communication skills, empathic listening and negotiation. One of the main goals of this therapy is to increase your ability to tolerate anxiety and approach difficult topics with your partner with greater confidence, openness, and emotional resilience.</p></div>
                 </div>
             </div>
         </div>
